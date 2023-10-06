@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/fav"
+        android:title="Favorites"
+        android:enabled="true"
+        android:icon="@drawable/star"/>
+    <item
+        android:id="@+id/recents"
+        android:title="Recents"
+        android:enabled="true"
+        android:icon="@drawable/recent"/>
+    <item
+        android:id="@+id/contact"
+        android:enabled="true"
+        android:title="Contacts"
+        android:icon="@drawable/contact"/>
+    <item
+        android:id="@+id/group"
+        android:title="Groups"
+        android:enabled="true"
+        android:icon="@drawable/groupperson"/>
+    <item
+        android:id="@+id/keypad"
+        android:title="Keypad"
+        android:enabled="true"
+        android:icon="@drawable/keypad"/>
+</menu>
