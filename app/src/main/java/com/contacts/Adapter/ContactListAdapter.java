@@ -9,43 +9,42 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.contacts.Fragment.ContactsFragment;
-import com.contacts.Model.UsersModel;
+import com.contacts.Model.Users;
 import com.contacts.R;
 
 import java.util.List;
 
-public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.viewholder> {
+public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.contactviewholder> {
 
+    List<Users> childItemList;
 
-    public ContactListAdapter(List<UsersModel> list) {
-
+    public ContactListAdapter(List<Users> childItemList) {
+        this.childItemList = childItemList;
     }
 
     @NonNull
     @Override
-    public ContactListAdapter.viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public contactviewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_list_item,parent,false);
-        return new viewholder(view);
+        return new contactviewholder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ContactListAdapter.viewholder holder, int position) {
-
+    public void onBindViewHolder(@NonNull contactviewholder holder, int position) {
+        holder.name.setText(childItemList.get(position).getName());
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return childItemList.size();
     }
 
-    public class viewholder extends RecyclerView.ViewHolder {
-        TextView name,header;
+    public class contactviewholder extends RecyclerView.ViewHolder {
+        TextView name;
         ImageView personimage;
 
-        public viewholder(@NonNull View itemView) {
+        public contactviewholder(@NonNull View itemView) {
             super(itemView);
-            header = itemView.findViewById(R.id.header);
             name =  itemView.findViewById(R.id.personName);
             personimage =  itemView.findViewById(R.id.personImage);
         }

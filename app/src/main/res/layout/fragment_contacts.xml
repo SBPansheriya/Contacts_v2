@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragment.ContactsFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
 
         <LinearLayout
@@ -23,37 +23,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
                 android:layout_weight="1"
-                android:paddingStart="10dp"
+                android:background="@drawable/border"
+                android:backgroundTint="@color/gray"
                 android:drawableStart="@drawable/search"
                 android:drawablePadding="10dp"
                 android:hint="Search Contacts"
-                android:background="@drawable/border"
-                android:backgroundTint="@color/gray"/>
+                android:paddingStart="10dp" />
 
             <ImageView
                 android:id="@+id/edit"
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
-                android:layout_weight="6"
                 android:layout_marginStart="10dp"
+                android:layout_weight="6"
                 android:background="@drawable/border"
                 android:backgroundTint="@color/gray"
-                android:visibility="visible"
-                android:src="@drawable/edit_pencil"/>
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                android:src="@drawable/edit_pencil"
+                android:visibility="visible" />
         </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/title2"
             android:layout_width="match_parent"
             android:layout_height="22dp"
-            android:layout_marginHorizontal="20dp"
-            android:layout_below="@+id/title">
+            android:layout_below="@+id/title"
+            android:layout_marginHorizontal="20dp">
 
             <ImageView
                 android:id="@+id/image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/person_icon"/>
+                android:src="@drawable/person_icon" />
 
             <TextView
                 android:id="@+id/txt"
@@ -62,8 +64,8 @@
                 android:layout_marginStart="5dp"
                 android:layout_toRightOf="@+id/image"
                 android:fontFamily="@font/sf_pro_text_regular"
-                android:textColor="@color/darkgray"
-                android:text="@string/phone"/>
+                android:text="@string/phone"
+                android:textColor="@color/darkgray" />
 
             <ImageView
                 android:id="@+id/image2"
@@ -77,44 +79,47 @@
                 android:id="@+id/totalcontact"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/image2"
                 android:layout_marginStart="5dp"
-                android:textColor="@color/darkgray"
+                android:layout_toRightOf="@+id/image2"
                 android:fontFamily="@font/sf_pro_text_regular"
-                android:text="100 Contacts"/>
+                android:text="100 Contacts"
+                android:textColor="@color/darkgray" />
 
             <TextView
+                android:id="@+id/selectall"
                 android:layout_width="71dp"
                 android:layout_height="22dp"
-                android:layout_gravity="end"
-                android:gravity="center"
                 android:layout_alignParentEnd="true"
-                android:text="Select All"
+                android:layout_gravity="end"
+                android:background="@drawable/border3"
                 android:backgroundTint="@color/mediumblue"
-                android:textColor="@color/blue"
-                android:background="@drawable/border3"/>
+                android:gravity="center"
+                android:visibility="invisible"
+                android:text="Select All"
+                android:textColor="@color/blue" />
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@+id/title2"
             android:layout_marginTop="20dp"
-            android:layout_below="@+id/title2">
+            android:orientation="vertical">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/show_contact_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:listitem="@layout/contact_list_item"/>
+                tools:listitem="@layout/header_list_item" />
         </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_contact"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_margin="10dp"
-            app:elevation="8dp"
             android:background="@drawable/border1"
             android:backgroundTint="@color/blue"
             android:src="@drawable/baseline_add_24"/>
