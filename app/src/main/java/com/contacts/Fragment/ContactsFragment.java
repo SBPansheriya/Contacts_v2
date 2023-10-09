@@ -45,7 +45,7 @@ public class ContactsFragment extends Fragment {
         List<Header> headerlist;
         headerlist = getData();
 
-        headerListAdapter = new HeaderListAdapter(headerlist);
+        headerListAdapter = new HeaderListAdapter(headerlist,ContactsFragment.this);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(headerListAdapter);

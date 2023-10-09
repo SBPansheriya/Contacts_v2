@@ -1,5 +1,6 @@
 package com.contacts.Adapter;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.contacts.EditScreenActivity;
+import com.contacts.Fragment.ContactsFragment;
 import com.contacts.Model.Users;
 import com.contacts.R;
 
@@ -17,9 +20,11 @@ import java.util.List;
 public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.contactviewholder> {
 
     List<Users> childItemList;
+    ContactsFragment contactsFragment;
 
-    public ContactListAdapter(List<Users> childItemList) {
+    public ContactListAdapter(ContactsFragment contactsFragment, List<Users> childItemList) {
         this.childItemList = childItemList;
+        this.contactsFragment = contactsFragment;
     }
 
     @NonNull
@@ -32,6 +37,14 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     @Override
     public void onBindViewHolder(@NonNull contactviewholder holder, int position) {
         holder.name.setText(childItemList.get(position).getName());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(contactsFragment.getActivity(), EditScreenActivity.class);
+                contactsFragment.startActivity(intent);
+            }
+        });
     }
 
     @Override

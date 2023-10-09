@@ -12,11 +12,11 @@
 
         <ImageView
             android:id="@+id/personImage"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_margin="5dp"
             android:layout_gravity="center"
-            android:src="@drawable/cricleavtar"/>
+            android:src="@drawable/cricle_avtar"/>
 
         <TextView
             android:id="@+id/personName"
@@ -30,8 +30,8 @@
             android:text="Contact name"/>
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_width="24dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:src="@drawable/info"/>
     </RelativeLayout>

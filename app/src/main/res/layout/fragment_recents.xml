@@ -5,10 +5,17 @@
     android:layout_height="match_parent"
     tools:context=".Fragment.RecentsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:textSize="25dp"
+        android:gravity="center"
+        android:text="No Recents Call" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:listitem="@layout/recent_list_item"/>
 
 </FrameLayout>

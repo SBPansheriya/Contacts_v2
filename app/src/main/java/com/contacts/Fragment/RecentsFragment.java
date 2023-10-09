@@ -24,10 +24,10 @@ public class RecentsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_recents, container, false);
 
 
-        recentListAdapter = new RecentListAdapter();
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(recentListAdapter);
+//        recentListAdapter = new RecentListAdapter();
+//        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+//        recyclerView.setLayoutManager(manager);
+//        recyclerView.setAdapter(recentListAdapter);
 
         return view;
     }

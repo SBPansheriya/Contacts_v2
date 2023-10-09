@@ -69,8 +69,8 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             return true;
         }
         if (item.getItemId() == R.id.keypad) {
-            Intent intent = new Intent(Intent.ACTION_DIAL);
-            startActivity(intent);
+//            Intent intent = new Intent(Intent.ACTION_DIAL);
+//            startActivity(intent);
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.framelayout, keypadFragment)
