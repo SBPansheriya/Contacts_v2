@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -27,8 +28,6 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         init();
         bottomNavigationView.setSelectedItemId(R.id.fav);
         bottomNavigationView.setOnItemSelectedListener(this);
-
-
 
     }
     FavoritesFragment  favoritesFragment = new FavoritesFragment();
