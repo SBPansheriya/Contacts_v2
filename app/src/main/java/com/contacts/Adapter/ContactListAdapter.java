@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -54,12 +56,12 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     public class contactviewholder extends RecyclerView.ViewHolder {
         TextView name;
-        ImageView personimage;
+        ImageView personImage;
 
         public contactviewholder(@NonNull View itemView) {
             super(itemView);
             name =  itemView.findViewById(R.id.personName);
-            personimage =  itemView.findViewById(R.id.personImage);
+            personImage =  itemView.findViewById(R.id.personImage);
         }
     }
 }

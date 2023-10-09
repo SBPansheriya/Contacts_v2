@@ -1,8 +1,13 @@
 package com.contacts.Fragment;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,12 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.contacts.Adapter.ContactListAdapter;
 import com.contacts.Adapter.HeaderListAdapter;
-import com.contacts.Adapter.RecentListAdapter;
 import com.contacts.CreateContactActivity;
 import com.contacts.Model.Header;
 import com.contacts.Model.Users;
@@ -28,11 +34,12 @@ import java.util.List;
 public class ContactsFragment extends Fragment {
 
     HeaderListAdapter headerListAdapter;
-
     RecyclerView recyclerView;
-    ImageView edit;
+    ImageView edit,cancel,share,delete;
+    Button create_btn;
     TextView selectall;
     FloatingActionButton floatingActionButton;
+    ViewGroup viewGroup;
 
 
     @Override
@@ -64,7 +71,56 @@ public class ContactsFragment extends Fragment {
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                edit.setVisibility(View.GONE);
                 selectall.setVisibility(View.VISIBLE);
+                cancel.setVisibility(View.VISIBLE);
+                share.setVisibility(View.VISIBLE);
+                delete.setVisibility(View.VISIBLE);
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+        });
+
+
+        create_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), CreateContactActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Dialog dialog = new Dialog(ContactsFragment.this.getContext());
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.setContentView(R.layout.dailog_layout);
+                dialog.setCancelable(false);
+                dialog.show();
+
+                Button cancel = dialog.findViewById(R.id.canceldialog);
+                Button movetobin = dialog.findViewById(R.id.movetobin);
+
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity(), CreateContactActivity.class);
+                        startActivity(intent);
+                    }
+                });
+
+                movetobin.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
             }
         });
 
@@ -94,6 +150,11 @@ public class ContactsFragment extends Fragment {
         recyclerView = view.findViewById(R.id.show_contact_recyclerview);
         floatingActionButton = view.findViewById(R.id.add_contact);
         edit = view.findViewById(R.id.edit);
+        cancel = view.findViewById(R.id.cancel);
+        share = view.findViewById(R.id.share);
+        delete = view.findViewById(R.id.trash);
         selectall = view.findViewById(R.id.selectall);
+        create_btn = view.findViewById(R.id.create_contact);
+        viewGroup = view.findViewById(android.R.id.content);
     }
 }

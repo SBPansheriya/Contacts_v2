@@ -3,6 +3,7 @@ package com.contacts.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -10,15 +11,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.contacts.Fragment.ContactsFragment;
+import com.contacts.Fragment.FavoritesFragment;
 import com.contacts.Model.Header;
 import com.contacts.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.headerviewHolder> {
+public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.headerviewHolder> implements SectionIndexer {
 
     List<Header> headerlist;
     ContactsFragment contactsFragment;
+    private List<String> mDataArray;
+    private ArrayList<Integer> mSectionPositions;
+
     public HeaderListAdapter(List<Header> headerlist, ContactsFragment contactsFragment) {
         this.headerlist = headerlist;
         this.contactsFragment = contactsFragment;
@@ -48,6 +54,30 @@ public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.he
     @Override
     public int getItemCount() {
         return headerlist.size();
+    }
+
+    @Override
+    public Object[] getSections() {
+        List<String> sections = new ArrayList<>(26);
+        mSectionPositions = new ArrayList<>(26);
+        for (int i = 0, size = mDataArray.size(); i < size; i++) {
+            String section = String.valueOf(mDataArray.get(i).charAt(0)).toUpperCase();
+            if (!sections.contains(section)) {
+                sections.add(section);
+                mSectionPositions.add(i);
+            }
+        }
+        return sections.toArray(new String[0]);
+    }
+
+    @Override
+    public int getPositionForSection(int i) {
+        return mSectionPositions.get(i);
+    }
+
+    @Override
+    public int getSectionForPosition(int i) {
+        return 0;
     }
 
     public class headerviewHolder extends RecyclerView.ViewHolder {

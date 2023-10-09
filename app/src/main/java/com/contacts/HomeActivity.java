@@ -28,6 +28,10 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         init();
         bottomNavigationView.setSelectedItemId(R.id.fav);
         bottomNavigationView.setOnItemSelectedListener(this);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.framelayout, favoritesFragment)
+                .commit();
 
     }
     FavoritesFragment  favoritesFragment = new FavoritesFragment();
