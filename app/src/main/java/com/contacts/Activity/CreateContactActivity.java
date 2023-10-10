@@ -65,16 +65,15 @@ public class CreateContactActivity extends AppCompatActivity {
                 }
                 else {
                     createContact();
+                    onBackPressed();
                     Toast.makeText(CreateContactActivity.this, "Saved Data To SharedPreferences", Toast.LENGTH_SHORT).show();
-                    Fragment fragment = new ContactsFragment();
+//                Fragment fragment = new ContactsFragment();
 //                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 //                Bundle bundle = new Bundle();
 //                bundle.putParcelableArrayList("list", usersArrayList);
 //                fragment.setArguments(bundle);
 //                fragmentTransaction.replace(R.id.create_contact_activity,fragment).commit();
                 }
-
-//
             }
         });
 
