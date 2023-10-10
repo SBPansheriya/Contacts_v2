@@ -2,9 +2,13 @@ package com.contacts;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
+
+import com.contacts.Activity.HomeActivity;
 
 public class Splash extends AppCompatActivity {
 
@@ -23,5 +27,10 @@ public class Splash extends AppCompatActivity {
                 finish();
             }
         }, 1000);
+    }
+
+    public boolean isNightMode(Context context) {
+        int nightModeFlags = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        return nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
     }
 }

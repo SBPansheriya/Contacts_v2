@@ -1,13 +1,12 @@
 package com.contacts.Fragment;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,14 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.contacts.Adapter.HeaderListAdapter;
-import com.contacts.CreateContactActivity;
+import com.contacts.Activity.CreateContactActivity;
 import com.contacts.Model.Header;
 import com.contacts.Model.Users;
 import com.contacts.R;
@@ -40,6 +37,9 @@ public class ContactsFragment extends Fragment {
     TextView selectall;
     FloatingActionButton floatingActionButton;
     ViewGroup viewGroup;
+    Context context;
+    ArrayList<Users> usersArrayList;
+
 
 
     @Override
@@ -49,15 +49,12 @@ public class ContactsFragment extends Fragment {
 
         init(view);
 
-        List<Header> headerlist;
-        headerlist = getData();
+//        getArguments().getParcelableArrayList("list");
 
-        headerListAdapter = new HeaderListAdapter(headerlist,ContactsFragment.this);
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(headerListAdapter);
-
-
+//        headerListAdapter = new HeaderListAdapter(list,ContactsFragment.this);
+//        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+//        recyclerView.setLayoutManager(manager);
+//        recyclerView.setAdapter(headerListAdapter);
 
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -128,23 +125,23 @@ public class ContactsFragment extends Fragment {
         return view;
     }
 
-    private List<Header> getData() {
-        List<Header> headerlist = new ArrayList<>();
-        headerlist.add(new Header("A",contactListData()));
-        headerlist.add(new Header("B",contactListData()));
-        headerlist.add(new Header("C",contactListData()));
-        return headerlist;
-    }
+//    private List<Header> getData() {
+//        List<Header> headerlist = new ArrayList<>();
+//        headerlist.add(new Header("A",contactListData()));
+//        headerlist.add(new Header("B",contactListData()));
+//        headerlist.add(new Header("C",contactListData()));
+//        return headerlist;
+//    }
 
-    private List<Users> contactListData()
-    {
-        List<Users> ChildItemList = new ArrayList<>();
-        ChildItemList.add(new Users("Alicia",""));
-        ChildItemList.add(new Users("John",""));
-        ChildItemList.add(new Users("Arlene McCoy",""));
-        ChildItemList.add(new Users("Brooklyn Simmons",""));
-        return ChildItemList;
-    }
+//    private List<Users> contactListData()
+//    {
+//        List<Users> ChildItemList = new ArrayList<>();
+//        ChildItemList.add(new Users());
+//        ChildItemList.add(new Users());
+//        ChildItemList.add(new Users());
+//        ChildItemList.add(new Users());
+//        return ChildItemList;
+//    }
 
     private void init(View view) {
         recyclerView = view.findViewById(R.id.show_contact_recyclerview);

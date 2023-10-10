@@ -16,7 +16,7 @@
             android:layout_height="30dp"
             android:layout_margin="5dp"
             android:layout_gravity="center"
-            android:src="@drawable/cricle_avtar"/>
+            android:src="@drawable/ellipse"/>
 
         <TextView
             android:id="@+id/personName"
@@ -26,6 +26,7 @@
             android:gravity="center"
             android:layout_marginHorizontal="10dp"
             android:fontFamily="@font/sf_pro_text_regular"
+            android:textColor="@color/bluetheme1"
             android:textSize="14dp"
             android:text="Contact name"/>
 

@@ -9,12 +9,12 @@
         android:id="@+id/recents"
         android:title="Recents"
         android:enabled="true"
-        android:icon="@drawable/recent"/>
+        android:icon="@drawable/recents"/>
     <item
         android:id="@+id/contact"
         android:enabled="true"
         android:title="Contacts"
-        android:icon="@drawable/contact"/>
+        android:icon="@drawable/contacts"/>
     <item
         android:id="@+id/group"
         android:title="Groups"

@@ -5,11 +5,11 @@ import java.util.List;
 public class Header {
 
     String header;
-    private List<Users> ChildItemList;
+    private List<Users> usersList;
 
-    public Header(String header, List<Users> childItemList) {
+    public Header(String header, List<Users> usersList) {
         this.header = header;
-        ChildItemList = childItemList;
+        this.usersList = usersList;
     }
 
     public String getHeader() {
@@ -20,11 +20,11 @@ public class Header {
         this.header = header;
     }
 
-    public List<Users> getChildItemList() {
-        return ChildItemList;
+    public List<Users> getUsersList() {
+        return usersList;
     }
 
-    public void setChildItemList(List<Users> childItemList) {
-        ChildItemList = childItemList;
+    public void setUsersList(List<Users> usersList) {
+        this.usersList = usersList;
     }
 }

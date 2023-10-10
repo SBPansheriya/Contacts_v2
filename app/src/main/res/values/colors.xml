@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="gray">#F2F4F5</color>
+    <color name="black">#FF000000</color> // com
+    <color name="white">#FFFFFFFF</color> // com
+    <color name="gray">#F2F4F5</color> // com
+    <color name="lightgray">#F2F4F5</color> // com
+    <color name="lightgray1">#F2F4F5</color> // com
+    <color name="bluetheme">#001E2F</color> // com
+    <color name="bluetheme1">#001E2F</color> // com
     <color name="darkgray">#6C7072</color>
+    <color name="darkgray1">#80000000</color> // com
+    <color name="darkgray2">#80000000</color> // com
     <color name="blue">#1B72C0</color>
+    <color name="blue1">#1B72C0</color>
     <color name="lightblue">#1A1B72C0</color>
-    <color name="mediumblue">#331B72C0</color>
+    <color name="mediumblue">#331B72C0</color> // com
+    <color name="lightblack">#FFFFFF</color>  // com
+    <color name="mediumblack">#12000000</color>  // com
+    <color name="nickel">#6C7072</color>  // com
 
 </resources>

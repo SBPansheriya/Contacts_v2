@@ -1,8 +1,10 @@
-package com.contacts;
+package com.contacts.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.contacts.R;
 
 public class MainActivity extends AppCompatActivity {
 

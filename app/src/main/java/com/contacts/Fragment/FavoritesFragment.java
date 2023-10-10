@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -14,9 +13,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.contacts.Adapter.FavListAdapter;
-import com.contacts.Adapter.HeaderListAdapter;
-import com.contacts.CreateContactActivity;
-import com.contacts.HomeActivity;
+import com.contacts.Activity.CreateContactActivity;
+import com.contacts.Activity.HomeActivity;
 import com.contacts.R;
 
 public class FavoritesFragment extends Fragment {

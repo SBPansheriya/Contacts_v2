@@ -48,13 +48,6 @@
                 android:visibility="gone"
                 android:src="@drawable/cricle_avtar" />
 
-<!--            <CheckBox-->
-<!--                android:id="@+id/personImage1"-->
-<!--                android:layout_width="25dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:gravity="center"-->
-<!--                android:button="@drawable/ellipse18"/>-->
-
             <ImageView
                 android:id="@+id/radioselected"
                 android:layout_width="20dp"
@@ -71,6 +64,7 @@
             android:layout_marginHorizontal="20dp"
             android:fontFamily="@font/sf_pro_text_regular"
             android:gravity="center"
+            android:textColor="@color/bluetheme1"
             android:text="Contact name"
             android:textSize="14dp" />
         <!--    </LinearLayout>-->

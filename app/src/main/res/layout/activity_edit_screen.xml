@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".EditScreenActivity">
+    tools:context=".Activity.EditScreenActivity">
 
     <RelativeLayout
         android:id="@+id/tbMenu"
@@ -18,9 +18,9 @@
 
         <ImageView
             android:id="@+id/back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_arrow_back_24" />
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/arrow_back" />
     </RelativeLayout>
 
     <LinearLayout
@@ -51,7 +51,7 @@
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:text="Cindy"
-            android:textColor="@color/black"
+            android:textColor="@color/bluetheme1"
             android:textSize="30dp" />
     </LinearLayout>
 
@@ -88,7 +88,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:src="@drawable/fav"
+            android:src="@drawable/unfav"
             android:visibility="visible" />
 
         <ImageView
@@ -96,7 +96,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:src="@drawable/fav1"
+            android:src="@drawable/fav"
             android:visibility="gone" />
     </LinearLayout>
 
@@ -113,6 +113,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/sf_pro_text_bold"
             android:gravity="center"
+            android:textColor="@color/bluetheme1"
             android:text="Text" />
 
         <TextView
@@ -121,6 +122,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/sf_pro_text_bold"
             android:gravity="center"
+            android:textColor="@color/bluetheme1"
             android:text="Call" />
 
         <TextView
@@ -129,6 +131,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/sf_pro_text_bold"
             android:gravity="center"
+            android:textColor="@color/bluetheme1"
             android:text="Edit" />
 
         <TextView
@@ -137,6 +140,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/sf_pro_text_bold"
             android:gravity="center"
+            android:textColor="@color/bluetheme1"
             android:text="Favourites" />
     </LinearLayout>
 
@@ -154,6 +158,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/sf_pro_text_bold"
             android:text="Contacts info"
+            android:textColor="@color/bluetheme1"
             android:textSize="14dp" />
 
         <TextView
@@ -161,6 +166,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:fontFamily="@font/sf_pro_text_regular"
+            android:textColor="@color/bluetheme1"
             android:text="Saved : Phone"
             android:textSize="10dp" />
     </LinearLayout>
@@ -179,7 +185,7 @@
             android:layout_height="24dp"
             android:layout_gravity="center"
             android:layout_margin="5dp"
-            android:src="@drawable/call2" />
+            android:src="@drawable/call_phone" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -193,6 +199,7 @@
                 android:layout_marginHorizontal="10dp"
                 android:fontFamily="@font/sf_pro_text_regular"
                 android:gravity="center"
+                android:textColor="@color/bluetheme1"
                 android:text="+91 (303) 555-0105"
                 android:textSize="14dp" />
 
@@ -207,6 +214,7 @@
                     android:layout_marginStart="10dp"
                     android:fontFamily="@font/sf_pro_text_regular"
                     android:gravity="center"
+                    android:textColor="@color/bluetheme1"
                     android:text="Phone"
                     android:textSize="14dp" />
 
@@ -226,6 +234,7 @@
                     android:layout_marginStart="8dp"
                     android:fontFamily="@font/sf_pro_text_regular"
                     android:gravity="center"
+                    android:textColor="@color/bluetheme1"
                     android:text="Mobile"
                     android:textSize="14dp" />
             </LinearLayout>
@@ -246,7 +255,7 @@
             android:layout_height="24dp"
             android:layout_gravity="center"
             android:layout_margin="5dp"
-            android:src="@drawable/call2" />
+            android:src="@drawable/call_phone" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -260,6 +269,7 @@
                 android:layout_marginHorizontal="10dp"
                 android:fontFamily="@font/sf_pro_text_regular"
                 android:gravity="center"
+                android:textColor="@color/bluetheme1"
                 android:text="+91 (303) 555-0105"
                 android:textSize="14dp" />
 
@@ -274,6 +284,7 @@
                     android:layout_marginStart="10dp"
                     android:fontFamily="@font/sf_pro_text_regular"
                     android:gravity="center"
+                    android:textColor="@color/bluetheme1"
                     android:text="Office"
                     android:textSize="14dp" />
 
@@ -293,6 +304,7 @@
                     android:layout_marginStart="8dp"
                     android:fontFamily="@font/sf_pro_text_regular"
                     android:gravity="center"
+                    android:textColor="@color/bluetheme1"
                     android:text="Mobile"
                     android:textSize="14dp" />
             </LinearLayout>
@@ -323,6 +335,7 @@
             android:layout_marginHorizontal="10dp"
             android:fontFamily="@font/sf_pro_text_regular"
             android:gravity="center"
+            android:textColor="@color/bluetheme1"
             android:text="Message    +91 (303) 555-0105"
             android:textSize="14dp" />
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreateContactActivity">
+    tools:context=".Activity.CreateContactActivity">
 
     <RelativeLayout
         android:id="@+id/tbMenu"
@@ -31,7 +31,7 @@
             android:fontFamily="@font/sf_pro_text_regular"
             android:text="Edit contacts"
             android:textAlignment="center"
-            android:textColor="#001E2F"
+            android:textColor="@color/bluetheme1"
             android:textSize="16dp" />
 
         <TextView
@@ -128,7 +128,7 @@
             android:layout_height="30dp"
             android:layout_gravity="top"
             android:layout_marginStart="10dp"
-            android:src="@drawable/person2" />
+            android:src="@drawable/person" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -188,7 +188,7 @@
             android:layout_gravity="top"
             android:layout_marginTop="1dp"
             android:layout_marginStart="10dp"
-            android:src="@drawable/call1" />
+            android:src="@drawable/call" />
 
         <LinearLayout
             android:layout_width="match_parent"

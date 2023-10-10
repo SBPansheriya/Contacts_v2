@@ -1,4 +1,4 @@
-package com.contacts;
+package com.contacts.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,14 +6,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
-public class CreateContactActivity extends AppCompatActivity {
+import com.contacts.R;
+
+public class UpdateContactActivity extends AppCompatActivity {
 
     ImageView cancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_contact);
+        setContentView(R.layout.activity_update_contact);
 
         init();
 

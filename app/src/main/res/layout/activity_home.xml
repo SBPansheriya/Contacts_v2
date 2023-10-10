@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity">
+    android:background="@color/white"
+    tools:context=".Activity.HomeActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -22,7 +23,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="0dp"
-        android:background="@drawable/border"
+        android:background="@color/lightblack"
         app:itemIconTint="@color/nav_item_color"
         app:itemTextColor="@color/nav_item_color"
         app:labelVisibilityMode="labeled"

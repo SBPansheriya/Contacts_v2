@@ -23,7 +23,7 @@
             android:id="@+id/back"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:src="@drawable/baseline_arrow_back_24" />
+            android:src="@drawable/arrow_back" />
 
         <TextView
             android:id="@+id/title"
@@ -34,7 +34,7 @@
             android:fontFamily="@font/sf_pro_text_regular"
             android:text="Favourites"
             android:textAlignment="center"
-            android:textColor="#001E2F"
+            android:textColor="@color/bluetheme1"
             android:textSize="18dp" />
 
         <ImageView
@@ -44,7 +44,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginStart="10dp"
             android:background="@drawable/border"
-            android:backgroundTint="@color/gray"
+            android:backgroundTint="@color/lightgray"
             android:src="@drawable/edit_pencil"
             android:padding="5dp"
             android:visibility="visible" />
@@ -81,9 +81,9 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="40dp"
             android:background="@drawable/border2"
-            android:fontFamily="@font/sf_pro_text_regular"
+            android:fontFamily="@font/sf_pro_text_bold"
             android:text="Add favourite"
-            android:textColor="@color/black"
+            android:textColor="@color/bluetheme1"
             android:textSize="16dp"
             app:backgroundTint="@null" />
     </LinearLayout>

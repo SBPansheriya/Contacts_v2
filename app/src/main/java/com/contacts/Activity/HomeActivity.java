@@ -1,4 +1,4 @@
-package com.contacts;
+package com.contacts.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +13,7 @@ import com.contacts.Fragment.FavoritesFragment;
 import com.contacts.Fragment.GroupsFragment;
 import com.contacts.Fragment.KeypadFragment;
 import com.contacts.Fragment.RecentsFragment;
+import com.contacts.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomeActivity extends AppCompatActivity implements BottomNavigationView

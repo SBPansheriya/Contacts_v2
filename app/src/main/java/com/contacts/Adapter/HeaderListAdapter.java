@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.contacts.Fragment.ContactsFragment;
-import com.contacts.Fragment.FavoritesFragment;
 import com.contacts.Model.Header;
+import com.contacts.Model.Users;
 import com.contacts.R;
 
 import java.util.ArrayList;
@@ -20,13 +20,14 @@ import java.util.List;
 
 public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.headerviewHolder> implements SectionIndexer {
 
-    List<Header> headerlist;
+    ArrayList<Users> list;
+    ArrayList<Header> headerlist;
     ContactsFragment contactsFragment;
     private List<String> mDataArray;
     private ArrayList<Integer> mSectionPositions;
 
-    public HeaderListAdapter(List<Header> headerlist, ContactsFragment contactsFragment) {
-        this.headerlist = headerlist;
+    public HeaderListAdapter(ArrayList<Users> list, ContactsFragment contactsFragment) {
+        this.list = list;
         this.contactsFragment = contactsFragment;
     }
 
@@ -41,19 +42,20 @@ public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.he
     public void onBindViewHolder(@NonNull headerviewHolder holder, int position) {
         Header header = headerlist.get(position);
 
-        holder.header.setText(header.getHeader());
+        holder.header.setText(list.get(position).getFirst());
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(holder.contactrecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
-        layoutManager.setInitialPrefetchItemCount(header.getChildItemList().size());
 
-        ContactListAdapter contactListAdapter = new ContactListAdapter(contactsFragment,header.getChildItemList());
-        holder.contactrecyclerView.setLayoutManager(layoutManager);
-        holder.contactrecyclerView.setAdapter(contactListAdapter);
+//        LinearLayoutManager layoutManager = new LinearLayoutManager(holder.contactrecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
+//        layoutManager.setInitialPrefetchItemCount(header.getChildItemList().size());
+//
+//        ContactListAdapter contactListAdapter = new ContactListAdapter(contactsFragment,header.getChildItemList());
+//        holder.contactrecyclerView.setLayoutManager(layoutManager);
+//        holder.contactrecyclerView.setAdapter(contactListAdapter);
     }
 
     @Override
     public int getItemCount() {
-        return headerlist.size();
+        return list.size();
     }
 
     @Override

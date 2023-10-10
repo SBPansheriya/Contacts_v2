@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreateContactActivity">
+    android:id="@+id/create_contact_activity"
+    tools:context=".Activity.CreateContactActivity">
 
     <RelativeLayout
         android:id="@+id/tbMenu"
@@ -31,10 +32,11 @@
             android:fontFamily="@font/sf_pro_text_regular"
             android:text="Create contacts"
             android:textAlignment="center"
-            android:textColor="#001E2F"
+            android:textColor="@color/bluetheme1"
             android:textSize="16dp" />
 
         <TextView
+            android:id="@+id/saveContact"
             android:layout_width="70dp"
             android:layout_height="30dp"
             android:layout_alignParentEnd="true"
@@ -62,6 +64,7 @@
             android:layout_gravity="center"
             android:paddingStart="10dp"
             android:text="Save to : "
+            android:textColor="@color/bluetheme1"
             android:textSize="14dp" />
 
         <TextView
@@ -92,17 +95,11 @@
             app:cardCornerRadius="150dp">
 
             <ImageView
+                android:id="@+id/addPersonImage"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/state_layer" />
-
-            <!--        <de.hdodenhof.circleimageview.CircleImageView-->
-            <!--            android:id="@+id/add_image"-->
-            <!--            app:civ_border_width="4dp"-->
-            <!--            android:src="@drawable/ic_launcher_background"-->
-            <!--            android:layout_width="100dp"-->
-            <!--            android:layout_height="100dp"/>-->
         </androidx.cardview.widget.CardView>
 
         <TextView
@@ -125,10 +122,10 @@
 
         <ImageView
             android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_height="26dp"
             android:layout_gravity="top"
             android:layout_marginStart="10dp"
-            android:src="@drawable/person2" />
+            android:src="@drawable/person" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -140,7 +137,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginBottom="5dp"
-                android:textColor="@color/darkgray"
+                android:textColor="@color/darkgray2"
                 android:text="First name"/>
 
             <EditText
@@ -157,7 +154,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginBottom="5dp"
-                android:textColor="@color/darkgray"
+                android:textColor="@color/darkgray2"
                 android:text="Last name"/>
 
             <EditText
@@ -184,7 +181,7 @@
             android:layout_gravity="top"
             android:layout_marginTop="1dp"
             android:layout_marginStart="10dp"
-            android:src="@drawable/call1" />
+            android:src="@drawable/call" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -196,11 +193,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginBottom="5dp"
-                android:textColor="@color/darkgray"
+                android:textColor="@color/darkgray2"
                 android:text="Phone"/>
 
             <EditText
-                android:id="@+id/phone"
+                android:id="@+id/pphone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
@@ -213,11 +210,11 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginBottom="5dp"
-                android:textColor="@color/darkgray"
+                android:textColor="@color/darkgray2"
                 android:text="Office"/>
 
             <EditText
-                android:id="@+id/office"
+                android:id="@+id/ophone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"

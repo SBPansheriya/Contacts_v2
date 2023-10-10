@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FFFFFFFF</color> // com
+    <color name="white">#FF000000</color> // com
+    <color name="gray">#80FFFFFF</color> // com
+    <color name="lightgray">#1AFFFFFF</color> // com
+    <color name="lightgray1">#33FFFFFF</color> // com
+    <color name="bluetheme">#80FFFFFF</color> // com
+    <color name="bluetheme1">#FFFFFF</color> // com
+    <color name="darkgray">#6C7072</color>
+    <color name="darkgray1">#80FFFFFF</color> // com
+    <color name="darkgray2">#FFFFFF</color> // com
+    <color name="blue">#1B72C0</color>
+    <color name="blue1">#FFFFFF</color>
+    <color name="lightblue">#1A1B72C0</color>
+    <color name="mediumblue">#33FFFFFF</color> // com
+    <color name="lightblack">#1F1F1F</color> // com
+    <color name="mediumblack">#12FFFFFF</color>  // com
+    <color name="nickel">#80FFFFFF</color> // com
+
+</resources>
