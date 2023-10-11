@@ -1,22 +1,37 @@
 package com.contacts.Fragment;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.ContactsContract;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.contacts.Adapter.HeaderListAdapter;
 import com.contacts.Activity.CreateContactActivity;
@@ -26,20 +41,22 @@ import com.contacts.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ContactsFragment extends Fragment {
 
     HeaderListAdapter headerListAdapter;
     RecyclerView recyclerView;
-    ImageView edit,cancel,share,delete;
+    ImageView edit, cancel, share, delete;
     Button create_btn;
     TextView selectall;
     FloatingActionButton floatingActionButton;
     ViewGroup viewGroup;
     Context context;
-    ArrayList<Users> usersArrayList;
-
+    ArrayList<Users> usersArrayList = new ArrayList<>();
+    ArrayList<Header> mSectionList = new ArrayList<>();
 
 
     @Override
@@ -49,13 +66,7 @@ public class ContactsFragment extends Fragment {
 
         init(view);
 
-//        getArguments().getParcelableArrayList("list");
-
-//        headerListAdapter = new HeaderListAdapter(list,ContactsFragment.this);
-//        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-//        recyclerView.setLayoutManager(manager);
-//        recyclerView.setAdapter(headerListAdapter);
-
+        checkPermission();
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +92,6 @@ public class ContactsFragment extends Fragment {
             public void onClick(View view) {
             }
         });
-
 
         create_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,26 +131,113 @@ public class ContactsFragment extends Fragment {
             }
         });
 
-
         return view;
     }
 
-//    private List<Header> getData() {
-//        List<Header> headerlist = new ArrayList<>();
-//        headerlist.add(new Header("A",contactListData()));
-//        headerlist.add(new Header("B",contactListData()));
-//        headerlist.add(new Header("C",contactListData()));
-//        return headerlist;
-//    }
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, 100);
+        } else {
+            getContactList();
+        }
+    }
 
-//    private List<Users> contactListData()
-//    {
-//        List<Users> ChildItemList = new ArrayList<>();
-//        ChildItemList.add(new Users());
-//        ChildItemList.add(new Users());
-//        ChildItemList.add(new Users());
-//        ChildItemList.add(new Users());
-//        return ChildItemList;
+    private void getContactList() {
+        Uri uri = ContactsContract.Contacts.CONTENT_URI;
+        String sort = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME;
+
+        Cursor cursor = getContext().getContentResolver().query(uri, null, null, null, sort);
+
+        if (cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                @SuppressLint("Range") String id = cursor.getString(cursor.getColumnIndex(
+                        ContactsContract.Contacts._ID
+                ));
+
+                @SuppressLint("Range") String name = cursor.getString(cursor.getColumnIndex(
+                        ContactsContract.Contacts.DISPLAY_NAME
+                ));
+
+                Uri phoneuri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+                String selection = ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=?";
+                Cursor phonecursor = getContext().getContentResolver().query(
+                        phoneuri, null, selection, new String[]{id}, null
+                );
+
+                if (phonecursor.moveToNext()) {
+                    @SuppressLint("Range") String number = phonecursor.getString(phonecursor.getColumnIndex(
+                            ContactsContract.CommonDataKinds.Phone.NUMBER
+                    ));
+
+                    Users users = new Users(name, number);
+                    usersArrayList.add(users);
+                    phonecursor.close();
+                }
+            }
+            cursor.close();
+        }
+
+
+//        ArrayList<Header> countriesModels = new ArrayList<>();
+//        for (int j = 0; j < usersArrayList.size() ; j++) {
+//            countriesModels.add(new Header("A",usersArrayList));
+//        }
+//
+//        mSectionList = new ArrayList<>();
+//        getHeaderListLatter(countriesModels);
+
+
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        headerListAdapter = new HeaderListAdapter(ContactsFragment.this, getList());
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(headerListAdapter);
+    }
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            getContactList();
+        } else {
+            Toast.makeText(context, "Permission Denied.", Toast.LENGTH_SHORT).show();
+            checkPermission();
+        }
+    }
+
+    private ArrayList<Header> getList() {
+        ArrayList<Header> arrayList = new ArrayList<>();
+        Header header = new Header("A",usersArrayList);
+        arrayList.add(header);
+//        arrayList.add(usersArrayList);
+        return arrayList;
+    }
+
+//    private void getHeaderListLatter(ArrayList<Header> usersList) {
+//
+//        Collections.sort(usersList, new Comparator<Header>() {
+//            int position = 0;
+//
+//            @Override
+//            public int compare (Header user1, Header user2) {
+//                return String.valueOf(user1.header.charAt(0)).toUpperCase().compareTo(String.valueOf(user2.getUsersList().get(position).getFirst().charAt(0)).toUpperCase());
+//            }
+//        });
+//
+//        String lastHeader = "";
+//
+//        int size = usersList.size();
+//
+//        for (int i = 0; i < size; i++) {
+//
+//            Header header1 = usersList.get(i);
+//            String header = String.valueOf(header1.header.charAt(0)).toUpperCase();
+//
+//            if (!TextUtils.equals(lastHeader, header)) {
+//                lastHeader = header;
+//                mSectionList.add(new Header(header,true,usersArrayList));
+//            }
+//
+//            mSectionList.add(header1);
+//        }
 //    }
 
     private void init(View view) {

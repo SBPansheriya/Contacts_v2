@@ -20,6 +20,11 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         .OnNavigationItemSelectedListener{
 
     BottomNavigationView bottomNavigationView;
+    FavoritesFragment  favoritesFragment = new FavoritesFragment();
+    RecentsFragment recentsFragment = new RecentsFragment();
+    ContactsFragment contactsFragment = new ContactsFragment();
+    GroupsFragment groupsFragment = new GroupsFragment();
+    KeypadFragment keypadFragment = new KeypadFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +40,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                 .commit();
 
     }
-    FavoritesFragment  favoritesFragment = new FavoritesFragment();
-    RecentsFragment recentsFragment = new RecentsFragment();
-    ContactsFragment contactsFragment = new ContactsFragment();
-    GroupsFragment groupsFragment = new GroupsFragment();
-    KeypadFragment keypadFragment = new KeypadFragment();
+
 
     @Override
     public boolean

@@ -4,10 +4,15 @@ import java.util.List;
 
 public class Header {
 
-    String header;
+    public String header;
+//    public boolean isSection;
     private List<Users> usersList;
 
-    public Header(String header, List<Users> usersList) {
+    public Header() {
+    }
+
+
+        public Header(String header, List<Users> usersList) {
         this.header = header;
         this.usersList = usersList;
     }

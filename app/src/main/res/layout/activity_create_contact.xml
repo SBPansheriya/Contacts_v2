@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:id="@+id/create_contact_activity"
     tools:context=".Activity.CreateContactActivity">
 
@@ -21,7 +22,7 @@
             android:id="@+id/cancel"
             android:layout_width="16dp"
             android:layout_height="20dp"
-            android:src="@drawable/crooss1" />
+            android:src="@drawable/crooss" />
 
         <TextView
             android:id="@+id/title"
@@ -35,17 +36,6 @@
             android:textColor="@color/bluetheme1"
             android:textSize="16dp" />
 
-        <TextView
-            android:id="@+id/saveContact"
-            android:layout_width="70dp"
-            android:layout_height="30dp"
-            android:layout_alignParentEnd="true"
-            android:background="@drawable/border1"
-            android:backgroundTint="@color/blue"
-            android:gravity="center"
-            android:text="Save"
-            android:textColor="@color/white"
-            android:textSize="16dp" />
     </RelativeLayout>
 
     <LinearLayout
@@ -222,5 +212,18 @@
                 android:padding="10dp" />
         </LinearLayout>
     </LinearLayout>
+    <Button
+        android:id="@+id/save_Contact"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/border"
+        app:backgroundTint="@color/blue"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:text="Save"
+        android:textColor="@color/white"
+        android:textSize="16dp" />
 
 </RelativeLayout>

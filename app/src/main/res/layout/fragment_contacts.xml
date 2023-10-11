@@ -25,7 +25,7 @@
                 android:background="@drawable/border"
                 android:backgroundTint="@color/lightgray"
                 android:padding="8dp"
-                android:src="@drawable/crooss1"
+                android:src="@drawable/crooss"
                 android:visibility="gone" />
 
             <EditText
@@ -169,7 +169,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:orientation="horizontal">
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -184,7 +184,8 @@
                     <in.myinnos.alphabetsindexfastscrollrecycler.IndexFastScrollRecyclerView
                         android:id="@+id/fast_scroller_recycler"
                         android:layout_width="30dp"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="55dp"/>
 
                 </LinearLayout>
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -193,7 +194,8 @@
                     android:layout_height="54dp"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginEnd="20dp"
+                    app:elevation="0dp"
                     android:backgroundTint="@color/blue"
                     android:src="@drawable/baseline_add_24" />
             </RelativeLayout>

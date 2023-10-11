@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class CreateContactActivity extends AppCompatActivity {
@@ -36,7 +37,7 @@ public class CreateContactActivity extends AppCompatActivity {
     EditText firstname,lastname,pphone,ophone;
     ImageView addPersonImage,cancel;
     ContactsManager contactsManager;
-    ArrayList<Users> usersArrayList;
+    List<Users> usersList;
     String imagename,imagepath;
     private static final int CAMERA_REQUEST = 100;
 
@@ -47,7 +48,6 @@ public class CreateContactActivity extends AppCompatActivity {
 
         init();
         contactsManager = new ContactsManager(getApplicationContext());
-
 
 
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -65,7 +65,7 @@ public class CreateContactActivity extends AppCompatActivity {
                 }
                 else {
                     createContact();
-                    onBackPressed();
+//                    onBackPressed();
                     Toast.makeText(CreateContactActivity.this, "Saved Data To SharedPreferences", Toast.LENGTH_SHORT).show();
 //                Fragment fragment = new ContactsFragment();
 //                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -92,9 +92,11 @@ public class CreateContactActivity extends AppCompatActivity {
         String last = lastname.getText().toString();
         String personPhone = pphone.getText().toString();
         String officePhone = ophone.getText().toString();
-        Users users = new Users(imagepath,first,last,personPhone,officePhone);
-//        usersArrayList.add(users);
-        contactsManager.AddContact(users);
+
+//        Users users = new Users(imagepath,first,last,personPhone,officePhone);
+//        usersList.add(users);
+
+        contactsManager.AddContact(getApplicationContext(),usersList);
     }
 
     private int generateTaskId() {
@@ -139,6 +141,6 @@ public class CreateContactActivity extends AppCompatActivity {
         lastname = findViewById(R.id.lastname);
         pphone = findViewById(R.id.pphone);
         ophone = findViewById(R.id.ophone);
-        save = findViewById(R.id.saveContact);
+        save = findViewById(R.id.save_Contact);
     }
 }

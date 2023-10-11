@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".Activity.CreateContactActivity">
 
     <RelativeLayout
@@ -20,7 +21,7 @@
             android:id="@+id/cancel1"
             android:layout_width="16dp"
             android:layout_height="20dp"
-            android:src="@drawable/crooss1" />
+            android:src="@drawable/crooss" />
 
         <TextView
             android:id="@+id/title"
@@ -34,16 +35,6 @@
             android:textColor="@color/bluetheme1"
             android:textSize="16dp" />
 
-        <TextView
-            android:layout_width="70dp"
-            android:layout_height="30dp"
-            android:layout_alignParentEnd="true"
-            android:background="@drawable/border1"
-            android:backgroundTint="@color/blue"
-            android:gravity="center"
-            android:text="Save"
-            android:textColor="@color/white"
-            android:textSize="16dp" />
     </RelativeLayout>
 
     <LinearLayout
@@ -92,6 +83,7 @@
             app:cardCornerRadius="150dp">
 
             <ImageView
+                android:id="@+id/update_image"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:scaleType="centerCrop"
@@ -144,7 +136,7 @@
                 android:text="First name"/>
 
             <EditText
-                android:id="@+id/firstname"
+                android:id="@+id/update_firstname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Clindy"
@@ -163,7 +155,7 @@
                 android:text="Last name"/>
 
             <EditText
-                android:id="@+id/lastname"
+                android:id="@+id/update_lastname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Warren"
@@ -204,7 +196,7 @@
                 android:text="Phone"/>
 
             <EditText
-                android:id="@+id/phone"
+                android:id="@+id/update_pphone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
@@ -223,7 +215,7 @@
                 android:text="Office"/>
 
             <EditText
-                android:id="@+id/office"
+                android:id="@+id/update_ophone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="+91 (405) 555-0128"
@@ -233,5 +225,19 @@
                 android:padding="10dp" />
         </LinearLayout>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/update_contact"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/border"
+        app:backgroundTint="@color/blue"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:text="Save"
+        android:textColor="@color/white"
+        android:textSize="16dp" />
 
 </RelativeLayout>
