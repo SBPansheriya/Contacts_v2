@@ -24,11 +24,11 @@ public class HeaderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private static final int TYPE_ITEM = 1;
 
     ContactsFragment contactsFragment;
-    ArrayList<Header> usersArrayList;
+    ArrayList<Object> items;
 
-    public HeaderListAdapter(ContactsFragment contactsFragment, ArrayList<Header> usersArrayList) {
+    public HeaderListAdapter(ContactsFragment contactsFragment, ArrayList<Object> items) {
         this.contactsFragment = contactsFragment;
-        this.usersArrayList = usersArrayList;
+        this.items = items;
     }
 
     @NonNull
@@ -48,7 +48,6 @@ public class HeaderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
         return  viewHolder;
 
-
 //        if (viewType == TYPE_ITEM) {
 //            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_list_item, parent, false);
 //            return new ItemViewHolder(itemView);
@@ -64,46 +63,49 @@ public class HeaderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemViewType(int position) {
-//        System.out.println("ViewType Position : " + position + "\n" + objectList.size());
-        Header header = usersArrayList.get(position);
-        if (header instanceof Header) {
-            return 0;
-        } else if (header instanceof Header) {
-            return 1;
-        }else {
-            return -1;
+
+        if (items.get(position) instanceof Header) {
+            return 0; // Header item type
+        } else {
+            return 1; // Child item type
         }
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-        if (holder instanceof HeaderViewHolder){
-            HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
-            headerViewHolder.contactHead.setText(usersArrayList.get(position).getHeader());
+        if (holder.getItemViewType() == 0) {
+            ((HeaderViewHolder) holder).bind(((Header) items.get(position)).getHeader());
+        } else {
+            ((ItemViewHolder) holder).bind(((Users) items.get(position)).getFirst());
         }
-        else if (holder instanceof ItemViewHolder){
-            final ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-//            itemViewHolder.personName.setText(usersArrayList.get(position).getUsersList().get(position).getFirst());
-            itemViewHolder.personName.setText(usersArrayList.get(position).getUsersList().get(position).getFirst());
-            itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(contactsFragment.getActivity(), ContactDetailActivity.class);
-//                    intent.putExtra("image",usersArrayList.get(position).getUsersList().get(position).getImage());
-//                    intent.putExtra("first",usersArrayList.get(position).getUsersList().get(position).getFirst());
-//                    intent.putExtra("last",usersArrayList.get(position).getUsersList().get(position).getLast());
-//                    intent.putExtra("pphone",usersArrayList.get(position).getUsersList().get(position).getPersonPhone());
-//                    intent.putExtra("ophone",usersArrayList.get(position).getUsersList().get(position).getOfficePhone());
-//                    contactsFragment.startActivity(intent);
-                }
-            });
-        }
+
+//        if (holder instanceof HeaderViewHolder){
+//            HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
+//            headerViewHolder.contactHead.setText(items.get(position).getHeader());
+//        }
+//        else if (holder instanceof ItemViewHolder){
+//            final ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
+////            itemViewHolder.personName.setText(usersArrayList.get(position).getUsersList().get(position).getFirst());
+//            itemViewHolder.personName.setText(items.get(position).getUsersList().get(position).getFirst());
+//            itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Intent intent = new Intent(contactsFragment.getActivity(), ContactDetailActivity.class);
+////                    intent.putExtra("image",usersArrayList.get(position).getUsersList().get(position).getImage());
+////                    intent.putExtra("first",usersArrayList.get(position).getUsersList().get(position).getFirst());
+////                    intent.putExtra("last",usersArrayList.get(position).getUsersList().get(position).getLast());
+////                    intent.putExtra("pphone",usersArrayList.get(position).getUsersList().get(position).getPersonPhone());
+////                    intent.putExtra("ophone",usersArrayList.get(position).getUsersList().get(position).getOfficePhone());
+////                    contactsFragment.startActivity(intent);
+//                }
+//            });
+//        }
     }
 
     @Override
     public int getItemCount() {
-        return usersArrayList.size();
+        return items.size();
     }
 
 //    @Override
@@ -127,6 +129,9 @@ public class HeaderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             contactHead = itemView.findViewById(R.id.header);
         }
+        public void bind(String headerText) {
+            contactHead.setText(headerText);
+        }
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -137,6 +142,10 @@ public class HeaderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             personName = itemView.findViewById(R.id.personName);
             personImage = itemView.findViewById(R.id.personImage);
+        }
+
+        public void bind(String personname) {
+            personName.setText(personname);
         }
     }
 }

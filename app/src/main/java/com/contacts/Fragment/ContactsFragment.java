@@ -56,7 +56,7 @@ public class ContactsFragment extends Fragment {
     ViewGroup viewGroup;
     Context context;
     ArrayList<Users> usersArrayList = new ArrayList<>();
-    ArrayList<Header> mSectionList = new ArrayList<>();
+    ArrayList<Object> items = new ArrayList<>();
 
 
     @Override
@@ -177,18 +177,10 @@ public class ContactsFragment extends Fragment {
             cursor.close();
         }
 
-
-//        ArrayList<Header> countriesModels = new ArrayList<>();
-//        for (int j = 0; j < usersArrayList.size() ; j++) {
-//            countriesModels.add(new Header("A",usersArrayList));
-//        }
-//
-//        mSectionList = new ArrayList<>();
-//        getHeaderListLatter(countriesModels);
-
+        items = getList();
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        headerListAdapter = new HeaderListAdapter(ContactsFragment.this, getList());
+        headerListAdapter = new HeaderListAdapter(ContactsFragment.this, items);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(headerListAdapter);
     }
@@ -203,12 +195,13 @@ public class ContactsFragment extends Fragment {
         }
     }
 
-    private ArrayList<Header> getList() {
-        ArrayList<Header> arrayList = new ArrayList<>();
-        Header header = new Header("A",usersArrayList);
-        arrayList.add(header);
-//        arrayList.add(usersArrayList);
-        return arrayList;
+    private ArrayList<Object> getList() {
+        ArrayList<Object> data = new ArrayList<>();
+        Header header = new Header("A");
+        data.add(new Header("A"));
+        data.add(new Users("Shrey","9512052570"));
+        data.add(new Users("Mayank","9512052570"));
+        return data;
     }
 
 //    private void getHeaderListLatter(ArrayList<Header> usersList) {
