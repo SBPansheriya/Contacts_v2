@@ -5,20 +5,17 @@ import java.util.List;
 public class Header {
 
     public String header;
-//    public boolean isSection;
-//    private List<Users> usersList;
-
-    public Header() {
-    }
+    private List<Users> usersList;
 
     public Header(String header) {
         this.header = header;
     }
 
-//    public Header(String header, List<Users> usersList) {
-//        this.header = header;
-//        this.usersList = usersList;
-//    }
+
+    public Header(String header, List<Users> usersList) {
+        this.header = header;
+        this.usersList = usersList;
+    }
 
     public String getHeader() {
         return header;
@@ -28,11 +25,12 @@ public class Header {
         this.header = header;
     }
 
-//    public List<Users> getUsersList() {
-//        return usersList;
-//    }
-//
-//    public void setUsersList(List<Users> usersList) {
-//        this.usersList = usersList;
-//    }
+
+    public List<Users> getUsersList() {
+        return usersList;
+    }
+
+    public void setUsersList(List<Users> usersList) {
+        this.usersList = usersList;
+    }
 }

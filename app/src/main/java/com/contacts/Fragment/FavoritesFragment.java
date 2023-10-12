@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.contacts.Activity.ContactDetailActivity;
 import com.contacts.Adapter.FavListAdapter;
 import com.contacts.Activity.CreateContactActivity;
 import com.contacts.Activity.HomeActivity;
@@ -21,7 +23,8 @@ public class FavoritesFragment extends Fragment {
 
 FavListAdapter favListAdapter;
 RecyclerView recyclerView;
-ImageView back;
+TextView done;
+ImageView back,info_icon,edit,scrollcontact;
 Button addfav;
 
 
@@ -48,16 +51,36 @@ Button addfav;
         addfav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), CreateContactActivity.class);
+                Intent intent = new Intent(getActivity(), ContactDetailActivity.class);
                 startActivity(intent);
             }
         });
 
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                edit.setVisibility(View.INVISIBLE);
+                done.setVisibility(View.VISIBLE);
+                scrollcontact.setVisibility(View.VISIBLE);
+                info_icon.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         return view;
     }
 
     private void  init(View view){
         back = view.findViewById(R.id.back);
         addfav = view.findViewById(R.id.create_fav);
+        info_icon = view.findViewById(R.id.info_icon);
+        edit = view.findViewById(R.id.fav_edit);
+        done = view.findViewById(R.id.fav_done);
+        scrollcontact = view.findViewById(R.id.scrollcontact);
     }
 }

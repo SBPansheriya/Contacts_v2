@@ -197,10 +197,9 @@ public class ContactsFragment extends Fragment {
 
     private ArrayList<Object> getList() {
         ArrayList<Object> data = new ArrayList<>();
-        Header header = new Header("A");
-        data.add(new Header("A"));
-        data.add(new Users("Shrey","9512052570"));
-        data.add(new Users("Mayank","9512052570"));
+        Header header = new Header("A",usersArrayList);
+        data.add(header);
+//        data.add(usersArrayList);
         return data;
     }
 
