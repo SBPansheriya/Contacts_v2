@@ -117,8 +117,7 @@ public class ContactsFragment extends Fragment {
                 cancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(getActivity(), getActivity().getClass());
-                        startActivity(intent);
+                        dialog.dismiss();
                     }
                 });
 
