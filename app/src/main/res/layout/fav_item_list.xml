@@ -14,12 +14,15 @@
             android:id="@+id/fav_personImage"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_margin="5dp"
             android:layout_gravity="center"
-            android:src="@drawable/ellipse"/>
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:src="@drawable/ellipse" />
 
         <TextView
-            android:id="@+id/personName"
+            android:id="@+id/fav_personName"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_toRightOf="@+id/fav_personImage"

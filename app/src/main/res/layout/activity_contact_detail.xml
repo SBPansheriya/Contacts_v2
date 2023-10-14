@@ -113,7 +113,7 @@
             android:layout_width="match_parent"
             android:layout_height="16dp"
             android:layout_weight="1"
-            android:fontFamily="@font/sf_pro_text_bold"
+            android:fontFamily="@font/sf_pro_text_medium"
             android:gravity="center"
             android:textColor="@color/bluetheme1"
             android:text="Text" />
@@ -122,7 +122,7 @@
             android:layout_width="match_parent"
             android:layout_height="16dp"
             android:layout_weight="1"
-            android:fontFamily="@font/sf_pro_text_bold"
+            android:fontFamily="@font/sf_pro_text_medium"
             android:gravity="center"
             android:textColor="@color/bluetheme1"
             android:text="Call" />
@@ -131,7 +131,7 @@
             android:layout_width="match_parent"
             android:layout_height="16dp"
             android:layout_weight="1"
-            android:fontFamily="@font/sf_pro_text_bold"
+            android:fontFamily="@font/sf_pro_text_medium"
             android:gravity="center"
             android:textColor="@color/bluetheme1"
             android:text="Edit" />
@@ -140,205 +140,221 @@
             android:layout_width="match_parent"
             android:layout_height="16dp"
             android:layout_weight="1"
-            android:fontFamily="@font/sf_pro_text_bold"
+            android:fontFamily="@font/sf_pro_text_medium"
             android:gravity="center"
             android:textColor="@color/bluetheme1"
             android:text="Favourites" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/title4"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title3"
+        android:background="@color/white_another"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="20dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/sf_pro_text_bold"
-            android:text="Contacts info"
-            android:textColor="@color/bluetheme1"
-            android:textSize="14dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:fontFamily="@font/sf_pro_text_regular"
-            android:textColor="@color/bluetheme1"
-            android:text="Saved : Phone"
-            android:textSize="10dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/title5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/title4"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:src="@drawable/call_phone" />
-
+        app:cardCornerRadius="10dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/selected_person_pnum"
-                android:layout_width="wrap_content"
-                android:layout_height="16dp"
-                android:layout_marginHorizontal="10dp"
-                android:fontFamily="@font/sf_pro_text_regular"
-                android:gravity="center"
-                android:textColor="@color/bluetheme1"
-                android:text="+91 (303) 555-0105"
-                android:textSize="14dp" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="16dp"
-                    android:layout_marginStart="10dp"
-                    android:fontFamily="@font/sf_pro_text_regular"
-                    android:gravity="center"
-                    android:textColor="@color/bluetheme1"
-                    android:text="Phone"
-                    android:textSize="14dp" />
-
-                <ImageView
-                    android:id="@+id/image2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/baseline_brightness_1_24" />
-
-                <TextView
-                    android:id="@+id/savedContactStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="16dp"
-                    android:layout_marginStart="8dp"
-                    android:fontFamily="@font/sf_pro_text_regular"
-                    android:gravity="center"
-                    android:textColor="@color/bluetheme1"
-                    android:text="Mobile"
-                    android:textSize="14dp" />
-            </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/title6"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/title5"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:src="@drawable/call_phone" />
-
         <LinearLayout
+            android:id="@+id/title4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/title3"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/selected_person_onum"
-                android:layout_width="wrap_content"
-                android:layout_height="16dp"
-                android:layout_marginHorizontal="10dp"
-                android:fontFamily="@font/sf_pro_text_regular"
-                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/sf_pro_text_bold"
+                android:text="Contacts info"
                 android:textColor="@color/bluetheme1"
-                android:text="+91 (303) 555-0105"
                 android:textSize="14dp" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/off_contact_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="16dp"
-                    android:layout_marginStart="10dp"
-                    android:fontFamily="@font/sf_pro_text_regular"
-                    android:gravity="center"
-                    android:textColor="@color/bluetheme1"
-                    android:text="Office"
-                    android:textSize="14dp" />
-
-                <ImageView
-                    android:id="@+id/image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/baseline_brightness_1_24" />
-
-                <TextView
-                    android:id="@+id/off_savedContactStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="16dp"
-                    android:layout_marginStart="8dp"
-                    android:fontFamily="@font/sf_pro_text_regular"
-                    android:gravity="center"
-                    android:textColor="@color/bluetheme1"
-                    android:text="Mobile"
-                    android:textSize="14dp" />
-            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/sf_pro_text_regular"
+                android:text="Saved : Phone"
+                android:textColor="@color/bluetheme1"
+                android:textSize="10dp" />
         </LinearLayout>
-    </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/whatsapp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/title6"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:src="@drawable/whatsapp" />
-
-        <TextView
-            android:id="@+id/message_whatsapp"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/title5"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_below="@+id/title4"
             android:layout_marginHorizontal="10dp"
-            android:fontFamily="@font/sf_pro_text_regular"
-            android:gravity="center"
-            android:textColor="@color/bluetheme1"
-            android:text="Message    +91 (303) 555-0105"
-            android:textSize="14dp" />
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
 
-    </LinearLayout>
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:src="@drawable/dark_call_phone" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/selected_person_pnum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="16dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:fontFamily="@font/sf_pro_text_regular"
+                    android:gravity="center"
+                    android:text="+91 (303) 555-0105"
+                    android:textColor="@color/bluetheme1"
+                    android:textSize="14dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="10dp"
+                        android:fontFamily="@font/sf_pro_text_regular"
+                        android:gravity="center"
+                        android:text="Phone"
+                        android:textColor="@color/bluetheme1"
+                        android:textSize="14dp" />
+
+                    <ImageView
+                        android:id="@+id/image2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="3dp"
+                        android:src="@drawable/baseline_brightness_1_24" />
+
+                    <TextView
+                        android:id="@+id/savedContactStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/sf_pro_text_regular"
+                        android:gravity="center"
+                        android:text="Mobile"
+                        android:textColor="@color/bluetheme1"
+                        android:textSize="14dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/title6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title5"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:src="@drawable/dark_call_phone" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/selected_person_onum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="16dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:fontFamily="@font/sf_pro_text_regular"
+                    android:gravity="center"
+                    android:text="+91 (303) 555-0105"
+                    android:textColor="@color/bluetheme1"
+                    android:textSize="14dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/off_contact_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="10dp"
+                        android:fontFamily="@font/sf_pro_text_regular"
+                        android:gravity="center"
+                        android:text="Office"
+                        android:textColor="@color/bluetheme1"
+                        android:textSize="14dp" />
+
+                    <ImageView
+                        android:id="@+id/image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="3dp"
+                        android:src="@drawable/baseline_brightness_1_24" />
+
+                    <TextView
+                        android:id="@+id/off_savedContactStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/sf_pro_text_regular"
+                        android:gravity="center"
+                        android:text="Mobile"
+                        android:textColor="@color/bluetheme1"
+                        android:textSize="14dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/whatsapp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title6"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:src="@drawable/whatsapp" />
+
+            <TextView
+                android:id="@+id/message_whatsapp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="10dp"
+                android:fontFamily="@font/sf_pro_text_regular"
+                android:gravity="center"
+                android:text="Message    +91 (303) 555-0105"
+                android:textColor="@color/bluetheme1"
+                android:textSize="14dp" />
+        </LinearLayout>
+        </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
 </RelativeLayout>

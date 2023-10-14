@@ -45,7 +45,7 @@
         android:layout_below="@+id/tbMenu"
         android:layout_marginHorizontal="20dp"
         android:background="@drawable/border"
-        android:backgroundTint="#12000000"
+        android:backgroundTint="@color/mediumblack"
         android:orientation="horizontal">
 
         <TextView
@@ -62,7 +62,7 @@
             android:layout_height="29dp"
             android:layout_gravity="center"
             android:layout_marginStart="10dp"
-            android:background="@drawable/border1"
+            android:background="@drawable/nocolor_border"
             android:backgroundTint="@color/mediumblue"
             android:gravity="center"
             android:text="Phone"
@@ -89,7 +89,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/state_layer" />
+                android:src="@drawable/person_placeholder" />
         </androidx.cardview.widget.CardView>
 
         <TextView
@@ -166,10 +166,9 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="30dp"
+            android:layout_height="26dp"
             android:layout_gravity="top"
-            android:layout_marginTop="1dp"
             android:layout_marginStart="10dp"
             android:src="@drawable/call" />
 

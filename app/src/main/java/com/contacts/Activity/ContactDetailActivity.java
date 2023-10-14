@@ -20,6 +20,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     LinearLayout whatsapp;
     TextView selected_person_name,selected_person_pnum,selected_person_onum;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,16 +28,28 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         init();
 
+        String contactId = getIntent().getStringExtra("contactId");
         String image = getIntent().getStringExtra("image");
         String firstname = getIntent().getStringExtra("first");
         String lastname = getIntent().getStringExtra("last");
         String pphone = getIntent().getStringExtra("pphone");
         String ophone = getIntent().getStringExtra("ophone");
 
+//        selected_person_image.setImageResource(Integer.parseInt(image));
+        selected_person_name.setText(""+firstname+ " " +""+lastname);
+        selected_person_pnum.setText(pphone);
+        selected_person_onum.setText(ophone);
+
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ContactDetailActivity.this,UpdateContactActivity.class);
+                intent.putExtra("contactId1",contactId);
+                intent.putExtra("image1",image);
+                intent.putExtra("first1",firstname);
+                intent.putExtra("last1",lastname);
+                intent.putExtra("pphone1",pphone);
+                intent.putExtra("ophone1",ophone);
                 startActivity(intent);
             }
         });

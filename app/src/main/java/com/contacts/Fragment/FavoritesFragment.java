@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -26,6 +27,8 @@ RecyclerView recyclerView;
 TextView done;
 ImageView back,info_icon,edit,scrollcontact;
 Button addfav;
+String shayariname[] = {"Dosti Shayari","God Shayari","Love Shayari","Brithday Shayari","Holi Shayari","Sharab Shayari","Politics Shayari","Bewfa Shayari","Other Shayari"};
+
 
 
     @Override
@@ -35,10 +38,10 @@ Button addfav;
 
         init(view);
 
-//        favListAdapter = new FavListAdapter(FavoritesFragment.this);
-//        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-//        recyclerView.setLayoutManager(manager);
-//        recyclerView.setAdapter(favListAdapter);
+        favListAdapter = new FavListAdapter(FavoritesFragment.this,shayariname);
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(favListAdapter);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,15 +64,15 @@ Button addfav;
             public void onClick(View view) {
                 edit.setVisibility(View.INVISIBLE);
                 done.setVisibility(View.VISIBLE);
-                scrollcontact.setVisibility(View.VISIBLE);
-                info_icon.setVisibility(View.INVISIBLE);
+//                scrollcontact.setVisibility(View.VISIBLE);
+//                info_icon.setVisibility(View.INVISIBLE);
             }
         });
 
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                onDestroyView();
             }
         });
         return view;
@@ -82,5 +85,6 @@ Button addfav;
         edit = view.findViewById(R.id.fav_edit);
         done = view.findViewById(R.id.fav_done);
         scrollcontact = view.findViewById(R.id.scrollcontact);
+        recyclerView = view.findViewById(R.id.recyclerView);
     }
 }

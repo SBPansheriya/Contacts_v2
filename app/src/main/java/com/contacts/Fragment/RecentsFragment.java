@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -20,7 +21,8 @@ public class RecentsFragment extends Fragment {
     RecentListAdapter recentListAdapter;
     RecyclerView recyclerView;
     ImageView back;
-    public RecentsFragment recentsFragment;
+    RecentsFragment recentsFragment;
+    String shayariname[] = {"Dosti Shayari","God Shayari","Love Shayari","Brithday Shayari","Holi Shayari","Sharab Shayari","Politics Shayari","Bewfa Shayari","Other Shayari"};
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -29,10 +31,10 @@ public class RecentsFragment extends Fragment {
 
         init(view);
 
-//        recentListAdapter = new RecentListAdapter();
-//        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-//        recyclerView.setLayoutManager(manager);
-//        recyclerView.setAdapter(recentListAdapter);
+        recentListAdapter = new RecentListAdapter(getContext(),shayariname);
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(recentListAdapter);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,5 +49,6 @@ public class RecentsFragment extends Fragment {
 
     private void  init(View view){
         back = view.findViewById(R.id.back);
+        recyclerView = view.findViewById(R.id.recents_recyclerview);
     }
 }

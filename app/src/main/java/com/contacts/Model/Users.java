@@ -5,26 +5,20 @@ import androidx.annotation.NonNull;
 import java.io.Serializable;
 
 public class Users {
+    public String contactId;
     public String image;
     public String first;
     public String last;
     public String personPhone;
     public String officePhone;
 
-//    public Users(String image, String first, String last, String personPhone, String officePhone) {
-//        this.image = image;
-//        this.first = first;
-//        this.last = last;
-//        this.personPhone = personPhone;
-//        this.officePhone = officePhone;
-//    }
-
-    public Users() {
-    }
-
-    public Users(String first, String personPhone) {
+    public Users(String contactId, String image, String first, String last, String personPhone, String officePhone) {
+        this.contactId = contactId;
+        this.image = image;
         this.first = first;
+        this.last = last;
         this.personPhone = personPhone;
+        this.officePhone = officePhone;
     }
 
     public String getImage() {
@@ -67,4 +61,11 @@ public class Users {
         this.officePhone = officePhone;
     }
 
+    public String getContactId() {
+        return contactId;
+    }
+
+    public void setContactId(String contactId) {
+        this.contactId = contactId;
+    }
 }

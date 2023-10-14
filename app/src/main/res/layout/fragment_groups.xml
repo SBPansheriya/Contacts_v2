@@ -12,6 +12,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:textSize="25dp"
+        android:fontFamily="@font/sf_pro_text_medium"
         android:textColor="@color/darkgray"
         android:text="Coming Soon" />
 
