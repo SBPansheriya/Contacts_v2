@@ -15,6 +15,7 @@ import com.contacts.Activity.ContactDetailActivity;
 import com.contacts.Fragment.ContactsFragment;
 import com.contacts.Model.Users;
 import com.contacts.R;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,8 +44,17 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
 
         holder.personName.setText(usersList.get(position).first +" "+ usersList.get(position).last);
-        loadImageFromStorage(usersList.get(position).getImage(),holder.personImage);
-        System.out.println(usersList.get(position).image);
+
+//        if (usersList.isEmpty()){
+//            holder.personImage.setImageResource(R.drawable.person_placeholder);
+//        }
+//        else {
+//            loadImageFromStorage(usersList.get(position).getImage(),holder.personImage);
+//            System.out.println(usersList.get(position).image);
+//        }
+
+        Picasso.get().load(usersList.get(position).image).into(holder.personImage);
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

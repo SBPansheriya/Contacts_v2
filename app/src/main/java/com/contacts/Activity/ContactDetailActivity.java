@@ -13,12 +13,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.contacts.R;
+import com.squareup.picasso.Picasso;
 
 public class ContactDetailActivity extends AppCompatActivity {
 
-    ImageView edit,call,messenger,favourites,selected_person_image,back;
-    LinearLayout whatsapp;
-    TextView selected_person_name,selected_person_pnum,selected_person_onum;
+    ImageView edit, call, messenger, favourites, selected_person_image, back;
+    LinearLayout whatsapp,office_contact_details_linear;
+    TextView selected_person_name, selected_person_pnum, selected_person_onum, message_whatsapp;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -35,21 +36,27 @@ public class ContactDetailActivity extends AppCompatActivity {
         String pphone = getIntent().getStringExtra("pphone");
         String ophone = getIntent().getStringExtra("ophone");
 
-//        selected_person_image.setImageResource(Integer.parseInt(image));
-        selected_person_name.setText(""+firstname+ " " +""+lastname);
+        Picasso.get().load(image).into(selected_person_image);
+        selected_person_name.setText("" + firstname + " " + "" + lastname);
         selected_person_pnum.setText(pphone);
-        selected_person_onum.setText(ophone);
+        if(ophone.isEmpty()){
+            office_contact_details_linear.setVisibility(View.GONE);
+        }
+        else {
+            selected_person_onum.setText(ophone);
+        }
+        message_whatsapp.setText(pphone);
 
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ContactDetailActivity.this,UpdateContactActivity.class);
-                intent.putExtra("contactId1",contactId);
-                intent.putExtra("image1",image);
-                intent.putExtra("first1",firstname);
-                intent.putExtra("last1",lastname);
-                intent.putExtra("pphone1",pphone);
-                intent.putExtra("ophone1",ophone);
+                Intent intent = new Intent(ContactDetailActivity.this, UpdateContactActivity.class);
+                intent.putExtra("contactId1", contactId);
+                intent.putExtra("image1", image);
+                intent.putExtra("first1", firstname);
+                intent.putExtra("last1", lastname);
+                intent.putExtra("pphone1", pphone);
+                intent.putExtra("ophone1", ophone);
                 startActivity(intent);
             }
         });
@@ -60,6 +67,7 @@ public class ContactDetailActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
 
         messenger.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("IntentReset")
@@ -72,6 +80,7 @@ public class ContactDetailActivity extends AppCompatActivity {
             }
         });
 
+
         whatsapp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -79,20 +88,20 @@ public class ContactDetailActivity extends AppCompatActivity {
                 Intent i = new Intent(Intent.ACTION_VIEW);
 
                 try {
-                    String url = "https://api.whatsapp.com/send?phone="+// something here;
+                    String url = "https://api.whatsapp.com/send?phone=" + pphone;
                     i.setPackage("com.whatsapp");
                     i.setData(Uri.parse(url));
                     if (i.resolveActivity(packageManager) != null) {
                         ContactDetailActivity.this.startActivity(i);
                     }
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
     }
 
-    private void init(){
+    private void init() {
         edit = findViewById(R.id.edit_contact_details);
         call = findViewById(R.id.call);
         messenger = findViewById(R.id.messenger);
@@ -103,5 +112,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         selected_person_name = findViewById(R.id.selected_person_name);
         selected_person_pnum = findViewById(R.id.selected_person_pnum);
         selected_person_onum = findViewById(R.id.selected_person_onum);
+        message_whatsapp = findViewById(R.id.message_whatsapp);
+        office_contact_details_linear = findViewById(R.id.office_contact_details_linear);
     }
 }

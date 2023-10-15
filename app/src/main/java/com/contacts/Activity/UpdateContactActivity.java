@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.contacts.Fragment.ContactsFragment;
 import com.contacts.Model.Users;
 import com.contacts.R;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -60,7 +61,7 @@ public class UpdateContactActivity extends AppCompatActivity {
         String pphone = getIntent().getStringExtra("pphone1");
         String ophone = getIntent().getStringExtra("ophone1");
 
-//        personimage.setImageResource(Integer.parseInt(image));
+        Picasso.get().load(image).into(personimage);
         update_firstname.setText(firstname);
         update_lastname.setText(lastname);
         update_pphone.setText(pphone);
@@ -91,12 +92,12 @@ public class UpdateContactActivity extends AppCompatActivity {
                 String pphone = update_pphone.getText().toString();
                 String ophone = update_ophone.getText().toString();
 
-                String name = firstname+lastname;
+                String name = firstname + " " + lastname;
 
                 getUpdateContactList(contactId, name, pphone);
 
-//                Users users = new Users(contactId,"",firstname,lastname,pphone,ophone);
-//                usersArrayList.add(users);
+                Users users = new Users(contactId,"",firstname,lastname,pphone,ophone);
+                usersArrayList.add(users);
 
                 Toast.makeText(UpdateContactActivity.this, "Updated Contact Successfully", Toast.LENGTH_SHORT).show();
                 onBackPressed();
@@ -130,7 +131,7 @@ public class UpdateContactActivity extends AppCompatActivity {
 //
 //    }
 
-    public void getUpdateContactList(String contactId,String newName, String newPhoneNumber) {
+    public void getUpdateContactList(String contactId, String newName, String newPhoneNumber) {
         ContentResolver contentResolver = getContentResolver();
         ContentValues contentValues = new ContentValues();
         contentValues.put(ContactsContract.CommonDataKinds.Phone.NUMBER, newPhoneNumber);
@@ -139,11 +140,10 @@ public class UpdateContactActivity extends AppCompatActivity {
                 ContactsContract.Data.MIMETYPE + " = ?";
 
         // Define the arguments for the condition
-        String[] selectionArgs = new String[] { contactId, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE };
+        String[] selectionArgs = new String[]{contactId, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE};
 
         // Update the contact
         contentResolver.update(ContactsContract.Data.CONTENT_URI, contentValues, selection, selectionArgs);
-
 
         ContentResolver contentResolver1 = getContentResolver();
         ContentValues contentValues1 = new ContentValues();
@@ -154,11 +154,13 @@ public class UpdateContactActivity extends AppCompatActivity {
                 ContactsContract.Data.MIMETYPE + " = ?";
 
         // Define the arguments for the condition
-        String[] selectionArgs1 = new String[] { contactId, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE };
+        String[] selectionArgs1 = new String[]{contactId, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE};
 
         // Update the contact's name
         contentResolver1.update(ContactsContract.Data.CONTENT_URI, contentValues1, selection1, selectionArgs1);
 
+        Users user = new Users(contactId,"",newName,"", newPhoneNumber,"");
+        usersArrayList.add(user);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

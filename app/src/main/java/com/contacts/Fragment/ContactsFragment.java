@@ -53,10 +53,10 @@ public class ContactsFragment extends Fragment {
 
     HeaderListAdapter headerListAdapter;
     RecyclerView recyclerView;
-    LinearLayout no_contcat_found_linear,Contact_found_linear;
+    LinearLayout no_contcat_found_linear, Contact_found_linear;
     ImageView edit, cancel, share, delete;
     Button create_btn;
-    TextView selectall,totalcontact;
+    TextView selectall, totalcontact;
     FloatingActionButton floatingActionButton;
     ViewGroup viewGroup;
     Context context;
@@ -107,12 +107,18 @@ public class ContactsFragment extends Fragment {
             }
         });
 
-        if (usersArrayList.isEmpty()){
+        if (usersArrayList.isEmpty()) {
             no_contcat_found_linear.setVisibility(View.VISIBLE);
             Contact_found_linear.setVisibility(View.INVISIBLE);
         }
 
-        totalcontact.setText(usersArrayList.get(position).contactId +" "+ "Contacts");
+
+        if (usersArrayList.isEmpty()) {
+            totalcontact.setText("0 Conatcts");
+        } else {
+            totalcontact.setText(usersArrayList.get(position).contactId + " " + "Contacts");
+        }
+
 
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,37 +160,6 @@ public class ContactsFragment extends Fragment {
     }
 
     private void getContactList() {
-        /*Uri uri = ContactsContract.Contacts.CONTENT_URI;
-        final String[] PROJECTION = {
-                ContactsContract.Contacts._ID,
-                ContactsContract.Contacts.DISPLAY_NAME,
-                ContactsContract.Data.MIMETYPE,
-                ContactsContract.Data.DATA1,
-        };
-
-        Cursor cursor = getContext().getContentResolver().query(uri, PROJECTION, null, null, null);
-
-        if (cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-                @SuppressLint("Range") String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID));
-                @SuppressLint("Range") String phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("\\s+", "").replaceAll("[^a-zA-Z0-9]", "");
-                @SuppressLint("Range") String phoneName = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                @SuppressLint("Range") String image = cursor.getString(cursor.getColumnIndex());
-                Log.e("Number", phoneNumber);
-                String firstName = "";
-                String lastName = "";
-                if (phoneName.contains(" ")) {
-                    String currentString = phoneName;
-                    String[] separated = currentString.split(" ");
-                    firstName = separated[0];
-                    lastName = separated[1];
-                }
-
-                Users users = new Users(contactId,"", firstName, lastName, phoneNumber, "");
-                usersArrayList.add(users);
-            }
-        }
-        cursor.close();*/
 
         ContentResolver contentResolver = getContext().getContentResolver();
         Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
@@ -225,12 +200,11 @@ public class ContactsFragment extends Fragment {
                 }
 
                 // Create a User object with the retrieved data and add it to the ArrayList
-                Users user = new Users(contactId,photoUri,firstName,lastName, phoneNumber,officeNumber);
+                Users user = new Users(contactId, photoUri, firstName, lastName, phoneNumber, officeNumber);
                 usersArrayList.add(user);
             }
             cursor.close();
         }
-
 
 
         if (usersArrayList.size() > 0) {
@@ -249,10 +223,10 @@ public class ContactsFragment extends Fragment {
             ArrayList<Header> headerArrayList = new ArrayList<>();
 
             for (char i = 'A'; i <= 'Z'; i++) {
-                Header header = new Header(String.valueOf(i),new ArrayList<>());
+                Header header = new Header(String.valueOf(i), new ArrayList<>());
                 headerArrayList.add(header);
             }
-            Header header1 = new Header("#",new ArrayList<>());
+            Header header1 = new Header("#", new ArrayList<>());
             headerArrayList.add(header1);
             for (int i = 0; i < usersArrayList.size(); i++) {
                 if (!TextUtils.isEmpty(usersArrayList.get(i).first)) {
