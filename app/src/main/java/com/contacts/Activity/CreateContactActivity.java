@@ -125,11 +125,11 @@ public class CreateContactActivity extends AppCompatActivity {
         values.put(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE);
         contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
 
-        byte[] imageBytes = getBytesFromImage(); // Replace with a function that retrieves the image as bytes.
+//        byte[] imageBytes = getBytesFromImage(); // Replace with a function that retrieves the image as bytes.
         values.clear();
         values.put(ContactsContract.Data.RAW_CONTACT_ID, rawContactId);
         values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE);
-        values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, imageBytes);
+//        values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, imageBytes);
         contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
 
     }
@@ -172,7 +172,7 @@ public class CreateContactActivity extends AppCompatActivity {
             if (is != null) {
                 Bitmap bitmap = BitmapFactory.decodeStream(is);
                 is.close();
-                return getBytesFromBitmap(bitmap);
+//                return getBytesFromBitmap(bitmap);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -180,24 +180,24 @@ public class CreateContactActivity extends AppCompatActivity {
         return null;
     }
 
-    private byte[] getBytesFromBitmap(Bitmap bitmap) {
-        if (bitmap == null) {
-            return null;
-        }
-        int size = bitmap.getWidth() * bitmap.getHeight() * 4; // Assuming ARGB_8888 format
-        android.support.v4.util.Pools.SynchronizedPool pool = new android.support.v4.util.Pools.SynchronizedPool(size);
-        byte[] result = new byte[size];
-        Bitmap.CompressFormat format = Bitmap.CompressFormat.PNG;
-        int quality = 100;
-        try {
-            if (!bitmap.compress(format, quality, pool.acquire(), result)) {
-                throw new RuntimeException("Failed to compress bitmap.");
-            }
-        } finally {
-            pool.release(result);
-        }
-        return result;
-    }
+//    private byte[] getBytesFromBitmap(Bitmap bitmap) {
+//        if (bitmap == null) {
+//            return null;
+//        }
+//        int size = bitmap.getWidth() * bitmap.getHeight() * 4; // Assuming ARGB_8888 format
+//        android.support.v4.util.Pools.SynchronizedPool pool = new android.support.v4.util.Pools.SynchronizedPool(size);
+//        byte[] result = new byte[size];
+//        Bitmap.CompressFormat format = Bitmap.CompressFormat.PNG;
+//        int quality = 100;
+//        try {
+//            if (!bitmap.compress(format, quality, pool.acquire(), result)) {
+//                throw new RuntimeException("Failed to compress bitmap.");
+//            }
+//        } finally {
+//            pool.release(result);
+//        }
+//        return result;
+//    }
 
 
     private void init(){
