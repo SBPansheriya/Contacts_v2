@@ -4,8 +4,9 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
         maven {
-            url = uri( "https://jitpack.io")
+            url = uri("https://jitpack.io")
         }
+        maven { url = uri("https://maven.gist.build") }
     }
 }
 dependencyResolutionManagement {
@@ -14,8 +15,9 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven {
-            url = uri( "https://jitpack.io")
+            url = uri("https://jitpack.io")
         }
+        maven { url = uri("https://maven.gist.build") }
     }
 }
 

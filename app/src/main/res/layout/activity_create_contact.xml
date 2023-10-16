@@ -189,6 +189,7 @@
                 android:id="@+id/pphone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="number"
                 android:layout_marginHorizontal="20dp"
                 android:background="@drawable/border2"
                 android:padding="10dp" />
@@ -200,15 +201,18 @@
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginBottom="5dp"
                 android:textColor="@color/darkgray2"
-                android:text="Office"/>
+                android:text="Office"
+                android:visibility="gone"/>
 
             <EditText
                 android:id="@+id/ophone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="number"
                 android:layout_marginHorizontal="20dp"
                 android:background="@drawable/border2"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:visibility="gone"/>
         </LinearLayout>
     </LinearLayout>
     <Button

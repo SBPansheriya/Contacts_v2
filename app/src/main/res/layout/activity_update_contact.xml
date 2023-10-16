@@ -141,6 +141,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Clindy"
+                android:inputType="text"
                 android:fontFamily="@font/sf_pro_text_regular"
                 android:layout_marginHorizontal="20dp"
                 android:background="@drawable/border2"
@@ -201,6 +202,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:text="+91 (704) 555-0127"
+                android:inputType="number"
                 android:fontFamily="@font/sf_pro_text_regular"
                 android:background="@drawable/border2"
                 android:padding="10dp" />
@@ -211,6 +213,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginBottom="5dp"
+                android:visibility="gone"
                 android:textColor="@color/darkgray"
                 android:text="Office"/>
 
@@ -218,10 +221,12 @@
                 android:id="@+id/update_ophone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="number"
                 android:text="+91 (405) 555-0128"
                 android:fontFamily="@font/sf_pro_text_regular"
                 android:layout_marginHorizontal="20dp"
                 android:background="@drawable/border2"
+                android:visibility="gone"
                 android:padding="10dp" />
         </LinearLayout>
     </LinearLayout>

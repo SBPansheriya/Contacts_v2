@@ -23,14 +23,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,8 +38,8 @@ import com.contacts.Activity.CreateContactActivity;
 import com.contacts.Model.Header;
 import com.contacts.Model.Users;
 import com.contacts.R;
+import com.github.ybq.android.spinkit.SpinKitView;
 import com.github.ybq.android.spinkit.sprite.Sprite;
-import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.github.ybq.android.spinkit.style.ThreeBounce;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -61,6 +60,8 @@ public class ContactsFragment extends Fragment {
     FloatingActionButton floatingActionButton;
     ViewGroup viewGroup;
     Context context;
+    SpinKitView spin_kit;
+    RelativeLayout progressLayout;
     ArrayList<Users> usersArrayList = new ArrayList<>();
     ArrayList<Object> items = new ArrayList<>();
     int position;
@@ -74,8 +75,6 @@ public class ContactsFragment extends Fragment {
 
         checkPermission();
 
-//        Sprite threeBounce = new ThreeBounce();
-//        progressBar.setIndeterminateDrawable(threeBounce);
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,7 +161,11 @@ public class ContactsFragment extends Fragment {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void getContactList() {
+
+        Sprite threeBounce = new ThreeBounce();
+        spin_kit.setIndeterminateDrawable(threeBounce);
 
         ContentResolver contentResolver = getContext().getContentResolver();
         Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
@@ -208,7 +211,6 @@ public class ContactsFragment extends Fragment {
             }
             cursor.close();
         }
-
 
         if (usersArrayList.size() > 0) {
             Comparator<Users> nameComparator = new Comparator<Users>() {
@@ -256,6 +258,9 @@ public class ContactsFragment extends Fragment {
             recyclerView.setLayoutManager(manager);
             recyclerView.setAdapter(headerListAdapter);
         }
+        headerListAdapter.notifyDataSetChanged();
+        progressLayout.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
     }
 
     private List<String> getPhoneNumbers(ContentResolver contentResolver, String contactId) {
@@ -277,6 +282,52 @@ public class ContactsFragment extends Fragment {
         return phoneNumbers;
     }
 
+//    public void getPhoneNumbersForContact(String contactName) {
+////        ContentResolver contentResolver = getContentResolver();
+//
+//        // Define the projection to retrieve phone numbers
+//        String[] projection = {
+//                ContactsContract.CommonDataKinds.Phone.NUMBER,
+//                ContactsContract.CommonDataKinds.Phone.TYPE
+//        };
+//
+//        // Define the selection criteria to find the contact by name
+//        String selection = ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME + " = ?";
+//        String[] selectionArgs = { contactName };
+//
+//        // Query the Contacts Provider to get the phone numbers
+//        Cursor cursor = contentResolver.query(
+//                ContactsContract.Data.CONTENT_URI,
+//                projection,
+//                selection,
+//                selectionArgs,
+//                null
+//        );
+//
+//        if (cursor != null) {
+//            while (cursor.moveToNext()) {
+//                @SuppressLint("Range") String phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+//                @SuppressLint("Range") int phoneType = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+//
+//                String phoneTypeLabel = "";
+//                switch (phoneType) {
+//                    case ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE:
+//                        phoneTypeLabel = "Mobile";
+//                        break;
+//                    case ContactsContract.CommonDataKinds.Phone.TYPE_WORK:
+//                        phoneTypeLabel = "Work";
+//                        break;
+//                    // Add more cases for other phone types as needed
+//                }
+//
+//                System.out.println("Phone Type: " + phoneTypeLabel);
+//                System.out.println("Phone Number: " + phoneNumber);
+//            }
+//
+//            cursor.close();
+//        }
+//    }
+
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -286,35 +337,6 @@ public class ContactsFragment extends Fragment {
             checkPermission();
         }
     }
-
-//    private void getHeaderListLatter(ArrayList<Header> usersList) {
-//
-//        Collections.sort(usersList, new Comparator<Header>() {
-//            int position = 0;
-//
-//            @Override
-//            public int compare (Header user1, Header user2) {
-//                return String.valueOf(user1.header.charAt(0)).toUpperCase().compareTo(String.valueOf(user2.getUsersList().get(position).getFirst().charAt(0)).toUpperCase());
-//            }
-//        });
-//
-//        String lastHeader = "";
-//
-//        int size = usersList.size();
-//
-//        for (int i = 0; i < size; i++) {
-//
-//            Header header1 = usersList.get(i);
-//            String header = String.valueOf(header1.header.charAt(0)).toUpperCase();
-//
-//            if (!TextUtils.equals(lastHeader, header)) {
-//                lastHeader = header;
-//                mSectionList.add(new Header(header,true,usersArrayList));
-//            }
-//
-//            mSectionList.add(header1);
-//        }
-//    }
 
     private void init(View view) {
         recyclerView = view.findViewById(R.id.show_contact_recyclerview);
@@ -329,5 +351,7 @@ public class ContactsFragment extends Fragment {
         no_contcat_found_linear = view.findViewById(R.id.no_contcat_found_linear);
         Contact_found_linear = view.findViewById(R.id.Contact_found_linear);
         totalcontact = view.findViewById(R.id.totalcontact);
+        progressLayout = view.findViewById(R.id.progressLayout);
+        spin_kit = view.findViewById(R.id.spin_kit);
     }
 }
