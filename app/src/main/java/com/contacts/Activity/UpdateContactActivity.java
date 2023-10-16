@@ -178,7 +178,7 @@ public class UpdateContactActivity extends AppCompatActivity {
 
     }
 
-    //    private void checkPermission() {
+//    private void checkPermission() {
 //        if (ContextCompat.checkSelfPermission(UpdateContactActivity.this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
 //            ActivityCompat.requestPermissions(UpdateContactActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, 100);
 //        }

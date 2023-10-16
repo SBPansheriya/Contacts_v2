@@ -164,6 +164,8 @@ public class ContactsFragment extends Fragment {
     @SuppressLint("NotifyDataSetChanged")
     private void getContactList() {
 
+        usersArrayList = new ArrayList<>();
+
         Sprite threeBounce = new ThreeBounce();
         spin_kit.setIndeterminateDrawable(threeBounce);
 
