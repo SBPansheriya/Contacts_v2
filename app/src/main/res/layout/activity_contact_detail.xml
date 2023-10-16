@@ -43,7 +43,7 @@
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ellipse" />
+                android:src="@drawable/person_placeholder" />
         </androidx.cardview.widget.CardView>
 
         <TextView
@@ -256,12 +256,13 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/title6"
+            android:id="@+id/office_contact_details_linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/title5"
             android:layout_marginHorizontal="10dp"
             android:layout_marginTop="10dp"
+            android:visibility="visible"
             android:orientation="horizontal">
 
             <ImageView
@@ -329,7 +330,7 @@
             android:id="@+id/whatsapp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/title6"
+            android:layout_below="@+id/office_contact_details_linear"
             android:layout_marginHorizontal="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
