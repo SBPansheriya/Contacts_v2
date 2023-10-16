@@ -1,5 +1,6 @@
 package com.contacts.Adapter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ public class FavListAdapter extends RecyclerView.Adapter<FavListAdapter.favourit
 
     FavoritesFragment favoritesFragment;
     String[] shayariname;
+    Context context;
 
     public FavListAdapter(FavoritesFragment favoritesFragment, String[] shayariname) {
         this.favoritesFragment = favoritesFragment;
@@ -36,6 +38,16 @@ public class FavListAdapter extends RecyclerView.Adapter<FavListAdapter.favourit
 
         holder.fav_person_name.setText(shayariname[position]);
 
+
+        FavoritesFragment.edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.scrollcontact.setVisibility(View.VISIBLE);
+                holder.info_plite.setVisibility(View.GONE);
+
+            }
+        });
+
         holder.info_plite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,12 +63,14 @@ public class FavListAdapter extends RecyclerView.Adapter<FavListAdapter.favourit
     }
 
     public class favouriteviewholder extends RecyclerView.ViewHolder {
-        ImageView fav_person_image,info_plite;
+        ImageView fav_person_image,info_plite,scrollcontact;
+
         TextView fav_person_name;
         public favouriteviewholder(@NonNull View itemView) {
             super(itemView);
             fav_person_image = itemView.findViewById(R.id.fav_personImage);
             info_plite = itemView.findViewById(R.id.info_icon);
+            scrollcontact = itemView.findViewById(R.id.scrollcontact);
             fav_person_name = itemView.findViewById(R.id.fav_personName);
         }
     }

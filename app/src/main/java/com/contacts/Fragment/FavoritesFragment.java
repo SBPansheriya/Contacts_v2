@@ -25,10 +25,10 @@ public class FavoritesFragment extends Fragment {
 FavListAdapter favListAdapter;
 RecyclerView recyclerView;
 TextView done;
-ImageView back,info_icon,edit,scrollcontact;
+ImageView back;
 Button addfav;
 String shayariname[] = {"Dosti Shayari","God Shayari","Love Shayari","Brithday Shayari","Holi Shayari","Sharab Shayari","Politics Shayari","Bewfa Shayari","Other Shayari"};
-
+public static ImageView edit;
 
 
     @Override
@@ -59,15 +59,15 @@ String shayariname[] = {"Dosti Shayari","God Shayari","Love Shayari","Brithday S
             }
         });
 
-        edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                edit.setVisibility(View.INVISIBLE);
-                done.setVisibility(View.VISIBLE);
-//                scrollcontact.setVisibility(View.VISIBLE);
-//                info_icon.setVisibility(View.INVISIBLE);
-            }
-        });
+//        edit.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                edit.setVisibility(View.GONE);
+//                done.setVisibility(View.VISIBLE);
+////                scrollcontact.setVisibility(View.VISIBLE);
+////                info_icon.setVisibility(View.GONE);
+//            }
+//        });
 
         done.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,10 +81,8 @@ String shayariname[] = {"Dosti Shayari","God Shayari","Love Shayari","Brithday S
     private void  init(View view){
         back = view.findViewById(R.id.back);
         addfav = view.findViewById(R.id.create_fav);
-        info_icon = view.findViewById(R.id.info_icon);
         edit = view.findViewById(R.id.fav_edit);
         done = view.findViewById(R.id.fav_done);
-        scrollcontact = view.findViewById(R.id.scrollcontact);
         recyclerView = view.findViewById(R.id.recyclerView);
     }
 }

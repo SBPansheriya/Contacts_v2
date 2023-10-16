@@ -36,7 +36,13 @@ public class ContactDetailActivity extends AppCompatActivity {
         String pphone = getIntent().getStringExtra("pphone");
         String ophone = getIntent().getStringExtra("ophone");
 
-        Picasso.get().load(image).into(selected_person_image);
+        if (image == null){
+            selected_person_image.setImageResource(R.drawable.person_placeholder);
+        }
+        else {
+            Picasso.get().load(image).into(selected_person_image);
+        }
+
         selected_person_name.setText("" + firstname + " " + "" + lastname);
         selected_person_pnum.setText(pphone);
         if(ophone.isEmpty()){

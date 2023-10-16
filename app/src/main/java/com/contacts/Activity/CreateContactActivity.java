@@ -71,12 +71,6 @@ public class CreateContactActivity extends AppCompatActivity {
                 else {
                     createContact();
                     Toast.makeText(CreateContactActivity.this, "Saved Data To SharedPreferences", Toast.LENGTH_SHORT).show();
-//                Fragment fragment = new ContactsFragment();
-//                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//                Bundle bundle = new Bundle();
-//                bundle.putParcelableArrayList("list", usersArrayList);
-//                fragment.setArguments(bundle);
-//                fragmentTransaction.replace(R.id.create_contact_activity,fragment).commit();
                 }
             }
         });
@@ -96,9 +90,6 @@ public class CreateContactActivity extends AppCompatActivity {
         String last = lastname.getText().toString();
         String personPhone = pphone.getText().toString();
         String officePhone = ophone.getText().toString();
-
-//        Users users = new Users(imagepath,first,last,personPhone,officePhone);
-//        usersList.add(users);
 
         ContentValues values = new ContentValues();
         ContentResolver contentResolver = getContentResolver();
@@ -125,11 +116,17 @@ public class CreateContactActivity extends AppCompatActivity {
         values.put(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE);
         contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
 
-//        byte[] imageBytes = getBytesFromImage(); // Replace with a function that retrieves the image as bytes.
+        values.clear();
+        values.put(ContactsContract.Data.RAW_CONTACT_ID, rawContactId);
+        values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+        values.put(ContactsContract.CommonDataKinds.Phone.NUMBER, officePhone);
+        values.put(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_WORK);
+        contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
+
         values.clear();
         values.put(ContactsContract.Data.RAW_CONTACT_ID, rawContactId);
         values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE);
-//        values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, imageBytes);
+        values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, imagepath);
         contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
 
     }

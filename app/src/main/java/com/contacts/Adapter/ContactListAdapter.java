@@ -53,7 +53,12 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 //            System.out.println(usersList.get(position).image);
 //        }
 
-        Picasso.get().load(usersList.get(position).image).into(holder.personImage);
+        if (usersList.get(position).image == null){
+            holder.personImage.setImageResource(R.drawable.person_placeholder);
+        }
+        else {
+            Picasso.get().load(usersList.get(position).image).into(holder.personImage);
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

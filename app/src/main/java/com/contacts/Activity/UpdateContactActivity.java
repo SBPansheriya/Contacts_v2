@@ -1,5 +1,7 @@
 package com.contacts.Activity;
 
+import static java.security.AccessController.getContext;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -18,6 +20,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -61,7 +64,13 @@ public class UpdateContactActivity extends AppCompatActivity {
         String pphone = getIntent().getStringExtra("pphone1");
         String ophone = getIntent().getStringExtra("ophone1");
 
-        Picasso.get().load(image).into(personimage);
+        if (image == null){
+            personimage.setImageResource(R.drawable.person_placeholder);
+        }
+        else {
+            Picasso.get().load(image).into(personimage);
+        }
+
         update_firstname.setText(firstname);
         update_lastname.setText(lastname);
         update_pphone.setText(pphone);
@@ -80,102 +89,110 @@ public class UpdateContactActivity extends AppCompatActivity {
         personimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(takePicture, CAMERA_REQUEST);
             }
         });
 
         update_contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                imagepath = imagepath+"/"+imagename;
                 String firstname = update_firstname.getText().toString();
                 String lastname = update_lastname.getText().toString();
                 String pphone = update_pphone.getText().toString();
                 String ophone = update_ophone.getText().toString();
 
-                String name = firstname + " " + lastname;
-
-                getUpdateContactList(contactId, name, pphone);
-
-
-//                Users users = new Users(contactId,"",firstname,lastname,pphone,ophone);
-//                usersArrayList.add(users);
-                Users users = new Users(contactId,"",firstname,lastname,pphone,ophone);
-                usersArrayList.add(users);
+                getUpdateContactList(contactId, firstname,lastname, pphone,ophone,imagepath);
 
                 Toast.makeText(UpdateContactActivity.this, "Updated Contact Successfully", Toast.LENGTH_SHORT).show();
                 onBackPressed();
-//                Intent intent = new Intent(UpdateContactActivity.this, ContactsFragment.class);
-//                startActivity(intent);
             }
         });
     }
 
-//    private void getUpdateContactList(String contactId, String newName, String newPhoneNumber) {
-//        ArrayList<ContentProviderOperation> contentProviderOperations = new ArrayList<>();
-//
-//        contentProviderOperations.add(ContentProviderOperation
-//                .newUpdate(ContactsContract.Contacts.CONTENT_URI)
-//                .withSelection(ContactsContract.Data.CONTACT_ID + " = ? AND " +
-//                                ContactsContract.Data.MIMETYPE + " = ?",
-//                        new String[]{
-//                                contactId,
-//                                ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE})
-//                .withValue(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, newName)
-//                .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, newPhoneNumber)
-//                .build());
-//
-//        try {
-//            getContentResolver().applyBatch(ContactsContract.AUTHORITY, contentProviderOperations);
-//        } catch (OperationApplicationException e) {
-//            throw new RuntimeException(e);
-//        } catch (RemoteException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//    }
+    public void getUpdateContactList(String contactId, String newFirstName, String newLastName,String newPersonalPhoneNumber,String newOfficePhoneNumber,String newImage) {
 
-    public void getUpdateContactList(String contactId, String newName, String newPhoneNumber) {
+//        ContentResolver contentResolver = getContentResolver();
+//        ContentValues phoneNumberValues = new ContentValues();
+//        phoneNumberValues.put(ContactsContract.CommonDataKinds.Phone.NUMBER, newPersonalPhoneNumber);
+//
+//        String selection = ContactsContract.Data.CONTACT_ID + " = ? AND " +
+//                ContactsContract.Data.MIMETYPE + " = ?";
+//
+//        String[] selectionArgs = new String[]{contactId, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE};
+//        contentResolver.update(ContactsContract.Data.CONTENT_URI, phoneNumberValues, selection, selectionArgs);
+//
+//        ContentValues phoneValues2 = new ContentValues();
+//        phoneValues2.put(ContactsContract.CommonDataKinds.Phone.NUMBER, newOfficePhoneNumber);
+//
+//        String phoneSelection2 = ContactsContract.Data.CONTACT_ID + " = ? AND " +
+//                ContactsContract.Data.MIMETYPE + " = ? AND " +
+//                ContactsContract.CommonDataKinds.Phone.TYPE + " = ?";
+//
+//        String[] phoneSelectionArgs2 = new String[] { contactId, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
+//                String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_WORK_MOBILE) };
+//
+//        contentResolver.update(ContactsContract.Data.CONTENT_URI, phoneValues2, phoneSelection2, phoneSelectionArgs2);
+
         ContentResolver contentResolver = getContentResolver();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(ContactsContract.CommonDataKinds.Phone.NUMBER, newPhoneNumber);
-        // Define the update condition
-        String selection = ContactsContract.Data.CONTACT_ID + " = ? AND " +
-                ContactsContract.Data.MIMETYPE + " = ?";
 
-        // Define the arguments for the condition
-        String[] selectionArgs = new String[]{contactId, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE};
+        // Update the first phone number
+        ContentValues phoneValues1 = new ContentValues();
+        phoneValues1.put(ContactsContract.CommonDataKinds.Phone.NUMBER, newPersonalPhoneNumber);
 
-        // Update the contact
-        contentResolver.update(ContactsContract.Data.CONTENT_URI, contentValues, selection, selectionArgs);
+        String phoneSelection1 = ContactsContract.Data.CONTACT_ID + " = ? AND " +
+                ContactsContract.Data.MIMETYPE + " = ? AND " +
+                ContactsContract.CommonDataKinds.Phone.TYPE + " = ?";
+
+        String[] phoneSelectionArgs1 = new String[] { contactId, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
+                String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE) };
+
+        contentResolver.update(ContactsContract.Data.CONTENT_URI, phoneValues1, phoneSelection1, phoneSelectionArgs1);
+
+        // Update the second phone number
+        ContentValues phoneValues2 = new ContentValues();
+        phoneValues2.put(ContactsContract.CommonDataKinds.Phone.NUMBER, newOfficePhoneNumber);
+
+        String phoneSelection2 = ContactsContract.Data.CONTACT_ID + " = ? AND " +
+                ContactsContract.Data.MIMETYPE + " = ? AND " +
+                ContactsContract.CommonDataKinds.Phone.TYPE + " = ?";
+
+        String[] phoneSelectionArgs2 = new String[] { contactId, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
+                String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_WORK) };
+
+        contentResolver.update(ContactsContract.Data.CONTENT_URI, phoneValues2, phoneSelection2, phoneSelectionArgs2);
+
 
         ContentResolver contentResolver1 = getContentResolver();
-        ContentValues contentValues1 = new ContentValues();
-        contentValues1.put(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, newName);
+        ContentValues contactNameValues = new ContentValues();
+        contactNameValues.put(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, newFirstName);
+        contactNameValues.put(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME, newLastName);
 
-        // Define the update condition
         String selection1 = ContactsContract.Data.CONTACT_ID + " = ? AND " +
                 ContactsContract.Data.MIMETYPE + " = ?";
 
-        // Define the arguments for the condition
         String[] selectionArgs1 = new String[]{contactId, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE};
+        contentResolver1.update(ContactsContract.Data.CONTENT_URI, contactNameValues, selection1, selectionArgs1);
 
-        // Update the contact's name
-        contentResolver1.update(ContactsContract.Data.CONTENT_URI, contentValues1, selection1, selectionArgs1);
 
-        Users user = new Users(contactId,"",newName,"", newPhoneNumber,"");
+        if (newImage != null) {
+            ContentResolver contentResolver2 = getContentResolver();
+            ContentValues imageValues = new ContentValues();
+            imageValues.put(ContactsContract.CommonDataKinds.Photo.PHOTO, newImage);
+
+            String imageSelection = ContactsContract.Data.CONTACT_ID + " = ? AND " +
+                    ContactsContract.Data.MIMETYPE + " = ?";
+            String[] imageSelectionArgs = new String[] { contactId, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE };
+
+            contentResolver2.update(ContactsContract.Data.CONTENT_URI, imageValues, imageSelection, imageSelectionArgs);
+        }
+
+        Users user = new Users(contactId,"",newFirstName,newLastName, newPersonalPhoneNumber,"");
         usersArrayList.add(user);
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-            personimage.setImageBitmap(bitmap);
-            imagepath = saveToInternalStorage(bitmap);
-        }
-    }
-
-//    private void checkPermission() {
+    //    private void checkPermission() {
 //        if (ContextCompat.checkSelfPermission(UpdateContactActivity.this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
 //            ActivityCompat.requestPermissions(UpdateContactActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, 100);
 //        }
@@ -191,6 +208,19 @@ public class UpdateContactActivity extends AppCompatActivity {
 //            checkPermission();
 //        }
 //    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
+            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+            personimage.setImageBitmap(bitmap);
+            imagepath = saveToInternalStorage(bitmap);
+        }
+    }
+
+//    private void pickFrom() {
+//        CropImage.activity()
+//                .start(getContext(), this);    }
 
     private String saveToInternalStorage(Bitmap bitmapImage) {
         ContextWrapper cw = new ContextWrapper(getApplicationContext());

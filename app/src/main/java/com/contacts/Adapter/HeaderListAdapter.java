@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -52,12 +53,15 @@ public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.He
 
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
         TextView header;
+        ImageView radio,radioUnselected;
         RecyclerView Contact_recyclerView;
 
         public HeaderViewHolder(@NonNull View itemView) {
             super(itemView);
             header = itemView.findViewById(R.id.header);
             Contact_recyclerView = itemView.findViewById(R.id.contact_recyclerview);
+            radio = itemView.findViewById(R.id.radio1);
+            radioUnselected = itemView.findViewById(R.id.radioselected);
 
         }
     }

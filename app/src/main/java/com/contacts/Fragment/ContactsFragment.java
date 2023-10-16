@@ -1,6 +1,5 @@
 package com.contacts.Fragment;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -31,6 +30,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,14 +39,15 @@ import com.contacts.Activity.CreateContactActivity;
 import com.contacts.Model.Header;
 import com.contacts.Model.Users;
 import com.contacts.R;
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.DoubleBounce;
+import com.github.ybq.android.spinkit.style.ThreeBounce;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class ContactsFragment extends Fragment {
@@ -66,13 +67,15 @@ public class ContactsFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contacts, container, false);
 
         init(view);
 
         checkPermission();
+
+//        Sprite threeBounce = new ThreeBounce();
+//        progressBar.setIndeterminateDrawable(threeBounce);
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -240,7 +243,6 @@ public class ContactsFragment extends Fragment {
                             headerArrayList.get(i1).usersList.add(usersArrayList.get(i));
                             break;
                         }
-
                     }
 
                     if (!isMatch) {
