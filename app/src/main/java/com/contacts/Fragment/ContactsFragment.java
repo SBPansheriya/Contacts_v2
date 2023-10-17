@@ -1,10 +1,13 @@
 package com.contacts.Fragment;
 
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,6 +18,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -23,9 +27,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,6 +39,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.contacts.Adapter.ContactListAdapter;
 import com.contacts.Adapter.HeaderListAdapter;
 import com.contacts.Activity.CreateContactActivity;
 import com.contacts.Model.Header;
@@ -46,35 +53,36 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
 public class ContactsFragment extends Fragment {
 
     HeaderListAdapter headerListAdapter;
+    ContactListAdapter contactListAdapter;
     RecyclerView recyclerView;
     LinearLayout no_contcat_found_linear, Contact_found_linear;
     ImageView edit, cancel, share, delete;
     Button create_btn;
-    TextView selectall, totalcontact;
+    SearchView searchView;
+    TextView selectall, totalcontact, deselectall;
     FloatingActionButton floatingActionButton;
     ViewGroup viewGroup;
     Context context;
     SpinKitView spin_kit;
     RelativeLayout progressLayout;
     ArrayList<Users> usersArrayList = new ArrayList<>();
-    ArrayList<Object> items = new ArrayList<>();
     int position;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contacts, container, false);
 
         init(view);
-
+        searchView.clearFocus();
+        progressLayout.setVisibility(View.VISIBLE);
         checkPermission();
-
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,13 +122,11 @@ public class ContactsFragment extends Fragment {
             Contact_found_linear.setVisibility(View.INVISIBLE);
         }
 
-
         if (usersArrayList.isEmpty()) {
             totalcontact.setText("0 Conatcts");
         } else {
             totalcontact.setText(usersArrayList.get(position).contactId + " " + "Contacts");
         }
-
 
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,12 +151,147 @@ public class ContactsFragment extends Fragment {
                 movetobin.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-//                        usersArrayList.remove(usersArrayList.get(i).contactId);
+                        deleteSelectedItems();
+
+                        dialog.dismiss();
                     }
                 });
             }
         });
+
+        selectall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectAllItems();
+                selectall.setVisibility(View.GONE);
+                deselectall.setVisibility(View.VISIBLE);
+            }
+        });
+
+        deselectall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deselectAllItems();
+                selectall.setVisibility(View.VISIBLE);
+                deselectall.setVisibility(View.GONE);
+            }
+        });
+
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shareSelected();
+//                /*Create an ACTION_SEND Intent*/
+//                Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+//                /*This will be the actual content you wish you share.*/
+//                String shareBody = textView.getText().toString();
+//                /*The type of the content is text, obviously.*/
+//                intent.setType("text/plain");
+//                /*Applying information Subject and Body.*/
+//                intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Contacts");
+//                intent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+//                /*Fire!*/
+//                startActivity(Intent.createChooser(intent, "Share..."));
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterList(newText);
+                return true;
+            }
+        });
+
         return view;
+    }
+
+    private void filterList(String text) {
+        ArrayList<Users> filteredList = new ArrayList<>();
+        for (Users users : usersArrayList) {
+            String name = users.getFirst() + " " + users.getLast();
+            if (name.toLowerCase().contains(text.toLowerCase())) {
+                filteredList.add(users);
+            }
+        }
+        if (filteredList.isEmpty()) {
+            Toast.makeText(getContext(), "No data found", Toast.LENGTH_SHORT).show();
+        } else {
+            headerListAdapter.setFilteredList(filteredList);
+        }
+    }
+
+    private void deleteSelectedItems() {
+        List<Users> itemsToRemove = new ArrayList<>();
+        for (Users users : usersArrayList) {
+            if (users.isSelected()) {
+                itemsToRemove.add(users);
+                deleteContact(getContext(), users.contactId);
+
+            }
+        }
+        usersArrayList.removeAll(itemsToRemove);
+        headerListAdapter.notifyDataSetChanged();
+    }
+
+    private void selectAllItems() {
+        for (Users item : usersArrayList) {
+            item.setSelected(true);
+        }
+        headerListAdapter.notifyDataSetChanged();
+    }
+
+    private void shareSelected() {
+//        String contactInfo = null;
+        Uri shareUri = null;
+        for (Users users : usersArrayList) {
+            if (users.isSelected()) {
+                String lookupKey = getLookupKey(users.contactId);
+                if (TextUtils.isEmpty(lookupKey)) {
+                    Log.e(TAG, "couldn't get lookupKey");
+                    return;
+                }
+                shareUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_VCARD_URI, lookupKey);
+//                contactInfo  = "Name: " + users.getFirst() + " " + users.getLast() + "\n" +
+//                        "Phone: " + users.getPersonPhone();
+            }
+        }
+//        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+//        shareIntent.setType("text/plain");
+//        shareIntent.putExtra(Intent.EXTRA_TEXT, contactInfo);
+//        startActivity(shareIntent);
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType(ContactsContract.Contacts.CONTENT_VCARD_TYPE);
+        intent.putExtra(Intent.EXTRA_STREAM, shareUri);
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Share a contact");
+        startActivity(intent);
+    }
+
+    private String getLookupKey(String contactId) {
+        String lookupKey = null;
+        String[] projection = new String[]{ContactsContract.Contacts.LOOKUP_KEY};
+        String selection = ContactsContract.Contacts._ID + "=" + contactId;
+        Cursor c = getContext().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, projection, selection, null, null);
+        if (c != null) {
+            if (c.moveToFirst()) {
+                lookupKey = c.getString(0);
+            }
+            c.close();
+        }
+        return lookupKey;
+    }
+
+    private void deselectAllItems() {
+        for (Users item : usersArrayList) {
+            item.setSelected(false);
+        }
+        headerListAdapter.notifyDataSetChanged();
     }
 
     private void checkPermission() {
@@ -158,7 +299,21 @@ public class ContactsFragment extends Fragment {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, 100);
         } else {
             getContactList();
+            progressLayout.setVisibility(View.GONE);
         }
+    }
+
+    public static void deleteContact(Context context, String contactId) {
+        ContentResolver contentResolver = context.getContentResolver();
+        Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.parseLong(contactId));
+
+        // First, delete the contact's data entries
+        contentResolver.delete(ContactsContract.RawContacts.CONTENT_URI,
+                ContactsContract.RawContacts.CONTACT_ID + " = ?",
+                new String[]{String.valueOf(contactId)});
+
+        // Then, delete the contact itself
+        contentResolver.delete(contactUri, null, null);
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -284,56 +439,11 @@ public class ContactsFragment extends Fragment {
         return phoneNumbers;
     }
 
-//    public void getPhoneNumbersForContact(String contactName) {
-////        ContentResolver contentResolver = getContentResolver();
-//
-//        // Define the projection to retrieve phone numbers
-//        String[] projection = {
-//                ContactsContract.CommonDataKinds.Phone.NUMBER,
-//                ContactsContract.CommonDataKinds.Phone.TYPE
-//        };
-//
-//        // Define the selection criteria to find the contact by name
-//        String selection = ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME + " = ?";
-//        String[] selectionArgs = { contactName };
-//
-//        // Query the Contacts Provider to get the phone numbers
-//        Cursor cursor = contentResolver.query(
-//                ContactsContract.Data.CONTENT_URI,
-//                projection,
-//                selection,
-//                selectionArgs,
-//                null
-//        );
-//
-//        if (cursor != null) {
-//            while (cursor.moveToNext()) {
-//                @SuppressLint("Range") String phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-//                @SuppressLint("Range") int phoneType = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
-//
-//                String phoneTypeLabel = "";
-//                switch (phoneType) {
-//                    case ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE:
-//                        phoneTypeLabel = "Mobile";
-//                        break;
-//                    case ContactsContract.CommonDataKinds.Phone.TYPE_WORK:
-//                        phoneTypeLabel = "Work";
-//                        break;
-//                    // Add more cases for other phone types as needed
-//                }
-//
-//                System.out.println("Phone Type: " + phoneTypeLabel);
-//                System.out.println("Phone Number: " + phoneNumber);
-//            }
-//
-//            cursor.close();
-//        }
-//    }
-
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             getContactList();
+            progressLayout.setVisibility(View.GONE);
         } else {
             Toast.makeText(context, "Permission Denied.", Toast.LENGTH_SHORT).show();
             checkPermission();
@@ -348,6 +458,7 @@ public class ContactsFragment extends Fragment {
         share = view.findViewById(R.id.share);
         delete = view.findViewById(R.id.trash);
         selectall = view.findViewById(R.id.selectall);
+        deselectall = view.findViewById(R.id.deselectall);
         create_btn = view.findViewById(R.id.create_contact);
         viewGroup = view.findViewById(android.R.id.content);
         no_contcat_found_linear = view.findViewById(R.id.no_contcat_found_linear);
@@ -355,5 +466,6 @@ public class ContactsFragment extends Fragment {
         totalcontact = view.findViewById(R.id.totalcontact);
         progressLayout = view.findViewById(R.id.progressLayout);
         spin_kit = view.findViewById(R.id.spin_kit);
+        searchView = view.findViewById(R.id.search_contact);
     }
 }

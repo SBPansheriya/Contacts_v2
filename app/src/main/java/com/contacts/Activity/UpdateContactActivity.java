@@ -2,6 +2,9 @@ package com.contacts.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.content.ContentResolver;
@@ -15,11 +18,14 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.contacts.Fragment.ContactsFragment;
 import com.contacts.Model.Users;
 import com.contacts.R;
 import com.squareup.picasso.Picasso;
@@ -46,7 +52,8 @@ public class UpdateContactActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_contact);
-
+        Window window = UpdateContactActivity.this.getWindow();
+        window.setStatusBarColor(ContextCompat.getColor(UpdateContactActivity.this, R.color.white));
         init();
 
         String contactId = getIntent().getStringExtra("contactId1");
@@ -98,7 +105,17 @@ public class UpdateContactActivity extends AppCompatActivity {
                 getUpdateContactList(contactId, firstname,lastname, pphone,ophone,newUri);
 
                 Toast.makeText(UpdateContactActivity.this, "Updated Contact Successfully", Toast.LENGTH_SHORT).show();
-                onBackPressed();
+
+                ContactsFragment fragment = new ContactsFragment();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                // Replace the content of the activity with the fragment
+                fragmentTransaction.replace(R.id.framelayout, fragment); // R.id.fragment_container should be the ID of the layout container where the fragment will be displayed
+                fragmentTransaction.addToBackStack(null); // Optional: Add transaction to back stack
+
+                // Commit the transaction
+                fragmentTransaction.commit();
             }
         });
     }

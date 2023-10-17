@@ -1,16 +1,22 @@
 package com.contacts.Activity;
 
+import static android.content.Context.ACTIVITY_SERVICE;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.contacts.R;
 import com.squareup.picasso.Picasso;
@@ -26,6 +32,8 @@ public class ContactDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_detail);
+        Window window = ContactDetailActivity.this.getWindow();
+        window.setStatusBarColor(ContextCompat.getColor(ContactDetailActivity.this, R.color.white));
 
         init();
 
@@ -90,17 +98,14 @@ public class ContactDetailActivity extends AppCompatActivity {
         whatsapp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PackageManager packageManager = ContactDetailActivity.this.getPackageManager();
-                Intent i = new Intent(Intent.ACTION_VIEW);
-
+                String contact = pphone; // use country code with your phone number
+                String url = "https://api.whatsapp.com/send?phone=" + contact;
                 try {
-                    String url = "https://api.whatsapp.com/send?phone=" + pphone;
-                    i.setPackage("com.whatsapp");
+                    Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(Uri.parse(url));
-                    if (i.resolveActivity(packageManager) != null) {
-                        ContactDetailActivity.this.startActivity(i);
-                    }
-                } catch (Exception e) {
+                    startActivity(i);
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(ContactDetailActivity.this, "Whatsapp app not installed in your phone", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }

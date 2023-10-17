@@ -2,11 +2,14 @@ package com.contacts.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.Window;
 
 import com.contacts.Fragment.ContactsFragment;
 import com.contacts.Fragment.FavoritesFragment;
@@ -30,7 +33,8 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
+        Window window = HomeActivity.this.getWindow();
+        window.setStatusBarColor(ContextCompat.getColor(HomeActivity.this, R.color.white));
         init();
         bottomNavigationView.setSelectedItemId(R.id.fav);
         bottomNavigationView.setOnItemSelectedListener(this);

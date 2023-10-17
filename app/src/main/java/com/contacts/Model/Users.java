@@ -11,6 +11,8 @@ public class Users {
     public String last;
     public String personPhone;
     public String officePhone;
+    private boolean isSelected;
+
 
     public Users(String contactId, String image, String first, String last, String personPhone, String officePhone) {
         this.contactId = contactId;
@@ -19,6 +21,8 @@ public class Users {
         this.last = last;
         this.personPhone = personPhone;
         this.officePhone = officePhone;
+        isSelected = false;
+
     }
 
     public String getImage() {
@@ -67,5 +71,13 @@ public class Users {
 
     public void setContactId(String contactId) {
         this.contactId = contactId;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 }

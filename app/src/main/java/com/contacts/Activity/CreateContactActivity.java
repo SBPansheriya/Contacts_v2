@@ -1,7 +1,8 @@
 package com.contacts.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.ContentResolver;
@@ -11,48 +12,43 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.contacts.ContactsManager;
 import com.contacts.Fragment.ContactsFragment;
 import com.contacts.Model.Users;
 import com.contacts.R;
-import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class CreateContactActivity extends AppCompatActivity {
 
     TextView save;
-    EditText firstname,lastname,pphone,ophone;
-    ImageView addPersonImage,cancel;
-    ContactsManager contactsManager;
+    EditText firstname, lastname, pphone, ophone;
+    ImageView addPersonImage, cancel;
     List<Users> usersList;
-    String imagename,imagepath;
+    String imagename;
+    String imagepath;
     private static final int CAMERA_REQUEST = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_contact);
-
+        Window window = CreateContactActivity.this.getWindow();
+        window.setStatusBarColor(ContextCompat.getColor(CreateContactActivity.this, R.color.white));
         init();
 
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -65,11 +61,17 @@ public class CreateContactActivity extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (firstname.getText().toString().isEmpty() && pphone.getText().toString().isEmpty()){
+                if (firstname.getText().toString().isEmpty() && pphone.getText().toString().isEmpty()) {
                     Toast.makeText(CreateContactActivity.this, "Please Fill Data", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     createContact();
+                    ContactsFragment fragment = new ContactsFragment();
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    // Replace the content of the activity with the fragment
+                    fragmentTransaction.replace(R.id.framelayout, fragment);
+                    // Commit the transaction
+                    fragmentTransaction.commit();
                     Toast.makeText(CreateContactActivity.this, "Saved Data To SharedPreferences", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -84,8 +86,8 @@ public class CreateContactActivity extends AppCompatActivity {
         });
     }
 
-    public void createContact(){
-        imagepath = imagepath+"/"+imagename;
+    public void createContact() {
+        imagepath = imagepath + "/" + imagename;
         String first = firstname.getText().toString();
         String last = lastname.getText().toString();
         String personPhone = pphone.getText().toString();
@@ -129,23 +131,30 @@ public class CreateContactActivity extends AppCompatActivity {
         values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, imagepath);
         contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
 
-    }
+//        if (imagepath != null) {
+//            ContentValues photoValues = new ContentValues();
+//            photoValues.put(ContactsContract.RawContacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE);
+//            photoValues.put(ContactsContract.CommonDataKinds.Photo.PHOTO, bitmapToByteArray(imagepath));
+//            photoValues.put(ContactsContract.RawContacts.Data.RAW_CONTACT_ID, rawContactId);
+//            contentResolver.insert(ContactsContract.Data.CONTENT_URI, photoValues);
+//        }
 
+    }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
+        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
             addPersonImage.setImageBitmap(bitmap);
-            imagepath=saveToInternalStorage(bitmap);
+            imagepath = saveToInternalStorage(bitmap);
         }
     }
 
-    private String saveToInternalStorage(Bitmap bitmapImage){
+    private String saveToInternalStorage(Bitmap bitmapImage) {
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        imagename = "img"+new Random().nextInt(100000)+".png";
-        File mypath=new File(directory,imagename);
+        imagename = "img" + new Random().nextInt(100000) + ".png";
+        File mypath = new File(directory, imagename);
 
         FileOutputStream fos = null;
         try {
@@ -163,41 +172,7 @@ public class CreateContactActivity extends AppCompatActivity {
         return directory.getAbsolutePath();
     }
 
-    private byte[] getImageBytes(Uri imageUri) {
-        try {
-            InputStream is = getContentResolver().openInputStream(imageUri);
-            if (is != null) {
-                Bitmap bitmap = BitmapFactory.decodeStream(is);
-                is.close();
-//                return getBytesFromBitmap(bitmap);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-//    private byte[] getBytesFromBitmap(Bitmap bitmap) {
-//        if (bitmap == null) {
-//            return null;
-//        }
-//        int size = bitmap.getWidth() * bitmap.getHeight() * 4; // Assuming ARGB_8888 format
-//        android.support.v4.util.Pools.SynchronizedPool pool = new android.support.v4.util.Pools.SynchronizedPool(size);
-//        byte[] result = new byte[size];
-//        Bitmap.CompressFormat format = Bitmap.CompressFormat.PNG;
-//        int quality = 100;
-//        try {
-//            if (!bitmap.compress(format, quality, pool.acquire(), result)) {
-//                throw new RuntimeException("Failed to compress bitmap.");
-//            }
-//        } finally {
-//            pool.release(result);
-//        }
-//        return result;
-//    }
-
-
-    private void init(){
+    private void init() {
         cancel = findViewById(R.id.cancel);
         addPersonImage = findViewById(R.id.addPersonImage);
         firstname = findViewById(R.id.firstname);

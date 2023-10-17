@@ -50,8 +50,8 @@
             android:layout_below="@+id/title">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:src="@drawable/person_icon"/>
 
             <TextView
@@ -60,7 +60,7 @@
                 android:layout_marginStart="5dp"
                 android:fontFamily="@font/sf_pro_text_regular"
                 android:textColor="@color/darkgray"
-                android:text="@string/phone"/>
+                android:text="Phone"/>
 
             <ImageView
                 android:layout_width="wrap_content"

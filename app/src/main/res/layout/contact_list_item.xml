@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -19,24 +20,34 @@
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/person_placeholder"
+                android:visibility="gone" />
+
+            <CheckBox
+                android:id="@+id/checkBox1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/SpinKitView.Circle"
+                android:clickable="true"
+                app:buttonTint="@color/blue"
+                android:button="@drawable/custom_checkbox"
                 android:visibility="visible" />
 
-            <ImageView
-                android:id="@+id/radio1"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:visibility="gone"
-                android:src="@drawable/cricle_avtar" />
+<!--            <ImageView-->
+<!--                android:id="@+id/radio1"-->
+<!--                android:layout_width="20dp"-->
+<!--                android:layout_height="20dp"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_margin="5dp"-->
+<!--                android:visibility="gone"-->
+<!--                android:src="@drawable/cricle_avtar" />-->
 
-            <ImageView
-                android:id="@+id/radioselected"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center"
-                android:src="@drawable/seceled_item"
-                android:visibility="gone" />
+<!--            <ImageView-->
+<!--                android:id="@+id/radioselected"-->
+<!--                android:layout_width="20dp"-->
+<!--                android:layout_height="20dp"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:src="@drawable/seceled_item"-->
+<!--                android:visibility="gone" />-->
 
         </LinearLayout>
 

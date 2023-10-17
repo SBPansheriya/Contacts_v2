@@ -14,8 +14,11 @@
         <LinearLayout
             android:id="@+id/title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
             android:orientation="horizontal">
 
             <ImageView
@@ -28,18 +31,16 @@
                 android:src="@drawable/crooss"
                 android:visibility="gone" />
 
-            <EditText
+            <androidx.appcompat.widget.SearchView
                 android:id="@+id/search_contact"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="36dp"
-                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/border"
                 android:backgroundTint="@color/lightgray"
-                android:drawableStart="@drawable/search"
-                android:drawablePadding="10dp"
-                android:hint="Search Contacts"
-                android:paddingStart="10dp" />
+                app:queryHint="Search Contacts"
+                app:queryBackground="@android:color/transparent"
+                app:iconifiedByDefault="false"/>
 
             <ImageView
                 android:id="@+id/edit"
@@ -129,7 +130,7 @@
                     android:layout_marginStart="5dp"
                     android:layout_toRightOf="@+id/image"
                     android:fontFamily="@font/sf_pro_text_regular"
-                    android:text="@string/phone"
+                    android:text="Phone"
                     android:textColor="@color/darkgray" />
 
                 <ImageView
@@ -152,16 +153,31 @@
 
                 <TextView
                     android:id="@+id/selectall"
-                    android:layout_width="71dp"
-                    android:layout_height="22dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
                     android:layout_alignParentEnd="true"
                     android:layout_gravity="end"
-                    android:background="@drawable/border3"
+                    android:paddingHorizontal="10dp"
+                    android:background="@drawable/no_color_border_1"
                     android:backgroundTint="@color/mediumblue"
                     android:gravity="center"
                     android:text="Select All"
                     android:textColor="@color/blue1"
-                    android:visibility="invisible" />
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/deselectall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_gravity="end"
+                    android:paddingHorizontal="10dp"
+                    android:background="@drawable/no_color_border_1"
+                    android:backgroundTint="@color/mediumblue"
+                    android:gravity="center"
+                    android:text="Deselect all"
+                    android:textColor="@color/blue1"
+                    android:visibility="gone" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -193,12 +209,13 @@
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/add_contact"
-                    android:layout_width="54dp"
-                    android:layout_height="54dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentBottom="true"
                     android:layout_marginEnd="20dp"
                     app:elevation="0dp"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
                     android:backgroundTint="@color/blue"
                     android:src="@drawable/baseline_add_24" />
             </RelativeLayout>
@@ -207,10 +224,10 @@
 
     <RelativeLayout
         android:id="@+id/progressLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="#3B000000"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <com.github.ybq.android.spinkit.SpinKitView
             android:id="@+id/spin_kit"
