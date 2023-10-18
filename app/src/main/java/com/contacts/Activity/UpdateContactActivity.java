@@ -12,6 +12,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -47,6 +48,7 @@ public class UpdateContactActivity extends AppCompatActivity {
     Button update_contact;
     ArrayList<Users> usersArrayList = new ArrayList<>();
     private static final int CAMERA_REQUEST = 100;
+    Users user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,27 +58,28 @@ public class UpdateContactActivity extends AppCompatActivity {
         window.setStatusBarColor(ContextCompat.getColor(UpdateContactActivity.this, R.color.white));
         init();
 
-        String contactId = getIntent().getStringExtra("contactId1");
-        String image = getIntent().getStringExtra("image1");
-        String firstname = getIntent().getStringExtra("first1");
-        String lastname = getIntent().getStringExtra("last1");
-        String pphone = getIntent().getStringExtra("pphone1");
-        String ophone = getIntent().getStringExtra("ophone1");
+        user = (Users) getIntent().getSerializableExtra("user");
 
-        if (image == null){
+//        String contactId = getIntent().getStringExtra("contactId1");
+//        String image = getIntent().getStringExtra("image1");
+//        String firstname = getIntent().getStringExtra("first1");
+//        String lastname = getIntent().getStringExtra("last1");
+//        String pphone = getIntent().getStringExtra("pphone1");
+//        String ophone = getIntent().getStringExtra("ophone1");
+
+        if (user.image == null) {
             personimage.setImageResource(R.drawable.person_placeholder);
-        }
-        else {
-            Picasso.get().load(image).into(personimage);
+        } else {
+            Picasso.get().load(user.image).into(personimage);
         }
 
         ActivityCompat.requestPermissions(UpdateContactActivity.this, new String[]{Manifest.permission.WRITE_CONTACTS}, 100);
 
-        update_firstname.setText(firstname);
-        update_lastname.setText(lastname);
-        update_pphone.setText(pphone);
-        update_ophone.setText(ophone);
-        show_person_name.setText(firstname + " " + lastname);
+        update_firstname.setText(user.first);
+        update_lastname.setText(user.last);
+        update_pphone.setText(user.personPhone);
+        update_ophone.setText(user.officePhone);
+        show_person_name.setText(user.first + " " + user.last);
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,25 +99,21 @@ public class UpdateContactActivity extends AppCompatActivity {
         update_contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                imagepath = imagepath+"/"+imagename;
+                imagepath = imagepath + "/" + imagename;
                 String firstname = update_firstname.getText().toString();
                 String lastname = update_lastname.getText().toString();
                 String pphone = update_pphone.getText().toString();
                 String ophone = update_ophone.getText().toString();
 
-                getUpdateContactList(contactId, firstname,lastname, pphone,ophone,newUri);
+                getUpdateContactList(user.contactId, firstname, lastname, pphone, ophone, newUri);
 
                 Toast.makeText(UpdateContactActivity.this, "Updated Contact Successfully", Toast.LENGTH_SHORT).show();
 
                 ContactsFragment fragment = new ContactsFragment();
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-                // Replace the content of the activity with the fragment
-                fragmentTransaction.replace(R.id.framelayout, fragment); // R.id.fragment_container should be the ID of the layout container where the fragment will be displayed
-                fragmentTransaction.addToBackStack(null); // Optional: Add transaction to back stack
-
-                // Commit the transaction
+                fragmentTransaction.replace(R.id.framelayout, fragment);
+                fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }
         });
@@ -132,8 +131,8 @@ public class UpdateContactActivity extends AppCompatActivity {
                 ContactsContract.Data.MIMETYPE + " = ? AND " +
                 ContactsContract.CommonDataKinds.Phone.TYPE + " = ?";
 
-        String[] phoneSelectionArgs1 = new String[] { contactId, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
-                String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE) };
+        String[] phoneSelectionArgs1 = new String[]{contactId, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
+                String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)};
 
         contentResolver.update(ContactsContract.Data.CONTENT_URI, phoneValues1, phoneSelection1, phoneSelectionArgs1);
 
@@ -145,8 +144,8 @@ public class UpdateContactActivity extends AppCompatActivity {
                 ContactsContract.Data.MIMETYPE + " = ? AND " +
                 ContactsContract.CommonDataKinds.Phone.TYPE + " = ?";
 
-        String[] phoneSelectionArgs2 = new String[] { contactId, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
-                String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_WORK) };
+        String[] phoneSelectionArgs2 = new String[]{contactId, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
+                String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_WORK)};
 
         contentResolver.update(ContactsContract.Data.CONTENT_URI, phoneValues2, phoneSelection2, phoneSelectionArgs2);
 
@@ -165,16 +164,16 @@ public class UpdateContactActivity extends AppCompatActivity {
 
         ContentResolver contentResolver2 = getContentResolver();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ContactsContract.CommonDataKinds.Photo.PHOTO,newImage.toString());
+        contentValues.put(ContactsContract.CommonDataKinds.Photo.PHOTO, newImage.toString());
 
         String selection = ContactsContract.Data.CONTACT_ID + " = ? AND " +
                 ContactsContract.Data.MIMETYPE + " = ?";
 
-        String[] selectionArgs = new String[] { contactId, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE };
+        String[] selectionArgs = new String[]{contactId, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE};
         int updatedRows = contentResolver2.update(ContactsContract.Data.CONTENT_URI, contentValues, selection, selectionArgs);
 
         if (updatedRows > 0) {
-            Users user = new Users(contactId,newImage.toString(),newFirstName,newLastName, newPersonalPhoneNumber,"");
+            Users user = new Users(contactId, newImage.toString(), newFirstName, newLastName, newPersonalPhoneNumber, "");
             usersArrayList.add(user);
         } else {
             System.out.println(updatedRows);
@@ -196,8 +195,8 @@ public class UpdateContactActivity extends AppCompatActivity {
     }
 
 //    private void checkPermission() {
-//        if (ContextCompat.checkSelfPermission(UpdateContactActivity.this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(UpdateContactActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, 100);
+//        if (ContextCompat.checkSelfPermission(UpdateContactActivity.this, Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(UpdateContactActivity.this, new String[]{Manifest.permission.WRITE_CONTACTS}, 100);
 //        }
 //    }
 
@@ -244,25 +243,6 @@ public class UpdateContactActivity extends AppCompatActivity {
         }
         return Uri.fromFile(mypath);
     }
-
-//    private void pickFromGallery() {
-//        CropImage.activity()
-//                .setGuidelines(CropImageView.Guidelines.ON)
-//                .start(this);
-//    }
-//
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-//            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-//            if (resultCode == RESULT_OK) {
-//                Uri resultUri = result.getUri();
-//            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-//                Exception error = result.getError();
-//            }
-//        }
-//    }
 
     private void init() {
         cancel = findViewById(R.id.update_cancel);

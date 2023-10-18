@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import java.io.Serializable;
 
-public class Users {
+public class Users implements Serializable {
     public String contactId;
     public String image;
     public String first;

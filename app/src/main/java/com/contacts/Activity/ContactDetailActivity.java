@@ -3,14 +3,20 @@ package com.contacts.Activity;
 import static android.content.Context.ACTIVITY_SERVICE;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -18,14 +24,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.contacts.Adapter.FavListAdapter;
+import com.contacts.Class.Constant;
+import com.contacts.Model.Users;
 import com.contacts.R;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 public class ContactDetailActivity extends AppCompatActivity {
 
-    ImageView edit, call, messenger, favourites, selected_person_image, back;
-    LinearLayout whatsapp,office_contact_details_linear;
+    ImageView edit, call, messenger, favourites, unfavourites, selected_person_image, back;
+    LinearLayout whatsapp, office_contact_details_linear;
     TextView selected_person_name, selected_person_pnum, selected_person_onum, message_whatsapp;
+    int favorite;
+    Users user;
+    ArrayList<Users> usersArrayList = new ArrayList<>();
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -37,68 +52,53 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         init();
 
-        String contactId = getIntent().getStringExtra("contactId");
-        String image = getIntent().getStringExtra("image");
-        String firstname = getIntent().getStringExtra("first");
-        String lastname = getIntent().getStringExtra("last");
-        String pphone = getIntent().getStringExtra("pphone");
-        String ophone = getIntent().getStringExtra("ophone");
+        user = (Users) getIntent().getSerializableExtra("user");
 
-        if (image == null){
+        selected_person_name.setText("" + user.first + " " + "" + user.last);
+        selected_person_pnum.setText(user.personPhone);
+        if (user.image == null) {
             selected_person_image.setImageResource(R.drawable.person_placeholder);
+        } else {
+            Picasso.get().load(user.image).into(selected_person_image);
         }
-        else {
-            Picasso.get().load(image).into(selected_person_image);
-        }
+        message_whatsapp.setText(user.personPhone);
 
-        selected_person_name.setText("" + firstname + " " + "" + lastname);
-        selected_person_pnum.setText(pphone);
-        if(ophone.isEmpty()){
-            office_contact_details_linear.setVisibility(View.GONE);
-        }
-        else {
-            selected_person_onum.setText(ophone);
-        }
-        message_whatsapp.setText(pphone);
+        call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + user.personPhone));
+                if (ActivityCompat.checkSelfPermission(ContactDetailActivity.this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                    startActivity(intent);
+                    Toast.makeText(ContactDetailActivity.this, "Calling " + user.first + " " + user.last, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ContactDetailActivity.this, UpdateContactActivity.class);
-                intent.putExtra("contactId1", contactId);
-                intent.putExtra("image1", image);
-                intent.putExtra("first1", firstname);
-                intent.putExtra("last1", lastname);
-                intent.putExtra("pphone1", pphone);
-                intent.putExtra("ophone1", ophone);
+                intent.putExtra("user", user);
                 startActivity(intent);
             }
         });
-
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
-
 
         messenger.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("IntentReset")
             @Override
             public void onClick(View view) {
-                String textnum = "12345";
                 Intent smsIntent = new Intent(Intent.ACTION_SENDTO);
+                smsIntent.addCategory(Intent.CATEGORY_DEFAULT);
                 smsIntent.setType("vnd.android-dir/mms-sms");
-                smsIntent.setData(Uri.parse("sms:" + textnum));
+                smsIntent.setData(Uri.parse("sms:" + user.personPhone));
+                startActivity(smsIntent);
             }
         });
-
 
         whatsapp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String contact = pphone; // use country code with your phone number
+                String contact = user.personPhone; // use country code with your phone number
                 String url = "https://api.whatsapp.com/send?phone=" + contact;
                 try {
                     Intent i = new Intent(Intent.ACTION_VIEW);
@@ -110,6 +110,63 @@ public class ContactDetailActivity extends AppCompatActivity {
                 }
             }
         });
+
+        if (Constant.favoriteList.size() > 0) {
+            boolean isMatch = false;
+            for (int i = 0; i < Constant.favoriteList.size(); i++) {
+                if (user.contactId.equals(Constant.favoriteList.get(i).contactId)) {
+                    isMatch = true;
+                    break;
+                }
+            }
+            if (isMatch) {
+                favourites.setVisibility(View.VISIBLE);
+                unfavourites.setVisibility(View.GONE);
+            } else {
+                unfavourites.setVisibility(View.VISIBLE);
+                favourites.setVisibility(View.GONE);
+            }
+        } else {
+            unfavourites.setVisibility(View.VISIBLE);
+            favourites.setVisibility(View.GONE);
+        }
+
+        unfavourites.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                favourites.setVisibility(View.VISIBLE);
+                unfavourites.setVisibility(View.GONE);
+                favorite = 1;
+                addToFavorites(ContactDetailActivity.this, user.contactId,favorite);
+                Toast.makeText(ContactDetailActivity.this, "Add into favourites", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        favourites.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                favourites.setVisibility(View.GONE);
+                unfavourites.setVisibility(View.VISIBLE);
+                favorite = 0;
+                addToFavorites(ContactDetailActivity.this, user.contactId,favorite);
+                Toast.makeText(ContactDetailActivity.this, "Remove from favourites", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+    }
+
+    public static void addToFavorites(Context context, String contactId,int favorite) {
+        ContentResolver contentResolver = context.getContentResolver();
+        ContentValues values = new ContentValues();
+        Uri rawContactUri = Uri.withAppendedPath(ContactsContract.RawContacts.CONTENT_URI, contactId);
+        values.put(ContactsContract.CommonDataKinds.Phone.STARRED, favorite); // 1 for favorite, 0 for not favorite
+        contentResolver.update(rawContactUri, values, null, null);
     }
 
     private void init() {
@@ -117,6 +174,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         call = findViewById(R.id.call);
         messenger = findViewById(R.id.messenger);
         favourites = findViewById(R.id.favourites);
+        unfavourites = findViewById(R.id.unfavourites);
         back = findViewById(R.id.back);
         whatsapp = findViewById(R.id.whatsapp);
         selected_person_image = findViewById(R.id.selected_person_image);

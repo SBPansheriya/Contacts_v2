@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.contacts.Fragment.ContactsFragment;
+import com.contacts.Fragment.FavoritesFragment;
 import com.contacts.Model.Header;
 import com.contacts.Model.Users;
 import com.contacts.R;
@@ -33,6 +34,7 @@ public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.He
         this.contactsFragment = contactsFragment;
         this.headerArrayList = headerArrayList;
     }
+
 
     public void setFilteredList(ArrayList<Users> filteredList){
         this.usersList = filteredList;

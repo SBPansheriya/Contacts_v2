@@ -47,7 +47,7 @@
             android:backgroundTint="@color/lightgray"
             android:src="@drawable/edit_pencil"
             android:padding="5dp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/fav_done"
@@ -64,6 +64,7 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/no_fav_found_linear"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -99,7 +100,7 @@
         tools:listitem="@layout/fav_item_list"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_contact"
+            android:id="@+id/add_fav_contact"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_alignParentEnd="true"

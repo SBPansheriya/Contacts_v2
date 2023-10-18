@@ -3,6 +3,8 @@ package com.contacts.Fragment;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
+import static com.contacts.Class.Constant.usersArrayList;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -60,7 +62,6 @@ import java.util.Objects;
 public class ContactsFragment extends Fragment {
 
     HeaderListAdapter headerListAdapter;
-    ContactListAdapter contactListAdapter;
     RecyclerView recyclerView;
     LinearLayout no_contcat_found_linear, Contact_found_linear;
     ImageView edit, cancel, share, delete;
@@ -72,7 +73,7 @@ public class ContactsFragment extends Fragment {
     Context context;
     SpinKitView spin_kit;
     RelativeLayout progressLayout;
-    ArrayList<Users> usersArrayList = new ArrayList<>();
+
     int position;
 
     @Override
@@ -125,7 +126,7 @@ public class ContactsFragment extends Fragment {
         if (usersArrayList.isEmpty()) {
             totalcontact.setText("0 Conatcts");
         } else {
-            totalcontact.setText(usersArrayList.get(position).contactId + " " + "Contacts");
+            totalcontact.setText(usersArrayList.size() + " " + "Contacts");
         }
 
         delete.setOnClickListener(new View.OnClickListener() {
@@ -181,17 +182,6 @@ public class ContactsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 shareSelected();
-//                /*Create an ACTION_SEND Intent*/
-//                Intent intent = new Intent(android.content.Intent.ACTION_SEND);
-//                /*This will be the actual content you wish you share.*/
-//                String shareBody = textView.getText().toString();
-//                /*The type of the content is text, obviously.*/
-//                intent.setType("text/plain");
-//                /*Applying information Subject and Body.*/
-//                intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Contacts");
-//                intent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-//                /*Fire!*/
-//                startActivity(Intent.createChooser(intent, "Share..."));
             }
         });
 
@@ -292,15 +282,6 @@ public class ContactsFragment extends Fragment {
             item.setSelected(false);
         }
         headerListAdapter.notifyDataSetChanged();
-    }
-
-    private void checkPermission() {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, 100);
-        } else {
-            getContactList();
-            progressLayout.setVisibility(View.GONE);
-        }
     }
 
     public static void deleteContact(Context context, String contactId) {
@@ -415,6 +396,7 @@ public class ContactsFragment extends Fragment {
             recyclerView.setLayoutManager(manager);
             recyclerView.setAdapter(headerListAdapter);
         }
+
         headerListAdapter.notifyDataSetChanged();
         progressLayout.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
@@ -437,6 +419,15 @@ public class ContactsFragment extends Fragment {
         }
 
         return phoneNumbers;
+    }
+
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, 100);
+        } else {
+            getContactList();
+            progressLayout.setVisibility(View.GONE);
+        }
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

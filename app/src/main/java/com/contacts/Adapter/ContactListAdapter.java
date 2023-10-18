@@ -31,8 +31,6 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     ContactsFragment contactsFragment;
     ArrayList<Users> usersList;
 
-    public ImageView personImage;
-
     public ContactListAdapter(ContactsFragment contactsFragment, ArrayList<Users> usersList) {
         this.contactsFragment = contactsFragment;
         this.usersList = usersList;
@@ -65,12 +63,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(contactsFragment.getActivity(), ContactDetailActivity.class);
-                intent.putExtra("contactId", usersList.get(position).contactId);
-                intent.putExtra("image", usersList.get(position).image);
-                intent.putExtra("first", usersList.get(position).first);
-                intent.putExtra("last", usersList.get(position).last);
-                intent.putExtra("pphone", usersList.get(position).personPhone);
-                intent.putExtra("ophone", usersList.get(position).officePhone);
+                intent.putExtra("user", usersList.get(position));
                 contactsFragment.startActivity(intent);
             }
         });
@@ -79,17 +72,6 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             usersList.get(position).setSelected(isChecked);
         });
-
-//        if (usersList != null && usersList.size() > 0) {
-//            holder.checkBox1.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    if (holder.checkBox1.isChecked()) {
-//                        usersArrayList.add(usersList.get(position));
-//                    }
-//                }
-//            });
-//        }
     }
 
     @Override
@@ -99,8 +81,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     public class ContactViewHolder extends RecyclerView.ViewHolder {
         TextView personName;
-        public ImageView personImage;
-        public CheckBox checkBox;
+        ImageView personImage;
+        CheckBox checkBox;
 
         public ContactViewHolder(@NonNull View itemView) {
             super(itemView);

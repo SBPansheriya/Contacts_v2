@@ -19,5 +19,6 @@
     <color name="lightblackbottom">#801F1F1F</color>  // com
     <color name="mediumblack">#12FFFFFF</color>  // com
     <color name="nickel">#80FFFFFF</color> // com
+    <color name="gray90">#80FFFFFF</color> // com
 
 </resources>
