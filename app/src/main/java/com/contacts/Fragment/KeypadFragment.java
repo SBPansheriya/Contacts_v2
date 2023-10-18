@@ -13,7 +13,7 @@ import com.contacts.R;
 
 public class KeypadFragment extends Fragment {
 
-    KeypadListAdapter keypadListAdapter;
+//    KeypadListAdapter keypadListAdapter;
     RecyclerView recyclerView;
 
     @Override
@@ -36,6 +36,6 @@ public class KeypadFragment extends Fragment {
     }
 
     private void init(View view) {
-        recyclerView = view.findViewById(R.id.keypadrecyclerview);
+//        recyclerView = view.findViewById(R.id.keypadrecyclerview);
     }
 }
