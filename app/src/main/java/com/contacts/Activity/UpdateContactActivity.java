@@ -195,12 +195,12 @@ public class UpdateContactActivity extends AppCompatActivity {
     }
 
 //    private void checkPermission() {
-//        if (ContextCompat.checkSelfPermission(UpdateContactActivity.this, Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(UpdateContactActivity.this, new String[]{Manifest.permission.WRITE_CONTACTS}, 100);
+//        if (ContextCompat.checkSelfPermission(UpdateContactActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(UpdateContactActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 100);
 //        }
 //    }
-
-
+//
+//
 //    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 //        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 //        if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

@@ -1,19 +1,27 @@
 package com.contacts.Fragment;
 
+import android.annotation.SuppressLint;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.contacts.Adapter.HeaderListAdapter;
+import com.contacts.Adapter.KeypadListAdapter;
 import com.contacts.R;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 public class KeypadFragment extends Fragment {
 
-//    KeypadListAdapter keypadListAdapter;
+    KeypadListAdapter keypadListAdapter;
     RecyclerView recyclerView;
 
     @Override
@@ -23,19 +31,19 @@ public class KeypadFragment extends Fragment {
 
         init(view);
 
-//        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
-//        bottomSheetDialog.setContentView(R.layout.fragment_keypad);
-//        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-//        keypadListAdapter  = new KeypadListAdapter(getContext());
-//        recyclerView = bottomSheetDialog.findViewById(R.id.framelayout);
-//        recyclerView.setLayoutManager(manager);
-//        recyclerView.setAdapter(keypadListAdapter);
-//        bottomSheetDialog.show();
+        @SuppressLint("ResourceType") BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(),R.color.blackforsheet);
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout);
+        bottomSheetDialog.show();
+
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        keypadListAdapter = new KeypadListAdapter(KeypadFragment.this);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(keypadListAdapter);
 
         return view;
     }
 
     private void init(View view) {
-//        recyclerView = view.findViewById(R.id.keypadrecyclerview);
+        recyclerView = view.findViewById(R.id.keypadrecyclerview);
     }
 }

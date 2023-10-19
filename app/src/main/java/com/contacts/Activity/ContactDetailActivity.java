@@ -1,7 +1,7 @@
 package com.contacts.Activity;
 
 import static android.content.Context.ACTIVITY_SERVICE;
-
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -52,6 +52,8 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         init();
 
+        checkPermission();
+
         user = (Users) getIntent().getSerializableExtra("user");
 
         selected_person_name.setText("" + user.first + " " + "" + user.last);
@@ -67,10 +69,10 @@ public class ContactDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + user.personPhone));
-                if (ActivityCompat.checkSelfPermission(ContactDetailActivity.this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+//                if (ActivityCompat.checkSelfPermission(ContactDetailActivity.this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
                     startActivity(intent);
                     Toast.makeText(ContactDetailActivity.this, "Calling " + user.first + " " + user.last, Toast.LENGTH_SHORT).show();
-                }
+//                }
             }
         });
 
@@ -159,6 +161,23 @@ public class ContactDetailActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+    }
+
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(ContactDetailActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(ContactDetailActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 100);
+        }
+    }
+
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+        } else {
+            Toast.makeText(ContactDetailActivity.this, "Permission Denied.", Toast.LENGTH_SHORT).show();
+            checkPermission();
+        }
     }
 
     public static void addToFavorites(Context context, String contactId,int favorite) {

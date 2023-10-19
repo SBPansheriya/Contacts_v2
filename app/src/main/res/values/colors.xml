@@ -20,5 +20,6 @@
     <color name="mediumblack">#12000000</color>  // com
     <color name="nickel">#6C7072</color>  // com
     <color name="gray90">#6C7072</color>  // com
+    <color name="blackforsheet">#FFFFFF</color> // com
 
 </resources>

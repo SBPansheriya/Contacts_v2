@@ -55,7 +55,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -73,8 +72,6 @@ public class ContactsFragment extends Fragment {
     Context context;
     SpinKitView spin_kit;
     RelativeLayout progressLayout;
-
-    int position;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -205,7 +202,7 @@ public class ContactsFragment extends Fragment {
         ArrayList<Users> filteredList = new ArrayList<>();
         for (Users users : usersArrayList) {
             String name = users.getFirst() + " " + users.getLast();
-            if (name.toLowerCase().contains(text.toLowerCase())) {
+            if (users.getFirst().toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(users);
             }
         }
@@ -237,7 +234,6 @@ public class ContactsFragment extends Fragment {
     }
 
     private void shareSelected() {
-//        String contactInfo = null;
         Uri shareUri = null;
         for (Users users : usersArrayList) {
             if (users.isSelected()) {
