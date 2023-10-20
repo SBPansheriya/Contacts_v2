@@ -64,6 +64,15 @@
             android:textSize="14dp" />
 
         <ImageView
+            android:id="@+id/no_fav_add"
+            android:layout_width="25dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="center"
+            android:src="@drawable/no_fav_star"
+            android:visibility="gone" />
+
+        <ImageView
             android:id="@+id/fav_add"
             android:layout_width="25dp"
             android:layout_height="wrap_content"

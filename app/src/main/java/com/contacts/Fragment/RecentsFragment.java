@@ -3,6 +3,7 @@ package com.contacts.Fragment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -23,6 +24,7 @@ import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.text.format.DateUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,12 +35,17 @@ import android.widget.Toast;
 
 import com.contacts.Adapter.RecentListAdapter;
 import com.contacts.Activity.HomeActivity;
+import com.contacts.Class.Constant;
 import com.contacts.Model.Recent;
 import com.contacts.R;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class RecentsFragment extends Fragment {
 
@@ -47,6 +54,7 @@ public class RecentsFragment extends Fragment {
     ImageView back;
     LinearLayout no_recents_linear;
     ArrayList<Recent> recentArrayList = new ArrayList<>();
+    int position;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -99,9 +107,10 @@ public class RecentsFragment extends Fragment {
                 String contactName = cursor.getString(nameColumn);
                 String contactNumber = cursor.getString(numberColumn);
                 int contactType = cursor.getInt(typeColumn);
+                @SuppressLint("Range") long contactDate = cursor.getLong(callDate);
 
-                CharSequence formattedDate = DateUtils.getRelativeTimeSpanString(callDate, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
-                String contactDate = cursor.getString(callDate);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
+                String formattedDate = dateFormat.format(new Date(contactDate));
 
                 String callType = "Unknown";
                 switch (contactType) {
@@ -116,10 +125,10 @@ public class RecentsFragment extends Fragment {
                         break;
                 }
 
-               String image = getContactImage();
+//               String image = getContactImage(getContext(),contcatId);
 
                 Log.d("AAA", "Name: " + contactName + ", Number: " + contactNumber + ", Date: " + formattedDate + ", Type: " + callType);
-                Recent recent = new Recent(contcatId, image, contactName, contactNumber, contactDate, callType);
+                Recent recent = new Recent(contcatId, "", contactName, contactNumber, formattedDate, callType);
                 recentArrayList.add(recent);
 
             } while (cursor.moveToNext());
@@ -130,6 +139,37 @@ public class RecentsFragment extends Fragment {
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(recentListAdapter);
     }
+
+//    public String getContactImage(Context context, String contactId) {
+//        String imageBase64 = null;
+//
+//        Cursor cursor = context.getContentResolver().query(
+//                ContactsContract.Contacts.CONTENT_URI,
+//                null,
+//                ContactsContract.Contacts._ID + " = ?",
+//                new String[] { contactId },
+//                null
+//        );
+//
+//        if (cursor != null && cursor.moveToFirst()) {
+//            @SuppressLint("Range") byte[] imageBytes = cursor.getBlob(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Photo.PHOTO));
+//            if (imageBytes != null) {
+//                Bitmap contactImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+//
+//                if (contactImage != null) {
+//                    // Convert the Bitmap to a Base64 encoded string
+//                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                    contactImage.compress(Bitmap.CompressFormat.PNG, 100, baos);
+//                    byte[] byteArray = baos.toByteArray();
+//                    imageBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
+//                }
+//            }
+//
+//            cursor.close();
+//        }
+//
+//        return imageBase64;
+//    }
 
     @SuppressLint("Range")
     public String getContactImage(){
@@ -143,66 +183,12 @@ public class RecentsFragment extends Fragment {
         Cursor cursor = contentResolver.query(uri, projection, null, null, sortOrder);
 
         if (cursor != null && cursor.getCount() > 0) {
-
             while (cursor.moveToNext()) {
                 imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
             }
             cursor.close();
         }
         return imagePath;
-    }
-
-    @SuppressLint("Range")
-    public static Bitmap getContactImage(Context context, String phoneNumber) {
-        String[] projection = {
-                ContactsContract.CommonDataKinds.Phone.CONTACT_ID
-        };
-
-        String selection = ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?";
-        String[] selectionArgs = {phoneNumber};
-
-        Cursor contactCursor = context.getContentResolver().query(
-                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                projection,
-                selection,
-                selectionArgs,
-                null
-        );
-
-        long contactId = -1;
-
-        if (contactCursor != null && contactCursor.moveToFirst()) {
-            contactId = contactCursor.getLong(contactCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID));
-            contactCursor.close();
-        }
-
-        if (contactId != -1) {
-            Bitmap contactImage = loadContactPhoto(context, contactId);
-            return contactImage;
-        }
-        return null;
-    }
-
-    public static Bitmap loadContactPhoto(Context context, long contactId) {
-        // Load the contact photo using the contact ID
-        Cursor cursor = context.getContentResolver().query(
-                ContactsContract.Data.CONTENT_URI,
-                new String[]{ContactsContract.CommonDataKinds.Photo.PHOTO},
-                ContactsContract.Data.CONTACT_ID + " = ? AND " +
-                        ContactsContract.Data.MIMETYPE + " = ?",
-                new String[]{String.valueOf(contactId),
-                        ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE},
-                null);
-
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                byte[] data = cursor.getBlob(0);
-                cursor.close();
-                return BitmapFactory.decodeByteArray(data, 0, data.length);
-            }
-            cursor.close();
-        }
-        return null;
     }
 
     private void checkPermission() {

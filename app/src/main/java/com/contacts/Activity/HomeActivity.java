@@ -62,6 +62,9 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             return true;
         }
         if (item.getItemId() == R.id.contact) {
+            Bundle bundle = new Bundle();
+            bundle.putString("btn","contact");
+            contactsFragment.setArguments(bundle);
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.framelayout, contactsFragment)

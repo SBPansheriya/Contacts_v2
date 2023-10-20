@@ -93,8 +93,15 @@ public class FavoritesFragment extends Fragment {
         add_fav_contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), ContactsFragment.class);
-                startActivity(intent);
+                Fragment mFragment = new ContactsFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("btn","fav");
+                mFragment.setArguments(bundle);
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.framelayout, mFragment)
+                        .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        .commit();
             }
         });
 
@@ -103,8 +110,8 @@ public class FavoritesFragment extends Fragment {
 //            public void onClick(View view) {
 //                edit.setVisibility(View.GONE);
 //                done.setVisibility(View.VISIBLE);
-////                scrollcontact.setVisibility(View.VISIBLE);
-////                info_icon.setVisibility(View.GONE);
+//                scrollcontact.setVisibility(View.VISIBLE);
+//                info_icon.setVisibility(View.GONE);
 //            }
 //        });
 

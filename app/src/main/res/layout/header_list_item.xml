@@ -21,6 +21,7 @@
                 android:maxLines="1"
                 android:paddingStart="10dp"
                 android:text="A"
+                android:visibility="visible"
                 android:textColor="@color/blue"
                 android:textSize="18dp" />
 

@@ -62,6 +62,7 @@ public class ContactsFragment extends Fragment {
 
     HeaderListAdapter headerListAdapter;
     RecyclerView recyclerView;
+    RelativeLayout tbmenu;
     LinearLayout no_contcat_found_linear, Contact_found_linear;
     ImageView edit, cancel, share, delete;
     Button create_btn;
@@ -81,6 +82,16 @@ public class ContactsFragment extends Fragment {
         searchView.clearFocus();
         progressLayout.setVisibility(View.VISIBLE);
         checkPermission();
+
+        String button = getArguments().getString("btn");
+
+        if (button.equals("fav")){
+            tbmenu.setVisibility(View.VISIBLE);
+        }
+        if (button.equals("contact")){
+            tbmenu.setVisibility(View.GONE);
+        }
+
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -219,44 +230,37 @@ public class ContactsFragment extends Fragment {
             if (users.isSelected()) {
                 itemsToRemove.add(users);
                 deleteContact(getContext(), users.contactId);
-
             }
+//            else {
+//                Toast.makeText(getContext(), "No contacts selected to delete", Toast.LENGTH_SHORT).show();
+//            }
         }
         usersArrayList.removeAll(itemsToRemove);
         headerListAdapter.notifyDataSetChanged();
     }
 
-    private void selectAllItems() {
-        for (Users item : usersArrayList) {
-            item.setSelected(true);
-        }
-        headerListAdapter.notifyDataSetChanged();
-    }
-
     private void shareSelected() {
-        Uri shareUri = null;
         for (Users users : usersArrayList) {
+            Uri shareUri = null;
             if (users.isSelected()) {
+
                 String lookupKey = getLookupKey(users.contactId);
                 if (TextUtils.isEmpty(lookupKey)) {
                     Log.e(TAG, "couldn't get lookupKey");
                     return;
                 }
                 shareUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_VCARD_URI, lookupKey);
-//                contactInfo  = "Name: " + users.getFirst() + " " + users.getLast() + "\n" +
-//                        "Phone: " + users.getPersonPhone();
-            }
-        }
-//        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-//        shareIntent.setType("text/plain");
-//        shareIntent.putExtra(Intent.EXTRA_TEXT, contactInfo);
-//        startActivity(shareIntent);
 
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType(ContactsContract.Contacts.CONTENT_VCARD_TYPE);
-        intent.putExtra(Intent.EXTRA_STREAM, shareUri);
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Share a contact");
-        startActivity(intent);
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType(ContactsContract.Contacts.CONTENT_VCARD_TYPE);
+                intent.putExtra(Intent.EXTRA_STREAM, shareUri);
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Share a contact");
+                startActivity(intent);
+            }
+//            else {
+//                Toast.makeText(getContext(), "No contacts selected to share", Toast.LENGTH_SHORT).show();
+//            }
+        }
     }
 
     private String getLookupKey(String contactId) {
@@ -271,6 +275,13 @@ public class ContactsFragment extends Fragment {
             c.close();
         }
         return lookupKey;
+    }
+
+    private void selectAllItems() {
+        for (Users item : usersArrayList) {
+            item.setSelected(true);
+        }
+        headerListAdapter.notifyDataSetChanged();
     }
 
     private void deselectAllItems() {
@@ -454,5 +465,6 @@ public class ContactsFragment extends Fragment {
         progressLayout = view.findViewById(R.id.progressLayout);
         spin_kit = view.findViewById(R.id.spin_kit);
         searchView = view.findViewById(R.id.search_contact);
+        tbmenu = view.findViewById(R.id.tbMenu);
     }
 }

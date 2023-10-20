@@ -50,8 +50,14 @@ public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.He
 
     @Override
     public void onBindViewHolder(@NonNull HeaderViewHolder holder, int position) {
-        holder.header.setText(headerArrayList.get(position).header);
-        Log.d("TTT", "onBindViewHolder: "+headerArrayList.get(position).header);
+
+        if (headerArrayList.get(position).usersList == null){
+            holder.header.setVisibility(View.GONE);
+        }
+        else {
+            holder.header.setVisibility(View.VISIBLE);
+            holder.header.setText(headerArrayList.get(position).header);
+        }
 
         LinearLayoutManager manager = new LinearLayoutManager(contactsFragment.getContext());
         contactListAdapter = new ContactListAdapter(contactsFragment, headerArrayList.get(position).usersList);
