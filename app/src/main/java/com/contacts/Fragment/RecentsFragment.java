@@ -83,6 +83,9 @@ public class RecentsFragment extends Fragment {
     }
 
     private void getRecentContacts() {
+
+        recentArrayList = new ArrayList<>();
+
         ContentResolver contentResolver = getContext().getContentResolver();
         String[] projection = {
                 CallLog.Calls._ID,
@@ -103,7 +106,7 @@ public class RecentsFragment extends Fragment {
             int callDate = cursor.getColumnIndex(CallLog.Calls.DATE);
 
             do {
-                String contcatId = cursor.getString(contactColumn);
+                String contactId = cursor.getString(contactColumn);
                 String contactName = cursor.getString(nameColumn);
                 String contactNumber = cursor.getString(numberColumn);
                 int contactType = cursor.getInt(typeColumn);
@@ -125,12 +128,11 @@ public class RecentsFragment extends Fragment {
                         break;
                 }
 
-//               String image = getContactImage(getContext(),contcatId);
+               String image = getContactImage(getContext(),contactId);
 
-                Log.d("AAA", "Name: " + contactName + ", Number: " + contactNumber + ", Date: " + formattedDate + ", Type: " + callType);
-                Recent recent = new Recent(contcatId, "", contactName, contactNumber, formattedDate, callType);
+                Log.d("AAA", "Image: " + image + ", Name: " + contactName + ", Number: " + contactNumber + ", Date: " + formattedDate + ", Type: " + callType);
+                Recent recent = new Recent(contactId, image, contactName, contactNumber, formattedDate, callType);
                 recentArrayList.add(recent);
-
             } while (cursor.moveToNext());
             cursor.close();
         }
@@ -139,6 +141,30 @@ public class RecentsFragment extends Fragment {
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(recentListAdapter);
     }
+
+    private static String getContactImage(Context context, String contactId) {
+        // Query the contact image using the contact ID
+        String contactImage = null;
+        Uri contactUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, contactId);
+        Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
+        Cursor photoCursor = context.getContentResolver().query(photoUri, new String[]{ContactsContract.Contacts.Photo.PHOTO}, null, null, null);
+
+        if (photoCursor != null && photoCursor.moveToFirst()) {
+            byte[] photoData = photoCursor.getBlob(0);
+            contactImage = getBase64Image(photoData);
+            photoCursor.close();
+        }
+
+        return contactImage;
+    }
+
+    private static String getBase64Image(byte[] photoData) {
+        if (photoData != null) {
+            return android.util.Base64.encodeToString(photoData, android.util.Base64.DEFAULT);
+        }
+        return null;
+    }
+
 
 //    public String getContactImage(Context context, String contactId) {
 //        String imageBase64 = null;
@@ -170,26 +196,6 @@ public class RecentsFragment extends Fragment {
 //
 //        return imageBase64;
 //    }
-
-    @SuppressLint("Range")
-    public String getContactImage(){
-
-        String imagePath = null;
-
-        ContentResolver contentResolver = getContext().getContentResolver();
-        Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-        String[] projection = {MediaStore.Images.Media.DATA};
-        String sortOrder = MediaStore.Images.Media.DATE_ADDED + " DESC";
-        Cursor cursor = contentResolver.query(uri, projection, null, null, sortOrder);
-
-        if (cursor != null && cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-                imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-            }
-            cursor.close();
-        }
-        return imagePath;
-    }
 
     private void checkPermission() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {

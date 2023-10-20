@@ -53,8 +53,6 @@ public class FavoritesFragment extends Fragment {
     Button addfav;
     ImageView edit;
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -82,11 +80,15 @@ public class FavoritesFragment extends Fragment {
         addfav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ContactsFragment contactsFragment = new ContactsFragment();
-                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                transaction.replace(R.id.framelayout, contactsFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                Fragment mFragment = new ContactsFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("btn","no_fav_found");
+                mFragment.setArguments(bundle);
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.framelayout, mFragment)
+                        .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        .commit();
             }
         });
 

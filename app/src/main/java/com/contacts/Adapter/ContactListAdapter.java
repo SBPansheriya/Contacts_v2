@@ -87,6 +87,9 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         if (button.equals("fav")){
             holder.no_fav_add.setVisibility(View.VISIBLE);
         }
+        if (button.equals("no_fav_found")){
+            holder.no_fav_add.setVisibility(View.VISIBLE);
+        }
         if (button.equals("contact")){
             holder.no_fav_add.setVisibility(View.GONE);
             holder.fav_add.setVisibility(View.GONE);

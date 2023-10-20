@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.RelativeLayout;
 
 import com.contacts.Fragment.ContactsFragment;
 import com.contacts.Fragment.FavoritesFragment;
@@ -17,6 +18,7 @@ import com.contacts.Fragment.GroupsFragment;
 import com.contacts.Fragment.KeypadFragment;
 import com.contacts.Fragment.RecentsFragment;
 import com.contacts.R;
+import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomeActivity extends AppCompatActivity implements BottomNavigationView

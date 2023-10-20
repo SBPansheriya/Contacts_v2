@@ -16,8 +16,11 @@ import android.view.ViewGroup;
 
 import com.contacts.Adapter.HeaderListAdapter;
 import com.contacts.Adapter.KeypadListAdapter;
+import com.contacts.Class.Constant;
 import com.contacts.R;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+
+import java.util.ArrayList;
 
 public class KeypadFragment extends Fragment {
 
@@ -31,12 +34,14 @@ public class KeypadFragment extends Fragment {
 
         init(view);
 
-        @SuppressLint("ResourceType") BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(),R.color.blackforsheet);
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout);
-        bottomSheetDialog.show();
+//        @SuppressLint("ResourceType") BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(),R.color.blackforsheet);
+//        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout);
+//        bottomSheetDialog.show();
+
+        Constant.usersArrayList = new ArrayList<>();
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        keypadListAdapter = new KeypadListAdapter(KeypadFragment.this);
+        keypadListAdapter = new KeypadListAdapter(KeypadFragment.this, Constant.usersArrayList);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(keypadListAdapter);
 

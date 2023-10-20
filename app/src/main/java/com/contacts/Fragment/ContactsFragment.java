@@ -24,6 +24,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -64,7 +65,7 @@ public class ContactsFragment extends Fragment {
     RecyclerView recyclerView;
     RelativeLayout tbmenu;
     LinearLayout no_contcat_found_linear, Contact_found_linear;
-    ImageView edit, cancel, share, delete;
+    ImageView edit, cancel, share, delete,back;
     Button create_btn;
     SearchView searchView;
     TextView selectall, totalcontact, deselectall;
@@ -80,12 +81,20 @@ public class ContactsFragment extends Fragment {
 
         init(view);
         searchView.clearFocus();
+        Sprite threeBounce = new ThreeBounce();
+        spin_kit.setIndeterminateDrawable(threeBounce);
         progressLayout.setVisibility(View.VISIBLE);
         checkPermission();
+
+
+
 
         String button = getArguments().getString("btn");
 
         if (button.equals("fav")){
+            tbmenu.setVisibility(View.VISIBLE);
+        }
+        if (button.equals("no_fav_found")){
             tbmenu.setVisibility(View.VISIBLE);
         }
         if (button.equals("contact")){
@@ -115,6 +124,25 @@ public class ContactsFragment extends Fragment {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Fragment mFragment = new ContactsFragment();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.framelayout, mFragment)
+                        .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        .commit();
+            }
+        });
+
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment mFragment = new FavoritesFragment();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.framelayout, mFragment)
+                        .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        .commit();
             }
         });
 
@@ -307,10 +335,9 @@ public class ContactsFragment extends Fragment {
     @SuppressLint("NotifyDataSetChanged")
     private void getContactList() {
 
-        usersArrayList = new ArrayList<>();
+        progressLayout.setVisibility(View.VISIBLE);
 
-        Sprite threeBounce = new ThreeBounce();
-        spin_kit.setIndeterminateDrawable(threeBounce);
+        usersArrayList = new ArrayList<>();
 
         ContentResolver contentResolver = getContext().getContentResolver();
         Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
@@ -406,7 +433,7 @@ public class ContactsFragment extends Fragment {
 
         headerListAdapter.notifyDataSetChanged();
         progressLayout.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.VISIBLE);
+//        recyclerView.setVisibility(View.VISIBLE);
     }
 
     private List<String> getPhoneNumbers(ContentResolver contentResolver, String contactId) {
@@ -466,5 +493,6 @@ public class ContactsFragment extends Fragment {
         spin_kit = view.findViewById(R.id.spin_kit);
         searchView = view.findViewById(R.id.search_contact);
         tbmenu = view.findViewById(R.id.tbMenu);
+        back = view.findViewById(R.id.back);
     }
 }
