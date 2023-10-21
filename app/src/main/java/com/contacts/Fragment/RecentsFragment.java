@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.CallLog;
+import android.provider.Contacts;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.text.format.DateUtils;
@@ -43,6 +44,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -128,10 +130,18 @@ public class RecentsFragment extends Fragment {
                         break;
                 }
 
-               String image = getContactImage(getContext(),contactId);
+//                cursorLog.moveToFirst();
+//                String number = cursorLog.getString(cursorLog.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
+//                contactId = getContactIdFromNumber(contactNumber);
+//                Contacts.People.loadContactPhoto(getContext(),
+//                        ContentUris.withAppendedId(Contacts.People.CONTENT_URI, Long.parseLong((contactId))),0,null);
 
-                Log.d("AAA", "Image: " + image + ", Name: " + contactName + ", Number: " + contactNumber + ", Date: " + formattedDate + ", Type: " + callType);
-                Recent recent = new Recent(contactId, image, contactName, contactNumber, formattedDate, callType);
+//                String image = getContactImage(getContext(),contactId);
+
+//                Bitmap image = loadContactPhoto(getContext(),contactNumber);
+
+                Log.d("AAA", "ID: " +contactId +", Image: " + "" + ", Name: " + contactName + ", Number: " + contactNumber + ", Date: " + formattedDate + ", Type: " + callType);
+                Recent recent = new Recent(contactId, "", contactName, contactNumber, formattedDate, callType);
                 recentArrayList.add(recent);
             } while (cursor.moveToNext());
             cursor.close();
@@ -141,6 +151,55 @@ public class RecentsFragment extends Fragment {
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(recentListAdapter);
     }
+
+//    public static Bitmap loadContactPhoto(Context context, String contactNumber) {
+//        long contactId = getContactIdFromNumber(context, contactNumber);
+//
+//        if (contactId != -1) {
+//            Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
+//            Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
+//
+//            try (Cursor cursor = context.getContentResolver().query(photoUri, new String[]{ContactsContract.Contacts.Photo.PHOTO}, null, null, null)) {
+//                if (cursor != null && cursor.moveToFirst()) {
+//                    byte[] data = cursor.getBlob(0);
+//                    if (data != null) {
+//                        return MediaStore.Images.Media.getBitmap(context.getContentResolver(), data);
+//                    }
+//                }
+//            } catch (Exception e) {
+//                Log.e("ContactImageLoader", "Error loading contact photo: " + e.getMessage());
+//            }
+//        }
+//
+//        return null;
+//    }
+
+    private static long getContactIdFromNumber(Context context, String contactNumber) {
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(contactNumber));
+
+        try (Cursor cursor = context.getContentResolver().query(uri, new String[]{ContactsContract.PhoneLookup._ID}, null, null, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                int idColumn = cursor.getColumnIndex(ContactsContract.PhoneLookup._ID);
+                return cursor.getLong(idColumn);
+            }
+        }
+
+        return -1;
+    }
+
+    private String getContactIdFromNumber(String number) {
+        String[] projection = new String[]{Contacts.Phones._ID};
+        Uri contactUri = Uri.withAppendedPath(Contacts.Phones.CONTENT_FILTER_URL,
+                Uri.encode(number));
+        Cursor c = getContext().getContentResolver().query(contactUri, projection,
+                null, null, null);
+        if (c.moveToFirst()) {
+            @SuppressLint("Range") String contactId=c.getString(c.getColumnIndex(Contacts.Phones._ID));
+            return contactId;
+        }
+        return null;
+    }
+
 
     private static String getContactImage(Context context, String contactId) {
         // Query the contact image using the contact ID

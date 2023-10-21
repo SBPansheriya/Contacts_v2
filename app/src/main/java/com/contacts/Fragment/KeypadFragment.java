@@ -34,9 +34,9 @@ public class KeypadFragment extends Fragment {
 
         init(view);
 
-//        @SuppressLint("ResourceType") BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(),R.color.blackforsheet);
-//        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout);
-//        bottomSheetDialog.show();
+        @SuppressLint("ResourceType") BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(),R.color.blackforsheet);
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout);
+        bottomSheetDialog.show();
 
         Constant.usersArrayList = new ArrayList<>();
 
@@ -51,8 +51,6 @@ public class KeypadFragment extends Fragment {
                 bottomSheetDialog.dismiss();
             }
         });
-
-
         return view;
     }
 

@@ -55,11 +55,7 @@
                     android:textSize="10dp" />
 
                 <TextView
-<<<<<<< Updated upstream
                     android:id="@+id/keypad_number"
-=======
-                    android:id="@+id/keypad_contact"
->>>>>>> Stashed changes
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

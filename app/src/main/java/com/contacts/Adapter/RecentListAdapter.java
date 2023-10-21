@@ -1,11 +1,7 @@
 package com.contacts.Adapter;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,11 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.contacts.Activity.ContactDetailActivity;
 import com.contacts.Model.Recent;
 import com.contacts.R;
 import com.squareup.picasso.Picasso;
@@ -47,11 +40,11 @@ public class RecentListAdapter extends RecyclerView.Adapter<RecentListAdapter.re
     @Override
     public void onBindViewHolder(@NonNull recentviewholder holder, int position) {
 
-//        if (recentArrayList.get(position).getIamge() == null) {
-//            holder.recent_personImage.setImageResource(R.drawable.person_placeholder);
-//        } else {
-//            Picasso.get().load(recentArrayList.get(position).getIamge()).into(holder.recent_personImage);
-//        }
+        if (recentArrayList.get(position).getIamge() == null) {
+            holder.recent_personImage.setImageResource(R.drawable.person_placeholder);
+        } else {
+            Picasso.get().load(recentArrayList.get(position).getIamge()).into(holder.recent_personImage);
+        }
 
         if (recentArrayList.get(position).getStatus().equals("Outgoing")) {
             holder.outgoing.setVisibility(View.VISIBLE);
@@ -75,14 +68,13 @@ public class RecentListAdapter extends RecyclerView.Adapter<RecentListAdapter.re
 
         holder.recent_date.setText(recentArrayList.get(position).getDate());
 
-        holder.recenet_call.setOnClickListener(new View.OnClickListener() {
+        holder.recent_call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Toast.makeText(context, "Calling " + recentArrayList.get(position).getContactname(), Toast.LENGTH_SHORT).show();
+//              Toast.makeText(context, "Calling " + recentArrayList.get(position).getContactname(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + recentArrayList.get(position).getContactnumber()));
                 context.startActivity(intent);
                 Toast.makeText(context, "Calling " + recentArrayList.get(position).getContactname(), Toast.LENGTH_SHORT).show();
-
             }
         });
     }
@@ -93,13 +85,13 @@ public class RecentListAdapter extends RecyclerView.Adapter<RecentListAdapter.re
     }
 
     public class recentviewholder extends RecyclerView.ViewHolder {
-        ImageView recent_personImage, recenet_call, missedCall, incoming, outgoing;
+        ImageView recent_personImage, recent_call, missedCall, incoming, outgoing;
         TextView recent_name, recent_date;
 
         public recentviewholder(@NonNull View itemView) {
             super(itemView);
             recent_personImage = itemView.findViewById(R.id.recent_personImage);
-            recenet_call = itemView.findViewById(R.id.recents_call);
+            recent_call = itemView.findViewById(R.id.recents_call);
             recent_name = itemView.findViewById(R.id.recent_name);
             recent_date = itemView.findViewById(R.id.recent_date);
             missedCall = itemView.findViewById(R.id.missedcall);
