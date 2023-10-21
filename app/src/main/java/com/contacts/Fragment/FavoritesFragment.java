@@ -82,7 +82,7 @@ public class FavoritesFragment extends Fragment {
             public void onClick(View view) {
                 Fragment mFragment = new ContactsFragment();
                 Bundle bundle = new Bundle();
-                bundle.putString("btn","no_fav_found");
+                bundle.putString("btn", "no_fav_found");
                 mFragment.setArguments(bundle);
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
@@ -97,7 +97,7 @@ public class FavoritesFragment extends Fragment {
             public void onClick(View view) {
                 Fragment mFragment = new ContactsFragment();
                 Bundle bundle = new Bundle();
-                bundle.putString("btn","fav");
+                bundle.putString("btn", "fav");
                 mFragment.setArguments(bundle);
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
@@ -148,92 +148,89 @@ public class FavoritesFragment extends Fragment {
 
     private void readFavoriteContacts() {
 
-        favoriteList = new ArrayList<>();
-
-        Uri uri = ContactsContract.Contacts.CONTENT_URI;
-
-        ContentResolver contentResolver = getContext().getContentResolver();
-
-        String[] projection = {
-                ContactsContract.Contacts._ID,
-                ContactsContract.Contacts.DISPLAY_NAME,
-                ContactsContract.Contacts.PHOTO_URI
-        };
-
-        String selection = ContactsContract.Contacts.STARRED + "=?";
-        String[] selectionArgs = {"1"};
-
-        Cursor cursor = contentResolver.query(uri, projection, selection, selectionArgs, null);
-
-        if (cursor != null && cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-                @SuppressLint("Range") String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                @SuppressLint("Range") String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                @SuppressLint("Range") String contactImageUri = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
-                String phoneNumber = getPhoneNumber(contactId);
-
-                Bitmap contactImage = null;
-                if (contactImageUri != null) {
-                    try {
-                        contactImage = BitmapFactory.decodeStream(contentResolver.openInputStream(Uri.parse(contactImageUri)));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                String firstName = "";
-                String lastName = "";
-                if (!TextUtils.isEmpty(contactName)) {
-                    if (contactName.contains(" ")) {
-                        String currentString = contactName;
-                        String[] separated = currentString.split(" ");
-                        firstName = separated[0];
-                        lastName = separated[1];
-                    } else {
-                        firstName = contactName;
-                        lastName = "";
-                    }
-                }
-
-                Users user = new Users(contactId, contactImageUri, firstName, lastName, phoneNumber, "");
-                favoriteList.add(user);
-            }
-        }
-        if (cursor != null) {
-            cursor.close();
-        }
+//        favoriteList = new ArrayList<>();
+//
+//        Uri uri = ContactsContract.Contacts.CONTENT_URI;
+//
+//        ContentResolver contentResolver = getContext().getContentResolver();
+//
+//        String[] projection = {
+//                ContactsContract.Contacts._ID,
+//                ContactsContract.Contacts.DISPLAY_NAME,
+//                ContactsContract.Contacts.PHOTO_URI
+//        };
+//
+//        String selection = ContactsContract.Contacts.STARRED + "=?";
+//        String[] selectionArgs = {"1"};
+//
+//        Cursor cursor = contentResolver.query(uri, projection, selection, selectionArgs, null);
+//
+//        if (cursor != null && cursor.getCount() > 0) {
+//            while (cursor.moveToNext()) {
+//                @SuppressLint("Range") String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+//                @SuppressLint("Range") String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+//                @SuppressLint("Range") String contactImageUri = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
+//                String phoneNumber = getPhoneNumber(contactId);
+//
+//                Bitmap contactImage = null;
+//                if (contactImageUri != null) {
+//                    try {
+//                        contactImage = BitmapFactory.decodeStream(contentResolver.openInputStream(Uri.parse(contactImageUri)));
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                String firstName = "";
+//                String lastName = "";
+//                if (!TextUtils.isEmpty(contactName)) {
+//                    if (contactName.contains(" ")) {
+//                        String currentString = contactName;
+//                        String[] separated = currentString.split(" ");
+//                        firstName = separated[0];
+//                        lastName = separated[1];
+//                    } else {
+//                        firstName = contactName;
+//                        lastName = "";
+//                    }
+//                }
+//
+//                Users user = new Users(contactId, contactImageUri, firstName, lastName, phoneNumber, "");
+//                favoriteList.add(user);
+//            }
+//        }
+//        if (cursor != null) {
+//            cursor.close();
+//        }
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         favListAdapter = new FavListAdapter(FavoritesFragment.this, favoriteList);
         recyclerView.setLayoutManager(manager);
-
-//        favoriteList = favListAdapter.loadListFromSharedPreferences(getContext());
 
         ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(favListAdapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(favListAdapter);
-
         favListAdapter.notifyDataSetChanged();
     }
 
-    @SuppressLint("Range")
-    private String getPhoneNumber(String contactId) {
-        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-        String[] projection = {ContactsContract.CommonDataKinds.Phone.NUMBER};
-        String selection = ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=?";
-        String[] selectionArgs = {contactId};
-
-        Cursor cursor = getActivity().getContentResolver().query(uri, projection, selection, selectionArgs, null);
-
-        String phoneNumber = null;
-        if (cursor != null && cursor.moveToNext()) {
-            phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-        }
-
-        if (cursor != null) {
-            cursor.close();
-        }
-        return phoneNumber;
-    }
+//    @SuppressLint("Range")
+//    private String getPhoneNumber(String contactId) {
+//        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+//        String[] projection = {ContactsContract.CommonDataKinds.Phone.NUMBER};
+//        String selection = ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=?";
+//        String[] selectionArgs = {contactId};
+//
+//        Cursor cursor = getActivity().getContentResolver().query(uri, projection, selection, selectionArgs, null);
+//
+//        String phoneNumber = null;
+//        if (cursor != null && cursor.moveToNext()) {
+//            phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+//        }
+//
+//        if (cursor != null) {
+//            cursor.close();
+//        }
+//        return phoneNumber;
+//    }
 
     private void init(View view) {
         back = view.findViewById(R.id.back);

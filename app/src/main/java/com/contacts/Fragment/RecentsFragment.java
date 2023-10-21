@@ -1,5 +1,7 @@
 package com.contacts.Fragment;
 
+import static com.contacts.Class.Constant.recentArrayList;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
@@ -39,6 +41,7 @@ import com.contacts.Activity.HomeActivity;
 import com.contacts.Class.Constant;
 import com.contacts.Model.Recent;
 import com.contacts.R;
+import com.contacts.Splash;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -55,7 +58,7 @@ public class RecentsFragment extends Fragment {
     RecyclerView recyclerView;
     ImageView back;
     LinearLayout no_recents_linear;
-    ArrayList<Recent> recentArrayList = new ArrayList<>();
+//    ArrayList<Recent> recentArrayList = new ArrayList<>();
     int position;
 
     @Override
@@ -67,6 +70,7 @@ public class RecentsFragment extends Fragment {
 
         checkPermission();
         checkPermission1();
+
 
         if (recentArrayList.isEmpty()) {
             no_recents_linear.setVisibility(View.VISIBLE);
@@ -86,105 +90,70 @@ public class RecentsFragment extends Fragment {
 
     private void getRecentContacts() {
 
-        recentArrayList = new ArrayList<>();
-
-        ContentResolver contentResolver = getContext().getContentResolver();
-        String[] projection = {
-                CallLog.Calls._ID,
-                CallLog.Calls.CACHED_NAME,
-                CallLog.Calls.NUMBER,
-                CallLog.Calls.TYPE,
-                CallLog.Calls.DATE
-        };
-
-        String sortOrder = CallLog.Calls.DATE + " DESC";
-        Cursor cursor = contentResolver.query(CallLog.Calls.CONTENT_URI, projection, null, null, sortOrder);
-
-        if (cursor != null && cursor.moveToFirst()) {
-            int contactColumn = cursor.getColumnIndex(CallLog.Calls._ID);
-            int nameColumn = cursor.getColumnIndex(CallLog.Calls.CACHED_NAME);
-            int numberColumn = cursor.getColumnIndex(CallLog.Calls.NUMBER);
-            int typeColumn = cursor.getColumnIndex(CallLog.Calls.TYPE);
-            int callDate = cursor.getColumnIndex(CallLog.Calls.DATE);
-
-            do {
-                String contactId = cursor.getString(contactColumn);
-                String contactName = cursor.getString(nameColumn);
-                String contactNumber = cursor.getString(numberColumn);
-                int contactType = cursor.getInt(typeColumn);
-                @SuppressLint("Range") long contactDate = cursor.getLong(callDate);
-
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
-                String formattedDate = dateFormat.format(new Date(contactDate));
-
-                String callType = "Unknown";
-                switch (contactType) {
-                    case CallLog.Calls.INCOMING_TYPE:
-                        callType = "Incoming";
-                        break;
-                    case CallLog.Calls.OUTGOING_TYPE:
-                        callType = "Outgoing";
-                        break;
-                    case CallLog.Calls.MISSED_TYPE:
-                        callType = "Missed";
-                        break;
-                }
-
-//                cursorLog.moveToFirst();
-//                String number = cursorLog.getString(cursorLog.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
-//                contactId = getContactIdFromNumber(contactNumber);
-//                Contacts.People.loadContactPhoto(getContext(),
-//                        ContentUris.withAppendedId(Contacts.People.CONTENT_URI, Long.parseLong((contactId))),0,null);
-
-//                String image = getContactImage(getContext(),contactId);
-
-//                Bitmap image = loadContactPhoto(getContext(),contactNumber);
-
-                Log.d("AAA", "ID: " +contactId +", Image: " + "" + ", Name: " + contactName + ", Number: " + contactNumber + ", Date: " + formattedDate + ", Type: " + callType);
-                Recent recent = new Recent(contactId, "", contactName, contactNumber, formattedDate, callType);
-                recentArrayList.add(recent);
-            } while (cursor.moveToNext());
-            cursor.close();
-        }
+//        recentArrayList = new ArrayList<>();
+//
+//        ContentResolver contentResolver = getContext().getContentResolver();
+//        String[] projection = {
+//                CallLog.Calls._ID,
+//                CallLog.Calls.CACHED_NAME,
+//                CallLog.Calls.NUMBER,
+//                CallLog.Calls.TYPE,
+//                CallLog.Calls.DATE
+//        };
+//
+//        String sortOrder = CallLog.Calls.DATE + " DESC";
+//        Cursor cursor = contentResolver.query(CallLog.Calls.CONTENT_URI, projection, null, null, sortOrder);
+//
+//        if (cursor != null && cursor.moveToFirst()) {
+//            int contactColumn = cursor.getColumnIndex(CallLog.Calls._ID);
+//            int nameColumn = cursor.getColumnIndex(CallLog.Calls.CACHED_NAME);
+//            int numberColumn = cursor.getColumnIndex(CallLog.Calls.NUMBER);
+//            int typeColumn = cursor.getColumnIndex(CallLog.Calls.TYPE);
+//            int callDate = cursor.getColumnIndex(CallLog.Calls.DATE);
+//
+//            do {
+//                String contactId = cursor.getString(contactColumn);
+//                String contactName = cursor.getString(nameColumn);
+//                String contactNumber = cursor.getString(numberColumn);
+//                int contactType = cursor.getInt(typeColumn);
+//                @SuppressLint("Range") long contactDate = cursor.getLong(callDate);
+//
+//                SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
+//                String formattedDate = dateFormat.format(new Date(contactDate));
+//
+//                String callType = "Unknown";
+//                switch (contactType) {
+//                    case CallLog.Calls.INCOMING_TYPE:
+//                        callType = "Incoming";
+//                        break;
+//                    case CallLog.Calls.OUTGOING_TYPE:
+//                        callType = "Outgoing";
+//                        break;
+//                    case CallLog.Calls.MISSED_TYPE:
+//                        callType = "Missed";
+//                        break;
+//                }
+//
+////                cursorLog.moveToFirst();
+////                String number = cursorLog.getString(cursorLog.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
+////                contactId = getContactIdFromNumber(contactNumber);
+////                Contacts.People.loadContactPhoto(getContext(),
+////                        ContentUris.withAppendedId(Contacts.People.CONTENT_URI, Long.parseLong((contactId))),0,null);
+//
+////                String image = getContactImage(getContext(),contactId);
+//
+////                Bitmap image = loadContactPhoto(getContext(),contactNumber);
+//
+//                Log.d("AAA", "ID: " +contactId +", Image: " + "" + ", Name: " + contactName + ", Number: " + contactNumber + ", Date: " + formattedDate + ", Type: " + callType);
+//                Recent recent = new Recent(contactId, "", contactName, contactNumber, formattedDate, callType);
+//                recentArrayList.add(recent);
+//            } while (cursor.moveToNext());
+//            cursor.close();
+//        }
         recentListAdapter = new RecentListAdapter(getContext(), recentArrayList);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(recentListAdapter);
-    }
-
-//    public static Bitmap loadContactPhoto(Context context, String contactNumber) {
-//        long contactId = getContactIdFromNumber(context, contactNumber);
-//
-//        if (contactId != -1) {
-//            Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
-//            Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
-//
-//            try (Cursor cursor = context.getContentResolver().query(photoUri, new String[]{ContactsContract.Contacts.Photo.PHOTO}, null, null, null)) {
-//                if (cursor != null && cursor.moveToFirst()) {
-//                    byte[] data = cursor.getBlob(0);
-//                    if (data != null) {
-//                        return MediaStore.Images.Media.getBitmap(context.getContentResolver(), data);
-//                    }
-//                }
-//            } catch (Exception e) {
-//                Log.e("ContactImageLoader", "Error loading contact photo: " + e.getMessage());
-//            }
-//        }
-//
-//        return null;
-//    }
-
-    private static long getContactIdFromNumber(Context context, String contactNumber) {
-        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(contactNumber));
-
-        try (Cursor cursor = context.getContentResolver().query(uri, new String[]{ContactsContract.PhoneLookup._ID}, null, null, null)) {
-            if (cursor != null && cursor.moveToFirst()) {
-                int idColumn = cursor.getColumnIndex(ContactsContract.PhoneLookup._ID);
-                return cursor.getLong(idColumn);
-            }
-        }
-
-        return -1;
     }
 
     private String getContactIdFromNumber(String number) {
@@ -223,38 +192,6 @@ public class RecentsFragment extends Fragment {
         }
         return null;
     }
-
-
-//    public String getContactImage(Context context, String contactId) {
-//        String imageBase64 = null;
-//
-//        Cursor cursor = context.getContentResolver().query(
-//                ContactsContract.Contacts.CONTENT_URI,
-//                null,
-//                ContactsContract.Contacts._ID + " = ?",
-//                new String[] { contactId },
-//                null
-//        );
-//
-//        if (cursor != null && cursor.moveToFirst()) {
-//            @SuppressLint("Range") byte[] imageBytes = cursor.getBlob(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Photo.PHOTO));
-//            if (imageBytes != null) {
-//                Bitmap contactImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-//
-//                if (contactImage != null) {
-//                    // Convert the Bitmap to a Base64 encoded string
-//                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                    contactImage.compress(Bitmap.CompressFormat.PNG, 100, baos);
-//                    byte[] byteArray = baos.toByteArray();
-//                    imageBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
-//                }
-//            }
-//
-//            cursor.close();
-//        }
-//
-//        return imageBase64;
-//    }
 
     private void checkPermission() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {

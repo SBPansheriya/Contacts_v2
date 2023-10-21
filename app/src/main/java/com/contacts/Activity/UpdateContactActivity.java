@@ -1,5 +1,6 @@
 package com.contacts.Activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -86,6 +87,7 @@ public class UpdateContactActivity extends AppCompatActivity {
         personimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                checkPermission();
                 Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(takePicture, CAMERA_REQUEST);
             }
@@ -154,11 +156,10 @@ public class UpdateContactActivity extends AppCompatActivity {
         ContentProviderOperation.Builder builder = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI);
         if (user.image != null) {
 
-            try
-            {
+            try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), newImage);
                 ByteArrayOutputStream image = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG , 100, image);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, image);
 
                 builder = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI);
                 builder.withSelection(ContactsContract.Data.CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[]{String.valueOf(contactId),
@@ -166,13 +167,10 @@ public class UpdateContactActivity extends AppCompatActivity {
                 builder.withValue(ContactsContract.CommonDataKinds.Photo.PHOTO, image.toByteArray());
                 ops.add(builder.build());
                 getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
-
             try {
                 ContentValues values = new ContentValues();
                 ContentResolver contentResolver3 = getContentResolver();
@@ -181,7 +179,7 @@ public class UpdateContactActivity extends AppCompatActivity {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), newImage);
                 ByteArrayOutputStream image = new ByteArrayOutputStream();
 
-                bitmap.compress(Bitmap.CompressFormat.JPEG , 100, image);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, image);
                 values.put(ContactsContract.Data.RAW_CONTACT_ID, contactId);
                 values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE);
                 values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, image.toByteArray());
@@ -189,9 +187,7 @@ public class UpdateContactActivity extends AppCompatActivity {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-
         }
-
 
         Users user = new Users(contactId, newImage.toString(), newFirstName, newLastName, newPersonalPhoneNumber, "");
         usersArrayList.add(user);
@@ -199,10 +195,23 @@ public class UpdateContactActivity extends AppCompatActivity {
         Toast.makeText(UpdateContactActivity.this, "Updated Contact Successfully", Toast.LENGTH_SHORT).show();
 
         onBackPressed();
-
-
     }
 
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+        } else {
+            Toast.makeText(this, "Permission Denied.", Toast.LENGTH_SHORT).show();
+            checkPermission();
+        }
+    }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

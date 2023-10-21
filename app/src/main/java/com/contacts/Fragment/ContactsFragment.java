@@ -48,6 +48,7 @@ import com.contacts.Activity.CreateContactActivity;
 import com.contacts.Model.Header;
 import com.contacts.Model.Users;
 import com.contacts.R;
+import com.contacts.Splash;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.github.ybq.android.spinkit.style.ThreeBounce;
@@ -84,10 +85,8 @@ public class ContactsFragment extends Fragment {
         Sprite threeBounce = new ThreeBounce();
         spin_kit.setIndeterminateDrawable(threeBounce);
         progressLayout.setVisibility(View.VISIBLE);
+
         checkPermission();
-
-
-
 
         String button = getArguments().getString("btn");
 
@@ -259,9 +258,6 @@ public class ContactsFragment extends Fragment {
                 itemsToRemove.add(users);
                 deleteContact(getContext(), users.contactId);
             }
-//            else {
-//                Toast.makeText(getContext(), "No contacts selected to delete", Toast.LENGTH_SHORT).show();
-//            }
         }
         usersArrayList.removeAll(itemsToRemove);
         headerListAdapter.notifyDataSetChanged();
@@ -285,9 +281,6 @@ public class ContactsFragment extends Fragment {
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Share a contact");
                 startActivity(intent);
             }
-//            else {
-//                Toast.makeText(getContext(), "No contacts selected to share", Toast.LENGTH_SHORT).show();
-//            }
         }
     }
 
@@ -323,67 +316,63 @@ public class ContactsFragment extends Fragment {
         ContentResolver contentResolver = context.getContentResolver();
         Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.parseLong(contactId));
 
-        // First, delete the contact's data entries
         contentResolver.delete(ContactsContract.RawContacts.CONTENT_URI,
                 ContactsContract.RawContacts.CONTACT_ID + " = ?",
                 new String[]{String.valueOf(contactId)});
 
-        // Then, delete the contact itself
         contentResolver.delete(contactUri, null, null);
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private void getContactList() {
-
-        progressLayout.setVisibility(View.VISIBLE);
-
-        usersArrayList = new ArrayList<>();
-
-        ContentResolver contentResolver = getContext().getContentResolver();
-        Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-
-        if (cursor != null && cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-                @SuppressLint("Range") String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                @SuppressLint("Range") String phoneName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                @SuppressLint("Range") String photoUri = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
-
-                String firstName = "";
-                String lastName = "";
-                if (!TextUtils.isEmpty(phoneName)) {
-                    if (phoneName.contains(" ")) {
-                        String currentString = phoneName;
-                        String[] separated = currentString.split(" ");
-                        firstName = separated[0];
-                        lastName = separated[1];
-                    } else {
-                        firstName = phoneName;
-                        lastName = "";
-                    }
-                }
-
-
-                // Get phone numbers
-                List<String> phoneNumbers = getPhoneNumbers(contentResolver, contactId);
-                String phoneNumber = "";
-                String officeNumber = "";
-                if (phoneNumbers.size() > 0) {
-                    if (phoneNumbers.size() > 2) {
-                        phoneNumber = phoneNumbers.get(0);
-                        officeNumber = phoneNumbers.get(1);
-                    } else {
-                        phoneNumber = phoneNumbers.get(0);
-                        officeNumber = "";
-                    }
-                }
-
-                // Create a User object with the retrieved data and add it to the ArrayList
-                Users user = new Users(contactId, photoUri, firstName, lastName, phoneNumber, officeNumber);
-                usersArrayList.add(user);
-            }
-            cursor.close();
-        }
-
+//        progressLayout.setVisibility(View.VISIBLE);
+//
+//        usersArrayList = new ArrayList<>();
+//
+//        ContentResolver contentResolver = getContext().getContentResolver();
+//        Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+//
+//        if (cursor != null && cursor.getCount() > 0) {
+//            while (cursor.moveToNext()) {
+//                @SuppressLint("Range") String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+//                @SuppressLint("Range") String phoneName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+//                @SuppressLint("Range") String photoUri = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
+//
+//                String firstName = "";
+//                String lastName = "";
+//                if (!TextUtils.isEmpty(phoneName)) {
+//                    if (phoneName.contains(" ")) {
+//                        String currentString = phoneName;
+//                        String[] separated = currentString.split(" ");
+//                        firstName = separated[0];
+//                        lastName = separated[1];
+//                    } else {
+//                        firstName = phoneName;
+//                        lastName = "";
+//                    }
+//                }
+//
+//
+//                // Get phone numbers
+//                List<String> phoneNumbers = getPhoneNumbers(contentResolver, contactId);
+//                String phoneNumber = "";
+//                String officeNumber = "";
+//                if (phoneNumbers.size() > 0) {
+//                    if (phoneNumbers.size() > 2) {
+//                        phoneNumber = phoneNumbers.get(0);
+//                        officeNumber = phoneNumbers.get(1);
+//                    } else {
+//                        phoneNumber = phoneNumbers.get(0);
+//                        officeNumber = "";
+//                    }
+//                }
+//
+//                // Create a User object with the retrieved data and add it to the ArrayList
+//                Users user = new Users(contactId, photoUri, firstName, lastName, phoneNumber, officeNumber);
+//                usersArrayList.add(user);
+//            }
+//            cursor.close();
+//        }
         if (usersArrayList.size() > 0) {
             Comparator<Users> nameComparator = new Comparator<Users>() {
                 @Override
@@ -392,7 +381,6 @@ public class ContactsFragment extends Fragment {
                     return user1.getFirst().compareTo(user2.getFirst());
                 }
             };
-
             Collections.sort(usersArrayList, nameComparator);
         }
 
@@ -429,31 +417,29 @@ public class ContactsFragment extends Fragment {
             headerListAdapter = new HeaderListAdapter(ContactsFragment.this, headerArrayList);
             recyclerView.setLayoutManager(manager);
             recyclerView.setAdapter(headerListAdapter);
+            headerListAdapter.notifyDataSetChanged();
         }
-
-        headerListAdapter.notifyDataSetChanged();
         progressLayout.setVisibility(View.GONE);
-//        recyclerView.setVisibility(View.VISIBLE);
     }
 
-    private List<String> getPhoneNumbers(ContentResolver contentResolver, String contactId) {
-        List<String> phoneNumbers = new ArrayList<>();
-
-        Uri phoneUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-        String[] phoneProjection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
-        String phoneSelection = ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?";
-        Cursor phoneCursor = contentResolver.query(phoneUri, phoneProjection, phoneSelection, new String[]{contactId}, null);
-
-        if (phoneCursor != null) {
-            while (phoneCursor.moveToNext()) {
-                @SuppressLint("Range") String phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                phoneNumbers.add(phoneNumber);
-            }
-            phoneCursor.close();
-        }
-
-        return phoneNumbers;
-    }
+//    private List<String> getPhoneNumbers(ContentResolver contentResolver, String contactId) {
+//        List<String> phoneNumbers = new ArrayList<>();
+//
+//        Uri phoneUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+//        String[] phoneProjection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
+//        String phoneSelection = ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?";
+//        Cursor phoneCursor = contentResolver.query(phoneUri, phoneProjection, phoneSelection, new String[]{contactId}, null);
+//
+//        if (phoneCursor != null) {
+//            while (phoneCursor.moveToNext()) {
+//                @SuppressLint("Range") String phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+//                phoneNumbers.add(phoneNumber);
+//            }
+//            phoneCursor.close();
+//        }
+//
+//        return phoneNumbers;
+//    }
 
     private void checkPermission() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
