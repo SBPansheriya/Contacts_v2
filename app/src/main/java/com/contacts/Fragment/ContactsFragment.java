@@ -124,12 +124,12 @@ public class ContactsFragment extends Fragment {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment mFragment = new ContactsFragment();
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.framelayout, mFragment)
-                        .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .commit();
+//                Fragment mFragment = new ContactsFragment();
+//                getActivity().getSupportFragmentManager()
+//                        .beginTransaction()
+//                        .replace(R.id.framelayout, mFragment)
+//                        .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//                        .commit();
             }
         });
 
@@ -137,12 +137,12 @@ public class ContactsFragment extends Fragment {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment mFragment = new FavoritesFragment();
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.framelayout, mFragment)
-                        .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .commit();
+//                Fragment mFragment = new FavoritesFragment();
+//                getActivity().getSupportFragmentManager()
+//                        .beginTransaction()
+//                        .replace(R.id.framelayout, mFragment)
+//                        .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//                        .commit();
             }
         });
 

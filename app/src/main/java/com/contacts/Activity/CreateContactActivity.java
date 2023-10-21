@@ -27,6 +27,7 @@ import com.contacts.Fragment.ContactsFragment;
 import com.contacts.Model.Users;
 import com.contacts.R;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -41,6 +42,7 @@ public class CreateContactActivity extends AppCompatActivity {
     List<Users> usersList;
     String imagename;
     String imagepath;
+    Bitmap bitmap;
     private static final int CAMERA_REQUEST = 100;
 
     @Override
@@ -65,14 +67,14 @@ public class CreateContactActivity extends AppCompatActivity {
                     Toast.makeText(CreateContactActivity.this, "Please Fill Data", Toast.LENGTH_SHORT).show();
                 } else {
                     createContact();
-                    ContactsFragment fragment = new ContactsFragment();
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    // Replace the content of the activity with the fragment
-                    fragmentTransaction.replace(R.id.framelayout, fragment);
-                    // Commit the transaction
-                    fragmentTransaction.commit();
-                    Toast.makeText(CreateContactActivity.this, "Saved Data To SharedPreferences", Toast.LENGTH_SHORT).show();
+//                    ContactsFragment fragment = new ContactsFragment();
+//                    FragmentManager fragmentManager = getSupportFragmentManager();
+//                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                    // Replace the content of the activity with the fragment
+//                    fragmentTransaction.replace(R.id.framelayout, fragment);
+//                    // Commit the transaction
+//                    fragmentTransaction.commit();
+//                    Toast.makeText(CreateContactActivity.this, "Saved Data To SharedPreferences", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -128,8 +130,12 @@ public class CreateContactActivity extends AppCompatActivity {
         values.clear();
         values.put(ContactsContract.Data.RAW_CONTACT_ID, rawContactId);
         values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE);
-        values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, imagepath);
+        ByteArrayOutputStream image = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG , 100, image);
+        values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, image.toByteArray());
         contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
+
+        finish();
 
 //        if (imagepath != null) {
 //            ContentValues photoValues = new ContentValues();
@@ -144,7 +150,7 @@ public class CreateContactActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+            bitmap = (Bitmap) data.getExtras().get("data");
             addPersonImage.setImageBitmap(bitmap);
             imagepath = saveToInternalStorage(bitmap);
         }

@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
+import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -31,6 +32,7 @@ import com.contacts.Model.Users;
 import com.contacts.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -59,13 +61,6 @@ public class UpdateContactActivity extends AppCompatActivity {
         init();
 
         user = (Users) getIntent().getSerializableExtra("user");
-
-//        String contactId = getIntent().getStringExtra("contactId1");
-//        String image = getIntent().getStringExtra("image1");
-//        String firstname = getIntent().getStringExtra("first1");
-//        String lastname = getIntent().getStringExtra("last1");
-//        String pphone = getIntent().getStringExtra("pphone1");
-//        String ophone = getIntent().getStringExtra("ophone1");
 
         if (user.image == null) {
             personimage.setImageResource(R.drawable.person_placeholder);
@@ -106,15 +101,6 @@ public class UpdateContactActivity extends AppCompatActivity {
                 String ophone = update_ophone.getText().toString();
 
                 getUpdateContactList(user.contactId, firstname, lastname, pphone, ophone, newUri);
-
-                Toast.makeText(UpdateContactActivity.this, "Updated Contact Successfully", Toast.LENGTH_SHORT).show();
-
-                ContactsFragment fragment = new ContactsFragment();
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.framelayout, fragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
             }
         });
     }
@@ -150,6 +136,7 @@ public class UpdateContactActivity extends AppCompatActivity {
         contentResolver.update(ContactsContract.Data.CONTENT_URI, phoneValues2, phoneSelection2, phoneSelectionArgs2);
 
 
+        // update name
         ContentResolver contentResolver1 = getContentResolver();
         ContentValues contactNameValues = new ContentValues();
         contactNameValues.put(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME, newFirstName);
@@ -162,54 +149,59 @@ public class UpdateContactActivity extends AppCompatActivity {
         contentResolver1.update(ContactsContract.Data.CONTENT_URI, contactNameValues, selection1, selectionArgs1);
 
 
-        ContentResolver contentResolver2 = getContentResolver();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(ContactsContract.CommonDataKinds.Photo.PHOTO, newImage.toString());
+        // update photo
+        ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+        ContentProviderOperation.Builder builder = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI);
+        if (user.image != null) {
 
-        String selection = ContactsContract.Data.CONTACT_ID + " = ? AND " +
-                ContactsContract.Data.MIMETYPE + " = ?";
+            try
+            {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), newImage);
+                ByteArrayOutputStream image = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG , 100, image);
 
-        String[] selectionArgs = new String[]{contactId, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE};
-        int updatedRows = contentResolver2.update(ContactsContract.Data.CONTENT_URI, contentValues, selection, selectionArgs);
-
-        if (updatedRows > 0) {
-            Users user = new Users(contactId, newImage.toString(), newFirstName, newLastName, newPersonalPhoneNumber, "");
-            usersArrayList.add(user);
+                builder = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI);
+                builder.withSelection(ContactsContract.Data.CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[]{String.valueOf(contactId),
+                        ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE});
+                builder.withValue(ContactsContract.CommonDataKinds.Photo.PHOTO, image.toByteArray());
+                ops.add(builder.build());
+                getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         } else {
-            System.out.println(updatedRows);
+
+            try {
+                ContentValues values = new ContentValues();
+                ContentResolver contentResolver3 = getContentResolver();
+
+                Bitmap bitmap = null;
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), newImage);
+                ByteArrayOutputStream image = new ByteArrayOutputStream();
+
+                bitmap.compress(Bitmap.CompressFormat.JPEG , 100, image);
+                values.put(ContactsContract.Data.RAW_CONTACT_ID, contactId);
+                values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE);
+                values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, image.toByteArray());
+                contentResolver3.insert(ContactsContract.Data.CONTENT_URI, values);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
         }
 
-//        if (newImage != null) {
-//            ContentResolver contentResolver2 = getContentResolver();
-//            ContentValues imageValues = new ContentValues();
-//            imageValues.put(ContactsContract.CommonDataKinds.Photo.PHOTO, newImage);
-//
-//            String imageSelection = ContactsContract.Data.CONTACT_ID + " = ? AND " +
-//                    ContactsContract.Data.MIMETYPE + " = ?";
-//            String[] imageSelectionArgs = new String[] { contactId, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE };
-//
-//            contentResolver2.update(ContactsContract.Data.CONTENT_URI, imageValues, imageSelection, imageSelectionArgs);
-//        }
+
+        Users user = new Users(contactId, newImage.toString(), newFirstName, newLastName, newPersonalPhoneNumber, "");
+        usersArrayList.add(user);
+
+        Toast.makeText(UpdateContactActivity.this, "Updated Contact Successfully", Toast.LENGTH_SHORT).show();
+
+        onBackPressed();
 
 
     }
-
-//    private void checkPermission() {
-//        if (ContextCompat.checkSelfPermission(UpdateContactActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(UpdateContactActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 100);
-//        }
-//    }
-//
-//
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//
-//        } else {
-//            Toast.makeText(UpdateContactActivity.this, "Permission Denied.", Toast.LENGTH_SHORT).show();
-//            checkPermission();
-//        }
-//    }
 
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

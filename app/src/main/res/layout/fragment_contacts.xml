@@ -4,40 +4,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/framelayout"
     tools:context=".Fragment.ContactsFragment">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:id="@+id/tbMenu"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginHorizontal="20dp"
-        android:gravity="center_vertical"
-        android:minHeight="?attr/actionBarSize"
-        android:orientation="horizontal"
-        android:visibility="visible">
+        <RelativeLayout
+            android:id="@+id/tbMenu"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="20dp"
+            android:gravity="center_vertical"
+            android:minHeight="?attr/actionBarSize"
+            android:orientation="horizontal"
+            android:visibility="visible">
 
-        <ImageView
-            android:id="@+id/back"
-            android:layout_width="25dp"
-            android:layout_height="wrap_content"
-            android:src="@drawable/arrow_back" />
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/arrow_back" />
 
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:gravity="center"
-        android:layout_marginHorizontal="20dp"
-        android:layout_toEndOf="@+id/back"
-        android:fontFamily="@font/sf_pro_text_regular"
-        android:text="Select contacts"
-        android:textAlignment="center"
-        android:textColor="@color/bluetheme1"
-        android:textSize="18dp" />
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_toEndOf="@+id/back"
+                android:fontFamily="@font/sf_pro_text_regular"
+                android:gravity="center"
+                android:text="Select contacts"
+                android:textAlignment="center"
+                android:textColor="@color/bluetheme1"
+                android:textSize="18dp" />
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/title"
@@ -64,13 +66,13 @@
                 android:id="@+id/search_contact"
                 android:layout_width="0dp"
                 android:layout_height="36dp"
-                android:layout_weight="1"
                 android:layout_marginStart="10dp"
+                android:layout_weight="1"
                 android:background="@drawable/border"
                 android:backgroundTint="@color/lightgray"
-                app:queryHint="Search Contacts"
+                app:iconifiedByDefault="false"
                 app:queryBackground="@android:color/transparent"
-                app:iconifiedByDefault="false"/>
+                app:queryHint="Search Contacts" />
 
             <ImageView
                 android:id="@+id/edit"
@@ -150,8 +152,8 @@
                 <ImageView
                     android:id="@+id/image"
                     android:layout_width="18dp"
-                    android:layout_marginStart="5dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
                     android:src="@drawable/person_icon" />
 
                 <TextView
@@ -188,10 +190,10 @@
                     android:layout_height="24dp"
                     android:layout_alignParentEnd="true"
                     android:layout_gravity="end"
-                    android:paddingHorizontal="10dp"
                     android:background="@drawable/no_color_border_1"
                     android:backgroundTint="@color/mediumblue"
                     android:gravity="center"
+                    android:paddingHorizontal="10dp"
                     android:text="Select All"
                     android:textColor="@color/blue1"
                     android:visibility="gone" />
@@ -202,10 +204,10 @@
                     android:layout_height="24dp"
                     android:layout_alignParentEnd="true"
                     android:layout_gravity="end"
-                    android:paddingHorizontal="10dp"
                     android:background="@drawable/no_color_border_1"
                     android:backgroundTint="@color/mediumblue"
                     android:gravity="center"
+                    android:paddingHorizontal="10dp"
                     android:text="Deselect all"
                     android:textColor="@color/blue1"
                     android:visibility="gone" />
@@ -234,7 +236,7 @@
                         android:id="@+id/fast_scroller_recycler"
                         android:layout_width="30dp"
                         android:layout_height="match_parent"
-                        android:layout_marginBottom="55dp"/>
+                        android:layout_marginBottom="55dp" />
 
                 </LinearLayout>
 
@@ -245,13 +247,14 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentBottom="true"
                     android:layout_marginEnd="20dp"
-                    app:elevation="0dp"
-                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
                     android:backgroundTint="@color/blue"
-                    android:src="@drawable/baseline_add_24" />
+                    android:src="@drawable/baseline_add_24"
+                    app:elevation="0dp"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
             </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/progressLayout"
         android:layout_width="0dp"
