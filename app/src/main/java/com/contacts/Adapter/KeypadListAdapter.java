@@ -46,6 +46,15 @@ public class KeypadListAdapter extends RecyclerView.Adapter<KeypadListAdapter.ke
         holder.keypad_name.setText(user.first + " " + user.last);
         holder.keypad_number.setText(user.personPhone);
 
+        if (usersArrayList.get(position).image == null) {
+            holder.keypad_personImage.setImageResource(R.drawable.person_placeholder);
+        } else {
+            Picasso.get().load(usersArrayList.get(position).image).into(holder.keypad_personImage);
+        }
+
+        holder.keypad_name.setText(usersArrayList.get(position).first + " " + usersArrayList.get(position).last);
+        holder.keypad_contact.setText(usersArrayList.get(position).personPhone);
+
     }
 
     @Override
@@ -53,6 +62,7 @@ public class KeypadListAdapter extends RecyclerView.Adapter<KeypadListAdapter.ke
         return usersArrayList.size();
     }
 
+<<<<<<< Updated upstream
     public class keypadviewholder extends RecyclerView.ViewHolder {
         ImageView keypad_image,keypad_call;
         TextView keypad_name,keypad_number;
@@ -62,6 +72,18 @@ public class KeypadListAdapter extends RecyclerView.Adapter<KeypadListAdapter.ke
             keypad_call = itemView.findViewById(R.id.keypad_call);
             keypad_name = itemView.findViewById(R.id.keypad_name);
             keypad_number = itemView.findViewById(R.id.keypad_number);
+=======
+    public class
+    keypadviewholder extends RecyclerView.ViewHolder {
+        ImageView keypad_personImage,keypad_call;
+        TextView keypad_name,keypad_contact;
+        public keypadviewholder(@NonNull View itemView) {
+            super(itemView);
+            keypad_personImage = itemView.findViewById(R.id.keypad_personImage);
+            keypad_call = itemView.findViewById(R.id.keypad_call);
+            keypad_name = itemView.findViewById(R.id.keypad_name);
+            keypad_contact = itemView.findViewById(R.id.keypad_contact);
+>>>>>>> Stashed changes
         }
     }
 }

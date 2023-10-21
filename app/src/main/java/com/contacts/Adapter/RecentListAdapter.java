@@ -47,11 +47,11 @@ public class RecentListAdapter extends RecyclerView.Adapter<RecentListAdapter.re
     @Override
     public void onBindViewHolder(@NonNull recentviewholder holder, int position) {
 
-        if (recentArrayList.get(position).getIamge() == null) {
-            holder.recent_personImage.setImageResource(R.drawable.person_placeholder);
-        } else {
-            Picasso.get().load(recentArrayList.get(position).getIamge()).into(holder.recent_personImage);
-        }
+//        if (recentArrayList.get(position).getIamge() == null) {
+//            holder.recent_personImage.setImageResource(R.drawable.person_placeholder);
+//        } else {
+//            Picasso.get().load(recentArrayList.get(position).getIamge()).into(holder.recent_personImage);
+//        }
 
         if (recentArrayList.get(position).getStatus().equals("Outgoing")) {
             holder.outgoing.setVisibility(View.VISIBLE);

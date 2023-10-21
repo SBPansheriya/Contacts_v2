@@ -45,6 +45,14 @@ public class KeypadFragment extends Fragment {
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(keypadListAdapter);
 
+        recyclerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+
         return view;
     }
 
