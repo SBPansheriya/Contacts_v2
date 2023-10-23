@@ -5,10 +5,12 @@
     android:layout_height="match_parent"
     tools:context=".Fragment.KeypadFragment">
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/keypadrecyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
         tools:listitem="@layout/keypad_list_item"/>
 
 </FrameLayout>

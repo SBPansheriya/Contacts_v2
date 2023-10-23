@@ -1,6 +1,9 @@
 package com.contacts.Activity;
 
 import static android.content.Context.ACTIVITY_SERVICE;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -8,6 +11,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -41,6 +45,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     int favorite;
     Users user;
     ArrayList<Users> usersArrayList = new ArrayList<>();
+    ActivityResultLauncher<Intent> launchSomeActivity;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -55,21 +60,28 @@ public class ContactDetailActivity extends AppCompatActivity {
         checkPermission();
 
         user = (Users) getIntent().getSerializableExtra("user");
+        setData();
 
-        selected_person_name.setText("" + user.first + " " + "" + user.last);
-        selected_person_pnum.setText(user.personPhone);
-        if (user.image == null) {
-            selected_person_image.setImageResource(R.drawable.person_placeholder);
-        } else {
-            Picasso.get().load(user.image).into(selected_person_image);
-        }
-        message_whatsapp.setText(user.personPhone);
+        launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent data = result.getData();
+                // do your operation from here....
+                if (data != null) {
+                    user = (Users) result.getData().getSerializableExtra("user");
+
+                    if (user != null) {
+                        setData();
+                    }
+                }
+            }
+        });
+
+
 
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + user.personPhone));
-//                if (ActivityCompat.checkSelfPermission(ContactDetailActivity.this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
                     startActivity(intent);
                     Toast.makeText(ContactDetailActivity.this, "Calling " + user.first + " " + user.last, Toast.LENGTH_SHORT).show();
 //                }
@@ -81,7 +93,7 @@ public class ContactDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(ContactDetailActivity.this, UpdateContactActivity.class);
                 intent.putExtra("user", user);
-                startActivity(intent);
+                launchSomeActivity.launch(intent);
             }
         });
 
@@ -163,6 +175,17 @@ public class ContactDetailActivity extends AppCompatActivity {
         });
     }
 
+    private void setData() {
+        selected_person_name.setText("" + user.first + " " + "" + user.last);
+        selected_person_pnum.setText(user.personPhone);
+        if (user.image == null) {
+            selected_person_image.setImageResource(R.drawable.person_placeholder);
+        } else {
+            Picasso.get().load(user.image).into(selected_person_image);
+        }
+        message_whatsapp.setText(user.personPhone);
+    }
+
     private void checkPermission() {
         if (ContextCompat.checkSelfPermission(ContactDetailActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(ContactDetailActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 100);
@@ -202,5 +225,13 @@ public class ContactDetailActivity extends AppCompatActivity {
         selected_person_onum = findViewById(R.id.selected_person_onum);
         message_whatsapp = findViewById(R.id.message_whatsapp);
         office_contact_details_linear = findViewById(R.id.office_contact_details_linear);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("user", user);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

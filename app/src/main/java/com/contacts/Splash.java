@@ -40,12 +40,6 @@ import java.util.Locale;
 
 public class Splash extends AppCompatActivity {
 
-    private static final String[] permissions = {
-            Manifest.permission.READ_CONTACTS,
-            Manifest.permission.READ_CALL_LOG,
-            Manifest.permission.CALL_PHONE
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

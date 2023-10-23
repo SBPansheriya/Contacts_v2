@@ -1,5 +1,6 @@
 package com.contacts.Adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +21,21 @@ public class KeypadListAdapter extends RecyclerView.Adapter<KeypadListAdapter.ke
 
     KeypadFragment keypadFragment;
     ArrayList<Users> usersArrayList;
+    Context context;
 
     public KeypadListAdapter(KeypadFragment keypadFragment, ArrayList<Users> usersArrayList) {
         this.keypadFragment = keypadFragment;
         this.usersArrayList = usersArrayList;
+    }
+
+//    public KeypadListAdapter(Context context, ArrayList<Users> filteredList) {
+//        this.context = context;
+//        this.usersArrayList = usersArrayList;
+//    }
+
+    public void setFilteredList(ArrayList<Users> filteredList){
+        this.usersArrayList = filteredList;
+        notifyDataSetChanged();
     }
 
     @NonNull

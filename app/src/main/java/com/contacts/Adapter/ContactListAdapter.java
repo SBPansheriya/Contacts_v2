@@ -1,21 +1,17 @@
 package com.contacts.Adapter;
 
-import static com.contacts.Class.Constant.usersArrayList;
-
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,14 +21,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.contacts.Activity.ContactDetailActivity;
 import com.contacts.Class.Constant;
 import com.contacts.Fragment.ContactsFragment;
-import com.contacts.Model.Header;
 import com.contacts.Model.Users;
 import com.contacts.R;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> {
@@ -40,10 +32,12 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     ContactsFragment contactsFragment;
     ArrayList<Users> usersList;
     int favorites;
+    boolean isEdit = false;
 
-    public ContactListAdapter(ContactsFragment contactsFragment, ArrayList<Users> usersList) {
+    public ContactListAdapter(ContactsFragment contactsFragment, ArrayList<Users> usersList, boolean isEdit) {
         this.contactsFragment = contactsFragment;
         this.usersList = usersList;
+        this.isEdit = isEdit;
     }
 
     public void setFilteredList(ArrayList<Users> filteredList){
@@ -83,7 +77,6 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             holder.fav_add.setVisibility(View.GONE);
         }
 
-
         if (button.equals("fav")){
             holder.no_fav_add.setVisibility(View.VISIBLE);
         }
@@ -117,7 +110,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
         holder.personName.setText(usersList.get(position).first + " " + usersList.get(position).last);
 
-        if (usersList.get(position).image == null) {
+        if (TextUtils.isEmpty(usersList.get(position).image)) {
             holder.personImage.setImageResource(R.drawable.person_placeholder);
         } else {
             Picasso.get().load(usersList.get(position).image).into(holder.personImage);
@@ -126,9 +119,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(contactsFragment.getActivity(), ContactDetailActivity.class);
-                intent.putExtra("user", usersList.get(position));
-                contactsFragment.startActivity(intent);
+                ((ContactsFragment)contactsFragment).intentPass(usersList.get(position));
             }
         });
 
@@ -136,11 +127,25 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             usersList.get(position).setSelected(isChecked);
         });
+
+        if (isEdit) {
+            holder.personImage.setVisibility(View.GONE);
+            holder.checkBox.setVisibility(View.VISIBLE);
+        } else {
+            holder.personImage.setVisibility(View.VISIBLE);
+            holder.checkBox.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public int getItemCount() {
         return usersList.size();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setContactList(ArrayList<Users> usersList) {
+        this.usersList = usersList;
+        notifyDataSetChanged();
     }
 
     public static void addToFavorites(Context context, String contactId,int favorite) {

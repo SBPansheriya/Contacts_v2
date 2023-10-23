@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.contacts.Class.Constant;
 import com.contacts.Fragment.ContactsFragment;
 import com.contacts.Model.Users;
 import com.contacts.R;
@@ -154,43 +155,61 @@ public class UpdateContactActivity extends AppCompatActivity {
         // update photo
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
         ContentProviderOperation.Builder builder = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI);
-        if (user.image != null) {
 
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), newImage);
-                ByteArrayOutputStream image = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, image);
+        if (newImage != null) {
+            if (user.image != null) {
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), newImage);
+                    ByteArrayOutputStream image = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, image);
 
-                builder = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI);
-                builder.withSelection(ContactsContract.Data.CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[]{String.valueOf(contactId),
-                        ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE});
-                builder.withValue(ContactsContract.CommonDataKinds.Photo.PHOTO, image.toByteArray());
-                ops.add(builder.build());
-                getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
-            } catch (Exception e) {
-                e.printStackTrace();
+                    builder = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI);
+                    builder.withSelection(ContactsContract.Data.CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[]{String.valueOf(contactId),
+                            ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE});
+                    builder.withValue(ContactsContract.CommonDataKinds.Photo.PHOTO, image.toByteArray());
+                    ops.add(builder.build());
+                    getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+            else {
+                try {
+                    ContentValues values = new ContentValues();
+                    ContentResolver contentResolver3 = getContentResolver();
+
+                    Bitmap bitmap = null;
+
+                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), newImage);
+                    ByteArrayOutputStream image = new ByteArrayOutputStream();
+
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, image);
+                    values.put(ContactsContract.Data.RAW_CONTACT_ID, contactId);
+                    values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE);
+                    values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, image.toByteArray());
+                    contentResolver3.insert(ContactsContract.Data.CONTENT_URI, values);
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            user.image = newImage.toString();
         } else {
-            try {
-                ContentValues values = new ContentValues();
-                ContentResolver contentResolver3 = getContentResolver();
+            user.image = null;
+        }
+        user.first = newFirstName;
+        user.last = newLastName;
+        user.personPhone = newPersonalPhoneNumber;
+        user.officePhone = "";
 
-                Bitmap bitmap = null;
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), newImage);
-                ByteArrayOutputStream image = new ByteArrayOutputStream();
+        for (int i = 0; i < Constant.usersArrayList.size(); i++) {
 
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, image);
-                values.put(ContactsContract.Data.RAW_CONTACT_ID, contactId);
-                values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE);
-                values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, image.toByteArray());
-                contentResolver3.insert(ContactsContract.Data.CONTENT_URI, values);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            if (Constant.usersArrayList.get(i).contactId.equalsIgnoreCase(contactId)) {
+                Constant.usersArrayList.remove(i);
+                Constant.usersArrayList.add(i,user);
+                break;
             }
         }
-
-        Users user = new Users(contactId, newImage.toString(), newFirstName, newLastName, newPersonalPhoneNumber, "");
-        usersArrayList.add(user);
 
         Toast.makeText(UpdateContactActivity.this, "Updated Contact Successfully", Toast.LENGTH_SHORT).show();
 
@@ -254,5 +273,13 @@ public class UpdateContactActivity extends AppCompatActivity {
         update_ophone = findViewById(R.id.update_ophone);
         update_contact = findViewById(R.id.update_contact);
         show_person_name = findViewById(R.id.show_personName);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("user", user);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

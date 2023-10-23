@@ -1,5 +1,6 @@
 package com.contacts.Adapter;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.He
     ContactListAdapter contactListAdapter;
     private List<String> mDataArray;
     private ArrayList<Integer> mSectionPositions;
+    boolean isEdit = false;
 
     public HeaderListAdapter(ContactsFragment contactsFragment, ArrayList<Header> headerArrayList) {
         this.contactsFragment = contactsFragment;
@@ -60,7 +62,7 @@ public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.He
         }
 
         LinearLayoutManager manager = new LinearLayoutManager(contactsFragment.getContext());
-        contactListAdapter = new ContactListAdapter(contactsFragment, headerArrayList.get(position).usersList);
+        contactListAdapter = new ContactListAdapter(contactsFragment, headerArrayList.get(position).usersList,isEdit);
         holder.Contact_recyclerView.setLayoutManager(manager);
         holder.Contact_recyclerView.setAdapter(contactListAdapter);
     }
@@ -68,6 +70,12 @@ public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.He
     @Override
     public int getItemCount() {
         return headerArrayList.size();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setContactList(ArrayList<Header> headerArrayList) {
+        this.headerArrayList = headerArrayList;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -79,8 +87,8 @@ public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.He
 
         List<String> sections = new ArrayList<>(26);
         mSectionPositions = new ArrayList<>(26);
-        for (int i = 0, size = mDataArray.size(); i < size; i++) {
-            String section = String.valueOf(mDataArray.get(i).charAt(0)).toUpperCase();
+        for (int i = 0, size = headerArrayList.size(); i < size; i++) {
+            String section = String.valueOf(headerArrayList.get(i).header.charAt(0)).toUpperCase();
             if (!sections.contains(section)) {
                 sections.add(section);
                 mSectionPositions.add(i);
@@ -109,5 +117,10 @@ public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.He
             Contact_recyclerView = itemView.findViewById(R.id.contact_recyclerview);
 
         }
+    }
+
+    public void setEdit(boolean edit) {
+        isEdit = edit;
+        notifyDataSetChanged();
     }
 }

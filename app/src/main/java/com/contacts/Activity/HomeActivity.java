@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,9 +18,12 @@ import com.contacts.Fragment.FavoritesFragment;
 import com.contacts.Fragment.GroupsFragment;
 import com.contacts.Fragment.KeypadFragment;
 import com.contacts.Fragment.RecentsFragment;
+import com.contacts.MyBottomSheetDialog;
 import com.contacts.R;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class HomeActivity extends AppCompatActivity implements BottomNavigationView
         .OnNavigationItemSelectedListener{
@@ -81,6 +85,8 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             return true;
         }
         if (item.getItemId() == R.id.keypad) {
+            BottomSheetDialogFragment bottomSheetDialog = new MyBottomSheetDialog();
+            bottomSheetDialog.show(getSupportFragmentManager(), bottomSheetDialog.getTag());
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.framelayout, keypadFragment)

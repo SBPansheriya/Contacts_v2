@@ -1,16 +1,20 @@
 package com.contacts.Activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.contacts.Class.Constant;
 import com.contacts.Fragment.ContactsFragment;
 import com.contacts.Model.Users;
 import com.contacts.R;
@@ -39,7 +44,6 @@ public class CreateContactActivity extends AppCompatActivity {
     TextView save;
     EditText firstname, lastname, pphone, ophone;
     ImageView addPersonImage, cancel;
-    List<Users> usersList;
     String imagename;
     String imagepath;
     Bitmap bitmap;
@@ -67,6 +71,7 @@ public class CreateContactActivity extends AppCompatActivity {
                     Toast.makeText(CreateContactActivity.this, "Please Fill Data", Toast.LENGTH_SHORT).show();
                 } else {
                     createContact();
+                    Toast.makeText(CreateContactActivity.this, firstname + " Saved", Toast.LENGTH_SHORT).show();
 //                    ContactsFragment fragment = new ContactsFragment();
 //                    FragmentManager fragmentManager = getSupportFragmentManager();
 //                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -74,7 +79,6 @@ public class CreateContactActivity extends AppCompatActivity {
 //                    fragmentTransaction.replace(R.id.framelayout, fragment);
 //                    // Commit the transaction
 //                    fragmentTransaction.commit();
-//                    Toast.makeText(CreateContactActivity.this, "Saved Data To SharedPreferences", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -89,7 +93,6 @@ public class CreateContactActivity extends AppCompatActivity {
     }
 
     public void createContact() {
-        imagepath = imagepath + "/" + imagename;
         String first = firstname.getText().toString();
         String last = lastname.getText().toString();
         String personPhone = pphone.getText().toString();
@@ -103,7 +106,7 @@ public class CreateContactActivity extends AppCompatActivity {
         values.put(ContactsContract.RawContacts.ACCOUNT_NAME, (String) null);
         Uri rawContactUri = contentResolver.insert(ContactsContract.RawContacts.CONTENT_URI, values);
 
-        long rawContactId = ContentUris.parseId(rawContactUri);
+        String rawContactId = String.valueOf(ContentUris.parseId(rawContactUri));
 
 // Add the contact's name
         values.clear();
@@ -127,24 +130,43 @@ public class CreateContactActivity extends AppCompatActivity {
         values.put(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_WORK);
         contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
 
-        values.clear();
-        values.put(ContactsContract.Data.RAW_CONTACT_ID, rawContactId);
-        values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE);
-        ByteArrayOutputStream image = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG , 100, image);
-        values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, image.toByteArray());
-        contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
+        ByteArrayOutputStream image = null;
+        if (bitmap != null) {
+            values.clear();
+            values.put(ContactsContract.Data.RAW_CONTACT_ID, rawContactId);
+            values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE);
+            image = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, image);
+            values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, image.toByteArray());
+            contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
+        }
+
+        Users users = new Users(rawContactId, "",first,last,personPhone,"");
+        Constant.usersArrayList.add(users);
 
         finish();
 
-//        if (imagepath != null) {
-//            ContentValues photoValues = new ContentValues();
-//            photoValues.put(ContactsContract.RawContacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE);
-//            photoValues.put(ContactsContract.CommonDataKinds.Photo.PHOTO, bitmapToByteArray(imagepath));
-//            photoValues.put(ContactsContract.RawContacts.Data.RAW_CONTACT_ID, rawContactId);
-//            contentResolver.insert(ContactsContract.Data.CONTENT_URI, photoValues);
-//        }
+        onBackPressed();
 
+    }
+
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
+        }
+        else {
+            createContact();
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            createContact();
+        } else {
+            Toast.makeText(this, "Permission Denied.", Toast.LENGTH_SHORT).show();
+            checkPermission();
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

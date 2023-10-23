@@ -7,6 +7,7 @@ import static com.contacts.Class.Constant.usersArrayList;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -19,6 +20,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
@@ -42,9 +45,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.contacts.Activity.ContactDetailActivity;
 import com.contacts.Adapter.ContactListAdapter;
 import com.contacts.Adapter.HeaderListAdapter;
 import com.contacts.Activity.CreateContactActivity;
+import com.contacts.Class.Constant;
 import com.contacts.Model.Header;
 import com.contacts.Model.Users;
 import com.contacts.R;
@@ -66,14 +71,16 @@ public class ContactsFragment extends Fragment {
     RecyclerView recyclerView;
     RelativeLayout tbmenu;
     LinearLayout no_contcat_found_linear, Contact_found_linear;
-    ImageView edit, cancel, share, delete,back;
+    ImageView edit, cancel, share, delete, back;
     Button create_btn;
     SearchView searchView;
     TextView selectall, totalcontact, deselectall;
     FloatingActionButton floatingActionButton;
     ViewGroup viewGroup;
+    Users users;
     Context context;
     SpinKitView spin_kit;
+    ActivityResultLauncher<Intent> launchSomeActivity;
     RelativeLayout progressLayout;
 
     @Override
@@ -90,15 +97,32 @@ public class ContactsFragment extends Fragment {
 
         String button = getArguments().getString("btn");
 
-        if (button.equals("fav")){
+        if (button.equals("fav")) {
             tbmenu.setVisibility(View.VISIBLE);
+            edit.setVisibility(View.GONE);
         }
-        if (button.equals("no_fav_found")){
+        if (button.equals("no_fav_found")) {
             tbmenu.setVisibility(View.VISIBLE);
+            edit.setVisibility(View.GONE);
         }
-        if (button.equals("contact")){
+        if (button.equals("contact")) {
             tbmenu.setVisibility(View.GONE);
         }
+
+
+        launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent data = result.getData();
+                // do your operation from here....
+                if (data != null) {
+                    users = (Users) result.getData().getSerializableExtra("user");
+                    usersArrayList.add(users);
+                    if (users != null) {
+//                        setData();
+                    }
+                }
+            }
+        });
 
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -117,6 +141,7 @@ public class ContactsFragment extends Fragment {
                 cancel.setVisibility(View.VISIBLE);
                 share.setVisibility(View.VISIBLE);
                 delete.setVisibility(View.VISIBLE);
+                headerListAdapter.setEdit(true);
             }
         });
 
@@ -129,6 +154,14 @@ public class ContactsFragment extends Fragment {
 //                        .replace(R.id.framelayout, mFragment)
 //                        .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 //                        .commit();
+                edit.setVisibility(View.VISIBLE);
+                selectall.setVisibility(View.GONE);
+                deselectall.setVisibility(View.GONE);
+                cancel.setVisibility(View.GONE);
+                share.setVisibility(View.GONE);
+                delete.setVisibility(View.GONE);
+                deselectAllItems();
+                headerListAdapter.setEdit(false);
             }
         });
 
@@ -136,12 +169,12 @@ public class ContactsFragment extends Fragment {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Fragment mFragment = new FavoritesFragment();
-//                getActivity().getSupportFragmentManager()
-//                        .beginTransaction()
-//                        .replace(R.id.framelayout, mFragment)
-//                        .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-//                        .commit();
+                Fragment mFragment = new FavoritesFragment();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.framelayout, mFragment)
+                        .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        .commit();
             }
         });
 
@@ -188,7 +221,6 @@ public class ContactsFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         deleteSelectedItems();
-
                         dialog.dismiss();
                     }
                 });
@@ -325,9 +357,11 @@ public class ContactsFragment extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     private void getContactList() {
+
+//        usersArrayList = new ArrayList<>();
 //        progressLayout.setVisibility(View.VISIBLE);
 //
-//        usersArrayList = new ArrayList<>();
+
 //
 //        ContentResolver contentResolver = getContext().getContentResolver();
 //        Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
@@ -393,6 +427,7 @@ public class ContactsFragment extends Fragment {
             }
             Header header1 = new Header("#", new ArrayList<>());
             headerArrayList.add(header1);
+
             for (int i = 0; i < usersArrayList.size(); i++) {
                 if (!TextUtils.isEmpty(usersArrayList.get(i).first)) {
                     boolean isMatch = false;
@@ -406,9 +441,28 @@ public class ContactsFragment extends Fragment {
                             break;
                         }
                     }
-
                     if (!isMatch) {
                         headerArrayList.get(headerArrayList.size() - 1).usersList.add(usersArrayList.get(i));
+                    }
+                }
+            }
+
+            if (headerArrayList.size() > 0) {
+                ArrayList<Header> removeHeaders = new ArrayList<>();
+                for (int i = 0; i < headerArrayList.size(); i++) {
+                    if (headerArrayList.get(i).usersList.size() == 0) {
+                        removeHeaders.add(headerArrayList.get(i));
+                    }
+                }
+
+                if (removeHeaders.size() > 0) {
+                    for (int i = 0; i < removeHeaders.size(); i++) {
+                        for (int i1 = 0; i1 < headerArrayList.size(); i1++) {
+                            if (removeHeaders.get(i).header.equals(headerArrayList.get(i1).header)) {
+                                headerArrayList.remove(i1);
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -417,9 +471,16 @@ public class ContactsFragment extends Fragment {
             headerListAdapter = new HeaderListAdapter(ContactsFragment.this, headerArrayList);
             recyclerView.setLayoutManager(manager);
             recyclerView.setAdapter(headerListAdapter);
-            headerListAdapter.notifyDataSetChanged();
+
         }
+        headerListAdapter.notifyDataSetChanged();
         progressLayout.setVisibility(View.GONE);
+    }
+
+    public void intentPass(Users users) {
+        Intent intent = new Intent(getActivity(), ContactDetailActivity.class);
+        intent.putExtra("user", users);
+        launchSomeActivity.launch(intent);
     }
 
 //    private List<String> getPhoneNumbers(ContentResolver contentResolver, String contactId) {
