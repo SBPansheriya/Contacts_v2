@@ -34,10 +34,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -77,8 +79,8 @@ public class ContactsFragment extends Fragment {
     TextView selectall, totalcontact, deselectall;
     FloatingActionButton floatingActionButton;
     ViewGroup viewGroup;
-    Users users;
     Context context;
+    Users users;
     SpinKitView spin_kit;
     ActivityResultLauncher<Intent> launchSomeActivity;
     RelativeLayout progressLayout;
@@ -88,6 +90,7 @@ public class ContactsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_contacts, container, false);
 
         init(view);
+
         searchView.clearFocus();
         Sprite threeBounce = new ThreeBounce();
         spin_kit.setIndeterminateDrawable(threeBounce);
@@ -116,14 +119,24 @@ public class ContactsFragment extends Fragment {
                 // do your operation from here....
                 if (data != null) {
                     users = (Users) result.getData().getSerializableExtra("user");
-                    usersArrayList.add(users);
                     if (users != null) {
-//                        setData();
+                        boolean isMatch = false;
+                        for (int i = 0; i < usersArrayList.size(); i++) {
+                            if (usersArrayList.get(i).contactId.equalsIgnoreCase(users.contactId)) {
+                                isMatch = true;
+                                usersArrayList.remove(i);
+                                usersArrayList.add(i, users);
+                                break;
+                            }
+                        }
+                        if (!isMatch) {
+                            usersArrayList.add(users);
+                        }
+                        getContactList();
                     }
                 }
             }
         });
-
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,12 +161,6 @@ public class ContactsFragment extends Fragment {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Fragment mFragment = new ContactsFragment();
-//                getActivity().getSupportFragmentManager()
-//                        .beginTransaction()
-//                        .replace(R.id.framelayout, mFragment)
-//                        .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-//                        .commit();
                 edit.setVisibility(View.VISIBLE);
                 selectall.setVisibility(View.GONE);
                 deselectall.setVisibility(View.GONE);
@@ -164,7 +171,6 @@ public class ContactsFragment extends Fragment {
                 headerListAdapter.setEdit(false);
             }
         });
-
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,7 +188,8 @@ public class ContactsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), CreateContactActivity.class);
-                startActivity(intent);
+                intent.putExtra("user", users);
+                launchSomeActivity.launch(intent);
             }
         });
 
@@ -200,30 +207,48 @@ public class ContactsFragment extends Fragment {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ArrayList<Users> itemsToRemove = getSelected();
 
-                Dialog dialog = new Dialog(ContactsFragment.this.getContext());
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.setContentView(R.layout.dailog_layout);
-                dialog.setCancelable(false);
-                dialog.show();
-
-                Button cancel = dialog.findViewById(R.id.canceldialog);
-                Button movetobin = dialog.findViewById(R.id.movetobin);
-
-                cancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
+                if (itemsToRemove.isEmpty()) {
+                    Toast.makeText(getContext(), "No selected contact found", Toast.LENGTH_SHORT).show();
+                } else {
+                    Dialog dialog = new Dialog(ContactsFragment.this.getContext());
+                    if (dialog.getWindow() != null) {
+                        dialog.getWindow().setGravity(Gravity.CENTER);
+                        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                        dialog.setCancelable(false);
                     }
-                });
+                    dialog.setContentView(R.layout.dailog_layout);
+                    dialog.setCancelable(false);
+                    dialog.show();
 
-                movetobin.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        deleteSelectedItems();
-                        dialog.dismiss();
-                    }
-                });
+                    Button cancel1 = dialog.findViewById(R.id.canceldialog);
+                    Button movetobin = dialog.findViewById(R.id.movetobin);
+
+                    cancel1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    movetobin.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            deleteSelectedItems();
+                            edit.setVisibility(View.VISIBLE);
+                            selectall.setVisibility(View.GONE);
+                            deselectall.setVisibility(View.GONE);
+                            cancel.setVisibility(View.GONE);
+                            share.setVisibility(View.GONE);
+                            delete.setVisibility(View.GONE);
+                            deselectAllItems();
+                            Toast.makeText(getContext(), "Deleted contact successfully", Toast.LENGTH_SHORT).show();
+                            headerListAdapter.setEdit(false);
+                            dialog.dismiss();
+                        }
+                    });
+                }
             }
         });
 
@@ -248,7 +273,7 @@ public class ContactsFragment extends Fragment {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shareSelected();
+                shareSelectedUsers();
             }
         });
 
@@ -260,6 +285,7 @@ public class ContactsFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+
                 filterList(newText);
                 return true;
             }
@@ -284,36 +310,55 @@ public class ContactsFragment extends Fragment {
     }
 
     private void deleteSelectedItems() {
-        List<Users> itemsToRemove = new ArrayList<>();
+        ArrayList<Users> itemsToRemove = new ArrayList<>();
+
         for (Users users : usersArrayList) {
             if (users.isSelected()) {
                 itemsToRemove.add(users);
                 deleteContact(getContext(), users.contactId);
             }
         }
-        usersArrayList.removeAll(itemsToRemove);
-        headerListAdapter.notifyDataSetChanged();
-    }
 
-    private void shareSelected() {
-        for (Users users : usersArrayList) {
-            Uri shareUri = null;
-            if (users.isSelected()) {
-
-                String lookupKey = getLookupKey(users.contactId);
-                if (TextUtils.isEmpty(lookupKey)) {
-                    Log.e(TAG, "couldn't get lookupKey");
-                    return;
+        for (int i = 0; i < itemsToRemove.size(); i++) {
+            for (int i1 = 0; i1 < usersArrayList.size(); i1++) {
+                if (itemsToRemove.get(i).contactId.equalsIgnoreCase(usersArrayList.get(i1).contactId)) {
+                    usersArrayList.remove(i1);
+                    break;
                 }
-                shareUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_VCARD_URI, lookupKey);
-
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.setType(ContactsContract.Contacts.CONTENT_VCARD_TYPE);
-                intent.putExtra(Intent.EXTRA_STREAM, shareUri);
-                intent.putExtra(Intent.EXTRA_SUBJECT, "Share a contact");
-                startActivity(intent);
             }
         }
+        getContactList();
+
+    }
+
+    public void shareSelectedUsers() {
+        ArrayList<Users> selectedUsers = getSelected();
+
+        if (selectedUsers.isEmpty()) {
+            Toast.makeText(getContext(), "No selected contact found", Toast.LENGTH_SHORT).show();
+        } else {
+            StringBuilder shareText = new StringBuilder();
+
+            for (Users user : selectedUsers) {
+                shareText.append("Name: ").append(user.getFirst() + " " + user.getLast()).append("\n");
+                shareText.append("Number: ").append(user.getPersonPhone()).append("\n");
+            }
+
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareText.toString());
+            startActivity(Intent.createChooser(shareIntent, "Share Selected Users"));
+        }
+    }
+
+    public ArrayList<Users> getSelected() {
+        ArrayList<Users> selected = new ArrayList<>();
+        for (Users u : usersArrayList) {
+            if (u.isSelected()) {
+                selected.add(u);
+            }
+        }
+        return selected;
     }
 
     private String getLookupKey(String contactId) {
@@ -357,56 +402,6 @@ public class ContactsFragment extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     private void getContactList() {
-
-//        usersArrayList = new ArrayList<>();
-//        progressLayout.setVisibility(View.VISIBLE);
-//
-
-//
-//        ContentResolver contentResolver = getContext().getContentResolver();
-//        Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-//
-//        if (cursor != null && cursor.getCount() > 0) {
-//            while (cursor.moveToNext()) {
-//                @SuppressLint("Range") String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-//                @SuppressLint("Range") String phoneName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-//                @SuppressLint("Range") String photoUri = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
-//
-//                String firstName = "";
-//                String lastName = "";
-//                if (!TextUtils.isEmpty(phoneName)) {
-//                    if (phoneName.contains(" ")) {
-//                        String currentString = phoneName;
-//                        String[] separated = currentString.split(" ");
-//                        firstName = separated[0];
-//                        lastName = separated[1];
-//                    } else {
-//                        firstName = phoneName;
-//                        lastName = "";
-//                    }
-//                }
-//
-//
-//                // Get phone numbers
-//                List<String> phoneNumbers = getPhoneNumbers(contentResolver, contactId);
-//                String phoneNumber = "";
-//                String officeNumber = "";
-//                if (phoneNumbers.size() > 0) {
-//                    if (phoneNumbers.size() > 2) {
-//                        phoneNumber = phoneNumbers.get(0);
-//                        officeNumber = phoneNumbers.get(1);
-//                    } else {
-//                        phoneNumber = phoneNumbers.get(0);
-//                        officeNumber = "";
-//                    }
-//                }
-//
-//                // Create a User object with the retrieved data and add it to the ArrayList
-//                Users user = new Users(contactId, photoUri, firstName, lastName, phoneNumber, officeNumber);
-//                usersArrayList.add(user);
-//            }
-//            cursor.close();
-//        }
         if (usersArrayList.size() > 0) {
             Comparator<Users> nameComparator = new Comparator<Users>() {
                 @Override
@@ -471,9 +466,7 @@ public class ContactsFragment extends Fragment {
             headerListAdapter = new HeaderListAdapter(ContactsFragment.this, headerArrayList);
             recyclerView.setLayoutManager(manager);
             recyclerView.setAdapter(headerListAdapter);
-
         }
-        headerListAdapter.notifyDataSetChanged();
         progressLayout.setVisibility(View.GONE);
     }
 
@@ -482,25 +475,6 @@ public class ContactsFragment extends Fragment {
         intent.putExtra("user", users);
         launchSomeActivity.launch(intent);
     }
-
-//    private List<String> getPhoneNumbers(ContentResolver contentResolver, String contactId) {
-//        List<String> phoneNumbers = new ArrayList<>();
-//
-//        Uri phoneUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-//        String[] phoneProjection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
-//        String phoneSelection = ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?";
-//        Cursor phoneCursor = contentResolver.query(phoneUri, phoneProjection, phoneSelection, new String[]{contactId}, null);
-//
-//        if (phoneCursor != null) {
-//            while (phoneCursor.moveToNext()) {
-//                @SuppressLint("Range") String phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-//                phoneNumbers.add(phoneNumber);
-//            }
-//            phoneCursor.close();
-//        }
-//
-//        return phoneNumbers;
-//    }
 
     private void checkPermission() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {

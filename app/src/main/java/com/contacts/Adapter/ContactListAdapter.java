@@ -31,12 +31,15 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     ContactsFragment contactsFragment;
     ArrayList<Users> usersList;
+    ArrayList<Users> originalChildItemList;
+
     int favorites;
     boolean isEdit = false;
 
     public ContactListAdapter(ContactsFragment contactsFragment, ArrayList<Users> usersList, boolean isEdit) {
         this.contactsFragment = contactsFragment;
         this.usersList = usersList;
+        this.originalChildItemList = new ArrayList<>(usersList);
         this.isEdit = isEdit;
     }
 
@@ -142,10 +145,19 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         return usersList.size();
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void setContactList(ArrayList<Users> usersList) {
-        this.usersList = usersList;
-        notifyDataSetChanged();
+    public void filter(String query) {
+        query = query.toLowerCase();
+        usersList.clear();
+        if (query.isEmpty()) {
+            usersList.addAll(originalChildItemList);
+        } else {
+            for (Users item : originalChildItemList) {
+                if (item.getFirst().toLowerCase().contains(query)) {
+                    usersList.add(item);
+                }
+            }
+        }
+        notifyDataSetChanged(); // Refresh the RecyclerView
     }
 
     public static void addToFavorites(Context context, String contactId,int favorite) {

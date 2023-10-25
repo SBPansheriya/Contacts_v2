@@ -6,11 +6,18 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import com.contacts.Fragment.ContactsFragment;
@@ -22,6 +29,7 @@ import com.contacts.MyBottomSheetDialog;
 import com.contacts.R;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -86,6 +94,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         }
         if (item.getItemId() == R.id.keypad) {
             BottomSheetDialogFragment bottomSheetDialog = new MyBottomSheetDialog();
+            bottomSheetDialog.getShowsDialog();
             bottomSheetDialog.show(getSupportFragmentManager(), bottomSheetDialog.getTag());
             getSupportFragmentManager()
                     .beginTransaction()

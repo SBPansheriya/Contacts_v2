@@ -54,7 +54,7 @@ public class FavListAdapter extends RecyclerView.Adapter<FavListAdapter.favourit
             Picasso.get().load(favoriteContacts.get(position).image).into(holder.fav_person_image);
         }
 
-        holder.fav_person_name.setText(favoriteContacts.get(position).first + "" + favoriteContacts.get(position).last);
+        holder.fav_person_name.setText(favoriteContacts.get(position).first + " " + favoriteContacts.get(position).last);
 
         holder.info_plite.setOnClickListener(new View.OnClickListener() {
             @Override

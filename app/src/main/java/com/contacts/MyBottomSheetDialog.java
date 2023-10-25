@@ -3,6 +3,7 @@ package com.contacts;
 import static com.contacts.Fragment.KeypadFragment.keypadListAdapter;
 import static com.contacts.Fragment.KeypadFragment.recyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -25,6 +27,7 @@ import com.contacts.Adapter.KeypadListAdapter;
 import com.contacts.Class.Constant;
 import com.contacts.Fragment.KeypadFragment;
 import com.contacts.Model.Users;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayList;
@@ -33,10 +36,13 @@ public class MyBottomSheetDialog extends BottomSheetDialogFragment {
 
     String s;
 
+    @SuppressLint("ResourceType")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_dialog_layout, container, false);
+
+        onStart();
 
         ImageView btn_1 = view.findViewById(R.id.btn_1);
         ImageView btn_2 = view.findViewById(R.id.btn_2);
@@ -52,7 +58,6 @@ public class MyBottomSheetDialog extends BottomSheetDialogFragment {
         ImageView btn_star = view.findViewById(R.id.btn_star);
         ImageView btn_call = view.findViewById(R.id.btn_call);
         ImageView btn_backpress = view.findViewById(R.id.btn_backpress);
-//        SearchView searchView = bottomSheetDialog.findViewById(R.id.dailer_show);
         EditText editText = view.findViewById(R.id.dailer_show);
 
         btn_0.setOnClickListener(new View.OnClickListener() {
@@ -220,6 +225,14 @@ public class MyBottomSheetDialog extends BottomSheetDialogFragment {
         });
 
         return view;
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (getDialog() != null && getDialog().getWindow() != null) {
+            getDialog().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        }
     }
 
 }

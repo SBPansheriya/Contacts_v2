@@ -1,5 +1,7 @@
 package com.contacts.Activity;
 
+import static com.contacts.Class.Constant.usersArrayList;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -20,6 +22,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -46,6 +49,7 @@ public class CreateContactActivity extends AppCompatActivity {
     ImageView addPersonImage, cancel;
     String imagename;
     String imagepath;
+    Users user;
     Bitmap bitmap;
     private static final int CAMERA_REQUEST = 100;
 
@@ -57,6 +61,11 @@ public class CreateContactActivity extends AppCompatActivity {
         window.setStatusBarColor(ContextCompat.getColor(CreateContactActivity.this, R.color.white));
         init();
 
+        ActivityCompat.requestPermissions(CreateContactActivity.this, new String[]{Manifest.permission.WRITE_CONTACTS}, 100);
+
+//        checkPermission();
+        user = (Users) getIntent().getSerializableExtra("user");
+
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -67,18 +76,12 @@ public class CreateContactActivity extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (firstname.getText().toString().isEmpty() && pphone.getText().toString().isEmpty()) {
+                if(TextUtils.isEmpty(firstname.getText().toString()) || TextUtils.isEmpty(pphone.getText().toString())){
                     Toast.makeText(CreateContactActivity.this, "Please Fill Data", Toast.LENGTH_SHORT).show();
-                } else {
+                }
+                else {
                     createContact();
-                    Toast.makeText(CreateContactActivity.this, firstname + " Saved", Toast.LENGTH_SHORT).show();
-//                    ContactsFragment fragment = new ContactsFragment();
-//                    FragmentManager fragmentManager = getSupportFragmentManager();
-//                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                    // Replace the content of the activity with the fragment
-//                    fragmentTransaction.replace(R.id.framelayout, fragment);
-//                    // Commit the transaction
-//                    fragmentTransaction.commit();
+                    Toast.makeText(CreateContactActivity.this, "Contact saved", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -131,22 +134,28 @@ public class CreateContactActivity extends AppCompatActivity {
         contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
 
         ByteArrayOutputStream image = null;
-        if (bitmap != null) {
-            values.clear();
-            values.put(ContactsContract.Data.RAW_CONTACT_ID, rawContactId);
-            values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE);
-            image = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, image);
-            values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, image.toByteArray());
-            contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
+        Uri path = null;
+        if (TextUtils.isEmpty((CharSequence) path)) {
+            if (bitmap != null) {
+                values.clear();
+                values.put(ContactsContract.Data.RAW_CONTACT_ID, rawContactId);
+                values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE);
+                image = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, image);
+                path = Uri.parse(MediaStore.Images.Media.insertImage(contentResolver, bitmap, "Title", null));
+                values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, path.toString());
+                values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, image.toByteArray());
+                contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
+            }
+        }
+        else {
+            path = null;
         }
 
-        Users users = new Users(rawContactId, "",first,last,personPhone,"");
-        Constant.usersArrayList.add(users);
-
-        finish();
-
+        user = new Users(rawContactId, path.toString() ,first,last,personPhone,"");
+        usersArrayList.add(user);
         onBackPressed();
+        finish();
 
     }
 
@@ -154,15 +163,11 @@ public class CreateContactActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
         }
-        else {
-            createContact();
-        }
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            createContact();
         } else {
             Toast.makeText(this, "Permission Denied.", Toast.LENGTH_SHORT).show();
             checkPermission();
@@ -208,5 +213,13 @@ public class CreateContactActivity extends AppCompatActivity {
         pphone = findViewById(R.id.pphone);
         ophone = findViewById(R.id.ophone);
         save = findViewById(R.id.save_Contact);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("user", user);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

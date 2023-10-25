@@ -77,14 +77,12 @@ public class ContactDetailActivity extends AppCompatActivity {
         });
 
 
-
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + user.personPhone));
-                    startActivity(intent);
-                    Toast.makeText(ContactDetailActivity.this, "Calling " + user.first + " " + user.last, Toast.LENGTH_SHORT).show();
-//                }
+                startActivity(intent);
+                Toast.makeText(ContactDetailActivity.this, "Calling " + user.first + " " + user.last, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -151,7 +149,7 @@ public class ContactDetailActivity extends AppCompatActivity {
                 favourites.setVisibility(View.VISIBLE);
                 unfavourites.setVisibility(View.GONE);
                 favorite = 1;
-                addToFavorites(ContactDetailActivity.this, user.contactId,favorite);
+                addToFavorites(ContactDetailActivity.this, user.contactId, favorite);
                 Toast.makeText(ContactDetailActivity.this, "Add into favourites", Toast.LENGTH_SHORT).show();
             }
         });
@@ -162,7 +160,7 @@ public class ContactDetailActivity extends AppCompatActivity {
                 favourites.setVisibility(View.GONE);
                 unfavourites.setVisibility(View.VISIBLE);
                 favorite = 0;
-                addToFavorites(ContactDetailActivity.this, user.contactId,favorite);
+                addToFavorites(ContactDetailActivity.this, user.contactId, favorite);
                 Toast.makeText(ContactDetailActivity.this, "Remove from favourites", Toast.LENGTH_SHORT).show();
             }
         });
@@ -203,7 +201,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         }
     }
 
-    public static void addToFavorites(Context context, String contactId,int favorite) {
+    public static void addToFavorites(Context context, String contactId, int favorite) {
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues values = new ContentValues();
         Uri rawContactUri = Uri.withAppendedPath(ContactsContract.RawContacts.CONTENT_URI, contactId);

@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:id="@+id/dialog_linear"
-    android:layout_width="370dp"
+    android:layout_width="360dp"
     android:layout_gravity="center"
-    android:layout_height="wrap_content">
+    android:layout_height="206dp">
     
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -62,7 +62,7 @@ synced devices."/>
                 android:textColor="@color/black"/>
 
             <View
-                android:layout_width="50dp"
+                android:layout_width="20dp"
                 android:layout_height="0dp"/>
 
             <Button

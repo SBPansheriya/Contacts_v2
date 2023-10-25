@@ -1,15 +1,19 @@
 package com.contacts.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.contacts.Activity.ContactDetailActivity;
 import com.contacts.Fragment.KeypadFragment;
 import com.contacts.Model.Users;
 import com.contacts.R;
@@ -21,17 +25,11 @@ public class KeypadListAdapter extends RecyclerView.Adapter<KeypadListAdapter.ke
 
     KeypadFragment keypadFragment;
     ArrayList<Users> usersArrayList;
-    Context context;
 
     public KeypadListAdapter(KeypadFragment keypadFragment, ArrayList<Users> usersArrayList) {
         this.keypadFragment = keypadFragment;
         this.usersArrayList = usersArrayList;
     }
-
-//    public KeypadListAdapter(Context context, ArrayList<Users> filteredList) {
-//        this.context = context;
-//        this.usersArrayList = usersArrayList;
-//    }
 
     public void setFilteredList(ArrayList<Users> filteredList){
         this.usersArrayList = filteredList;
@@ -57,6 +55,15 @@ public class KeypadListAdapter extends RecyclerView.Adapter<KeypadListAdapter.ke
 
         holder.keypad_name.setText(user.first + " " + user.last);
         holder.keypad_number.setText(user.personPhone);
+
+        holder.keypad_call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + user.personPhone));
+                keypadFragment.startActivity(intent);
+                Toast.makeText(keypadFragment.getContext(), "Calling " + user.first + " " + user.last, Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 

@@ -50,7 +50,6 @@ public class UpdateContactActivity extends AppCompatActivity {
     String imagename, imagepath;
     Uri newUri;
     Button update_contact;
-    ArrayList<Users> usersArrayList = new ArrayList<>();
     private static final int CAMERA_REQUEST = 100;
     Users user;
 
@@ -211,7 +210,7 @@ public class UpdateContactActivity extends AppCompatActivity {
             }
         }
 
-        Toast.makeText(UpdateContactActivity.this, "Updated Contact Successfully", Toast.LENGTH_SHORT).show();
+        Toast.makeText(UpdateContactActivity.this, "Contact saved", Toast.LENGTH_SHORT).show();
 
         onBackPressed();
     }

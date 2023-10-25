@@ -21,5 +21,6 @@
     <color name="nickel">#6C7072</color>  // com
     <color name="gray90">#6C7072</color>  // com
     <color name="blackforsheet">#FFFFFF</color> // com
+    <color name="transparent">#80000000</color> // com
 
 </resources>

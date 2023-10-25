@@ -37,7 +37,6 @@ public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.He
         this.headerArrayList = headerArrayList;
     }
 
-
     public void setFilteredList(ArrayList<Users> filteredList){
         this.usersList = filteredList;
         notifyDataSetChanged();
