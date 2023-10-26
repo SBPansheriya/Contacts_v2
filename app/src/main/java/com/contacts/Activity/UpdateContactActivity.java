@@ -193,9 +193,10 @@ public class UpdateContactActivity extends AppCompatActivity {
                 }
             }
             user.image = newImage.toString();
-        } else {
-            user.image = null;
         }
+//        else {
+//            user.image = null;
+//        }
         user.first = newFirstName;
         user.last = newLastName;
         user.personPhone = newPersonalPhoneNumber;

@@ -4,6 +4,8 @@ package com.contacts.Fragment;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import static com.contacts.Class.Constant.usersArrayList;
+import static com.contacts.Fragment.KeypadFragment.keypadListAdapter;
+import static com.contacts.Fragment.KeypadFragment.recyclerView;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -32,7 +34,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.ContactsContract;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -41,6 +45,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -52,6 +57,7 @@ import com.contacts.Adapter.ContactListAdapter;
 import com.contacts.Adapter.HeaderListAdapter;
 import com.contacts.Activity.CreateContactActivity;
 import com.contacts.Class.Constant;
+import com.contacts.Model.Alphabet;
 import com.contacts.Model.Header;
 import com.contacts.Model.Users;
 import com.contacts.R;
@@ -60,6 +66,8 @@ import com.github.ybq.android.spinkit.SpinKitView;
 import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.github.ybq.android.spinkit.style.ThreeBounce;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.reddit.indicatorfastscroll.FastScrollItemIndicator;
+import com.reddit.indicatorfastscroll.FastScrollerView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,9 +89,12 @@ public class ContactsFragment extends Fragment {
     ViewGroup viewGroup;
     Context context;
     Users users;
+    Alphabet alphabet;
     SpinKitView spin_kit;
     ActivityResultLauncher<Intent> launchSomeActivity;
     RelativeLayout progressLayout;
+    FastScrollerView fastScrollerView;
+    ArrayList<Alphabet> alphabetArrayList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -112,7 +123,6 @@ public class ContactsFragment extends Fragment {
             tbmenu.setVisibility(View.GONE);
         }
 
-
         launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK) {
                 Intent data = result.getData();
@@ -138,11 +148,26 @@ public class ContactsFragment extends Fragment {
             }
         });
 
+        fastScrollerView.setupWithRecyclerView(recyclerView, (position) -> {
+            for (char i = 'A'; i <= 'Z'; i++) {
+                alphabet = new Alphabet(String.valueOf(i));
+                alphabetArrayList.add(alphabet);
+            }
+            Alphabet alphabet1 = new Alphabet("#");
+            alphabetArrayList.add(alphabet1);
+
+            alphabet = alphabetArrayList.get(position);
+            return new FastScrollItemIndicator.Text(
+                    alphabet.getAlphabet().substring(0, 1).toUpperCase()
+            );
+        });
+
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), CreateContactActivity.class);
-                startActivity(intent);
+                intent.putExtra("user", users);
+                launchSomeActivity.launch(intent);
             }
         });
 
@@ -150,6 +175,7 @@ public class ContactsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 edit.setVisibility(View.GONE);
+                floatingActionButton.setVisibility(View.GONE);
                 selectall.setVisibility(View.VISIBLE);
                 cancel.setVisibility(View.VISIBLE);
                 share.setVisibility(View.VISIBLE);
@@ -175,6 +201,7 @@ public class ContactsFragment extends Fragment {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                getActivity().onBackPressed();
                 Fragment mFragment = new FavoritesFragment();
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
@@ -198,11 +225,7 @@ public class ContactsFragment extends Fragment {
             Contact_found_linear.setVisibility(View.INVISIBLE);
         }
 
-        if (usersArrayList.isEmpty()) {
-            totalcontact.setText("0 Conatcts");
-        } else {
-            totalcontact.setText(usersArrayList.size() + " " + "Contacts");
-        }
+        totalcontact.setText(usersArrayList.size() + "  " + "Contacts");
 
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,7 +239,7 @@ public class ContactsFragment extends Fragment {
                     if (dialog.getWindow() != null) {
                         dialog.getWindow().setGravity(Gravity.CENTER);
                         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-                        dialog.setCancelable(false);
+                         dialog.setCancelable(false);
                     }
                     dialog.setContentView(R.layout.dailog_layout);
                     dialog.setCancelable(false);
@@ -285,7 +308,6 @@ public class ContactsFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
                 filterList(newText);
                 return true;
             }
@@ -298,10 +320,11 @@ public class ContactsFragment extends Fragment {
         ArrayList<Users> filteredList = new ArrayList<>();
         for (Users users : usersArrayList) {
             String name = users.getFirst() + " " + users.getLast();
-            if (users.getFirst().toLowerCase().contains(text.toLowerCase())) {
+            if (name.toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(users);
             }
         }
+
         if (filteredList.isEmpty()) {
             Toast.makeText(getContext(), "No data found", Toast.LENGTH_SHORT).show();
         } else {
@@ -328,7 +351,6 @@ public class ContactsFragment extends Fragment {
             }
         }
         getContactList();
-
     }
 
     public void shareSelectedUsers() {
@@ -338,7 +360,6 @@ public class ContactsFragment extends Fragment {
             Toast.makeText(getContext(), "No selected contact found", Toast.LENGTH_SHORT).show();
         } else {
             StringBuilder shareText = new StringBuilder();
-
             for (Users user : selectedUsers) {
                 shareText.append("Name: ").append(user.getFirst() + " " + user.getLast()).append("\n");
                 shareText.append("Number: ").append(user.getPersonPhone()).append("\n");
@@ -359,20 +380,6 @@ public class ContactsFragment extends Fragment {
             }
         }
         return selected;
-    }
-
-    private String getLookupKey(String contactId) {
-        String lookupKey = null;
-        String[] projection = new String[]{ContactsContract.Contacts.LOOKUP_KEY};
-        String selection = ContactsContract.Contacts._ID + "=" + contactId;
-        Cursor c = getContext().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, projection, selection, null, null);
-        if (c != null) {
-            if (c.moveToFirst()) {
-                lookupKey = c.getString(0);
-            }
-            c.close();
-        }
-        return lookupKey;
     }
 
     private void selectAllItems() {
@@ -515,5 +522,6 @@ public class ContactsFragment extends Fragment {
         searchView = view.findViewById(R.id.search_contact);
         tbmenu = view.findViewById(R.id.tbMenu);
         back = view.findViewById(R.id.back);
+        fastScrollerView = view.findViewById(R.id.fastscroller);
     }
 }

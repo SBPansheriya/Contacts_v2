@@ -21,15 +21,14 @@ import com.contacts.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.HeaderViewHolder> implements SectionIndexer {
+public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.HeaderViewHolder> {
 
     ContactsFragment contactsFragment;
     ArrayList<Header> headerArrayList;
     ArrayList<Users> usersList;
     ContactListAdapter contactListAdapter;
-    private List<String> mDataArray;
-    private ArrayList<Integer> mSectionPositions;
     boolean isEdit = false;
 
     public HeaderListAdapter(ContactsFragment contactsFragment, ArrayList<Header> headerArrayList) {
@@ -37,7 +36,7 @@ public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.He
         this.headerArrayList = headerArrayList;
     }
 
-    public void setFilteredList(ArrayList<Users> filteredList){
+    public void setFilteredList(ArrayList<Users> filteredList) {
         this.usersList = filteredList;
         notifyDataSetChanged();
     }
@@ -45,23 +44,17 @@ public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.He
     @NonNull
     @Override
     public HeaderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(contactsFragment.getContext()).inflate(R.layout.header_list_item,parent,false);
+        View view = LayoutInflater.from(contactsFragment.getContext()).inflate(R.layout.header_list_item, parent, false);
         return new HeaderViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull HeaderViewHolder holder, int position) {
 
-        if (headerArrayList.get(position).usersList == null){
-            holder.header.setVisibility(View.GONE);
-        }
-        else {
-            holder.header.setVisibility(View.VISIBLE);
-            holder.header.setText(headerArrayList.get(position).header);
-        }
+        holder.header.setText(headerArrayList.get(position).header);
 
         LinearLayoutManager manager = new LinearLayoutManager(contactsFragment.getContext());
-        contactListAdapter = new ContactListAdapter(contactsFragment, headerArrayList.get(position).usersList,isEdit);
+        contactListAdapter = new ContactListAdapter(contactsFragment, headerArrayList.get(position).usersList, isEdit);
         holder.Contact_recyclerView.setLayoutManager(manager);
         holder.Contact_recyclerView.setAdapter(contactListAdapter);
     }
@@ -69,41 +62,6 @@ public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.He
     @Override
     public int getItemCount() {
         return headerArrayList.size();
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    public void setContactList(ArrayList<Header> headerArrayList) {
-        this.headerArrayList = headerArrayList;
-        notifyDataSetChanged();
-    }
-
-    @Override
-    public Object[] getSections() {
-
-        for (char c = 'A'; c <= 'Z'; c++) {
-            mDataArray.add(String.valueOf(c));
-        }
-
-        List<String> sections = new ArrayList<>(26);
-        mSectionPositions = new ArrayList<>(26);
-        for (int i = 0, size = headerArrayList.size(); i < size; i++) {
-            String section = String.valueOf(headerArrayList.get(i).header.charAt(0)).toUpperCase();
-            if (!sections.contains(section)) {
-                sections.add(section);
-                mSectionPositions.add(i);
-            }
-        }
-        return sections.toArray(new String[0]);
-    }
-
-    @Override
-    public int getPositionForSection(int i) {
-        return mSectionPositions.get(i);
-    }
-
-    @Override
-    public int getSectionForPosition(int i) {
-        return 0;
     }
 
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -114,7 +72,6 @@ public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.He
             super(itemView);
             header = itemView.findViewById(R.id.header);
             Contact_recyclerView = itemView.findViewById(R.id.contact_recyclerview);
-
         }
     }
 

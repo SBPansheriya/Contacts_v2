@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,20 +27,18 @@ import com.contacts.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> {
 
     ContactsFragment contactsFragment;
     ArrayList<Users> usersList;
-    ArrayList<Users> originalChildItemList;
-
     int favorites;
     boolean isEdit = false;
 
     public ContactListAdapter(ContactsFragment contactsFragment, ArrayList<Users> usersList, boolean isEdit) {
         this.contactsFragment = contactsFragment;
         this.usersList = usersList;
-        this.originalChildItemList = new ArrayList<>(usersList);
         this.isEdit = isEdit;
     }
 
@@ -143,21 +142,6 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     @Override
     public int getItemCount() {
         return usersList.size();
-    }
-
-    public void filter(String query) {
-        query = query.toLowerCase();
-        usersList.clear();
-        if (query.isEmpty()) {
-            usersList.addAll(originalChildItemList);
-        } else {
-            for (Users item : originalChildItemList) {
-                if (item.getFirst().toLowerCase().contains(query)) {
-                    usersList.add(item);
-                }
-            }
-        }
-        notifyDataSetChanged(); // Refresh the RecyclerView
     }
 
     public static void addToFavorites(Context context, String contactId,int favorite) {

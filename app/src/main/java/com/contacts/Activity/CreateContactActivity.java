@@ -76,10 +76,9 @@ public class CreateContactActivity extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(TextUtils.isEmpty(firstname.getText().toString()) || TextUtils.isEmpty(pphone.getText().toString())){
+                if (TextUtils.isEmpty(firstname.getText().toString()) || TextUtils.isEmpty(pphone.getText().toString())) {
                     Toast.makeText(CreateContactActivity.this, "Please Fill Data", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     createContact();
                     Toast.makeText(CreateContactActivity.this, "Contact saved", Toast.LENGTH_SHORT).show();
                 }
@@ -134,29 +133,23 @@ public class CreateContactActivity extends AppCompatActivity {
         contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
 
         ByteArrayOutputStream image = null;
-        Uri path = null;
-        if (TextUtils.isEmpty((CharSequence) path)) {
-            if (bitmap != null) {
-                values.clear();
-                values.put(ContactsContract.Data.RAW_CONTACT_ID, rawContactId);
-                values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE);
-                image = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, image);
-                path = Uri.parse(MediaStore.Images.Media.insertImage(contentResolver, bitmap, "Title", null));
-                values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, path.toString());
-                values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, image.toByteArray());
-                contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
-            }
-        }
-        else {
-            path = null;
+        String path = null;
+        if (bitmap != null) {
+            values.clear();
+            values.put(ContactsContract.Data.RAW_CONTACT_ID, rawContactId);
+            values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE);
+            image = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, image);
+            path = (MediaStore.Images.Media.insertImage(contentResolver, bitmap, "Title", null));
+            values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, path);
+            values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, image.toByteArray());
+            contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
         }
 
-        user = new Users(rawContactId, path.toString() ,first,last,personPhone,"");
+        user = new Users(rawContactId, path, first, last, personPhone, "");
         usersArrayList.add(user);
         onBackPressed();
         finish();
-
     }
 
     private void checkPermission() {

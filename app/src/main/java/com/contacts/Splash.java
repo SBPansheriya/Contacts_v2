@@ -105,56 +105,6 @@ public class Splash extends AppCompatActivity {
             }
         }, 500);
     }
-//    private void checkPermission() {
-//        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED)
-//        {
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 100);
-//        } else {
-//            getContactList();
-//            readFavoriteContacts();
-////            getRecentContacts();
-//        }
-//    }
-//
-//    private void checkPermissionCallPhone() {
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, 101);
-//        } else {
-////            getContactList();
-////            readFavoriteContacts();
-//            getRecentContacts();
-//        }
-//    }
-//
-//    private void checkPermissionRecents() {
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALL_LOG}, 102);
-//        } else {
-////            getContactList();
-////            readFavoriteContacts();
-//            getRecentContacts();
-//        }
-//    }
-//
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//            getContactList();
-//            readFavoriteContacts();
-////            getRecentContacts();
-//        } else if(requestCode == 101 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-//            getRecentContacts();
-//        } else if (requestCode == 102 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//            getRecentContacts();
-//        }
-//        else {
-//            Toast.makeText(this, "Permission Denied.", Toast.LENGTH_SHORT).show();
-//            checkPermission();
-//            checkPermissionCallPhone();
-//            checkPermissionRecents();
-//        }
-//    }
-
 
     @SuppressLint("NotifyDataSetChanged")
     private void getContactList() {
@@ -204,16 +154,6 @@ public class Splash extends AppCompatActivity {
             }
             cursor.close();
         }
-
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Intent intent = new Intent(Splash.this, HomeActivity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                startActivity(intent);
-//                finish();
-//            }
-//        }, 500);
     }
 
     private List<String> getPhoneNumbers(ContentResolver contentResolver, String contactId) {
@@ -289,15 +229,6 @@ public class Splash extends AppCompatActivity {
         if (cursor != null) {
             cursor.close();
         }
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Intent intent = new Intent(Splash.this, HomeActivity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                startActivity(intent);
-//                finish();
-//            }
-//        }, 500);
     }
 
     @SuppressLint("Range")
@@ -382,19 +313,9 @@ public class Splash extends AppCompatActivity {
             } while (cursor.moveToNext());
             cursor.close();
         }
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Intent intent = new Intent(Splash.this, HomeActivity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                startActivity(intent);
-//                finish();
-//            }
-//        }, 500);
     }
 
     private static String getContactImage(Context context, String contactId) {
-        // Query the contact image using the contact ID
         String contactImage = null;
         Uri contactUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, contactId);
         Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
