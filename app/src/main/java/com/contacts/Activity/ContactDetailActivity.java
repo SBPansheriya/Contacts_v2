@@ -2,6 +2,10 @@ package com.contacts.Activity;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 
+import static com.contacts.Class.Constant.favoriteList;
+import static com.contacts.Class.Constant.recentArrayList;
+import static com.contacts.Class.Constant.usersArrayList;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -30,6 +34,7 @@ import android.widget.Toast;
 
 import com.contacts.Adapter.FavListAdapter;
 import com.contacts.Class.Constant;
+import com.contacts.Model.Recent;
 import com.contacts.Model.Users;
 import com.contacts.R;
 import com.squareup.picasso.Picasso;
@@ -44,7 +49,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     TextView selected_person_name, selected_person_pnum, selected_person_onum, message_whatsapp;
     int favorite;
     Users user;
-    ArrayList<Users> usersArrayList = new ArrayList<>();
+    Recent recent;
     ActivityResultLauncher<Intent> launchSomeActivity;
 
     @SuppressLint("SetTextI18n")
@@ -76,13 +81,15 @@ public class ContactDetailActivity extends AppCompatActivity {
             }
         });
 
-
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + user.personPhone));
                 startActivity(intent);
                 Toast.makeText(ContactDetailActivity.this, "Calling " + user.first + " " + user.last, Toast.LENGTH_SHORT).show();
+
+                recent = new Recent(user.contactId, "", user.first, user.last, user.personPhone, "");
+                recentArrayList.add(recent);
             }
         });
 
@@ -123,10 +130,10 @@ public class ContactDetailActivity extends AppCompatActivity {
             }
         });
 
-        if (Constant.favoriteList.size() > 0) {
+        if (favoriteList.size() > 0) {
             boolean isMatch = false;
-            for (int i = 0; i < Constant.favoriteList.size(); i++) {
-                if (user.contactId.equals(Constant.favoriteList.get(i).contactId)) {
+            for (int i = 0; i < favoriteList.size(); i++) {
+                if (user.contactId.equals(favoriteList.get(i).contactId)) {
                     isMatch = true;
                     break;
                 }
@@ -182,6 +189,7 @@ public class ContactDetailActivity extends AppCompatActivity {
             Picasso.get().load(user.image).into(selected_person_image);
         }
         message_whatsapp.setText(user.personPhone);
+
     }
 
     private void checkPermission() {
@@ -190,23 +198,34 @@ public class ContactDetailActivity extends AppCompatActivity {
         }
     }
 
-
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
         } else {
             Toast.makeText(ContactDetailActivity.this, "Permission Denied.", Toast.LENGTH_SHORT).show();
             checkPermission();
         }
     }
 
-    public static void addToFavorites(Context context, String contactId, int favorite) {
+    public void addToFavorites(Context context, String contactId, int favorite) {
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues values = new ContentValues();
         Uri rawContactUri = Uri.withAppendedPath(ContactsContract.RawContacts.CONTENT_URI, contactId);
         values.put(ContactsContract.CommonDataKinds.Phone.STARRED, favorite); // 1 for favorite, 0 for not favorite
         contentResolver.update(rawContactUri, values, null, null);
+
+        user = new Users(contactId, user.image, user.first, user.last, user.personPhone, "");
+        if (favorite == 1){
+            favoriteList.add(user);
+        }
+        else {
+            for (int i = 0; i < favoriteList.size(); i++) {
+                if (contactId.equalsIgnoreCase(user.contactId)) {
+                    favoriteList.remove(i);
+                    break;
+                }
+            }
+        }
     }
 
     private void init() {
@@ -229,6 +248,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     public void onBackPressed() {
         Intent intent = new Intent();
         intent.putExtra("user", user);
+        intent.putExtra("recents", recent);
         setResult(RESULT_OK, intent);
         finish();
     }

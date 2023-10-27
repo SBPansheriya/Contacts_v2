@@ -14,26 +14,27 @@
             android:id="@+id/tbMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
             android:gravity="center_vertical"
+            android:layout_marginHorizontal="20dp"
             android:minHeight="?attr/actionBarSize"
             android:orientation="horizontal">
+            
+<!--            <ImageView-->
+<!--                android:id="@+id/star"-->
+<!--                android:layout_width="237dp"-->
+<!--                android:layout_height="30dp"-->
+<!--                android:layout_marginStart="10dp"-->
+<!--                android:src="@drawable/favourites"/>-->
 
-            <ImageView
-                android:id="@+id/back"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/arrow_back" />
 
             <TextView
                 android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_toEndOf="@+id/back"
-                android:fontFamily="@font/sf_pro_text_regular"
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:gravity="center|start"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/sf_pro_text_medium"
                 android:text="Favourites"
-                android:textAlignment="center"
                 android:textColor="@color/bluetheme1"
                 android:textSize="18dp" />
 
@@ -50,17 +51,17 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/fav_done"
+                android:id="@+id/add_fav_contact"
                 android:layout_width="70dp"
                 android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
                 android:background="@drawable/border1"
                 android:backgroundTint="@color/blue"
                 android:gravity="center"
-                android:text="Done"
+                android:text="Add"
                 android:textColor="@color/white"
                 android:textSize="16dp"
-                android:visibility="gone" />
+                android:visibility="visible" />
         </RelativeLayout>
 
         <LinearLayout
@@ -100,9 +101,10 @@
         tools:listitem="@layout/fav_item_list"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_fav_contact"
+            android:id="@+id/add_fav_contact1"
             android:layout_width="60dp"
             android:layout_height="60dp"
+            android:visibility="gone"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="10dp"

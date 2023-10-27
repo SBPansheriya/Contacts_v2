@@ -4,6 +4,7 @@ import static com.contacts.Class.Constant.recentArrayList;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -15,6 +16,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -40,6 +43,7 @@ import com.contacts.Adapter.RecentListAdapter;
 import com.contacts.Activity.HomeActivity;
 import com.contacts.Class.Constant;
 import com.contacts.Model.Recent;
+import com.contacts.Model.Users;
 import com.contacts.R;
 import com.contacts.Splash;
 
@@ -56,10 +60,9 @@ public class RecentsFragment extends Fragment {
 
     RecentListAdapter recentListAdapter;
     RecyclerView recyclerView;
-    ImageView back;
     LinearLayout no_recents_linear;
-//    ArrayList<Recent> recentArrayList = new ArrayList<>();
-    int position;
+    Recent recent;
+    ActivityResultLauncher<Intent> launchSomeActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,11 +80,16 @@ public class RecentsFragment extends Fragment {
             recyclerView.setVisibility(View.INVISIBLE);
         }
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), HomeActivity.class);
-                startActivity(intent);
+        launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent data = result.getData();
+                // do your operation from here....
+                if (data != null) {
+                    recent = (Recent) result.getData().getSerializableExtra("recents");
+                    if (recent != null) {
+                        recentArrayList.add(recent);
+                    }
+                }
             }
         });
 
@@ -89,108 +97,10 @@ public class RecentsFragment extends Fragment {
     }
 
     private void getRecentContacts() {
-
-//        recentArrayList = new ArrayList<>();
-//
-//        ContentResolver contentResolver = getContext().getContentResolver();
-//        String[] projection = {
-//                CallLog.Calls._ID,
-//                CallLog.Calls.CACHED_NAME,
-//                CallLog.Calls.NUMBER,
-//                CallLog.Calls.TYPE,
-//                CallLog.Calls.DATE
-//        };
-//
-//        String sortOrder = CallLog.Calls.DATE + " DESC";
-//        Cursor cursor = contentResolver.query(CallLog.Calls.CONTENT_URI, projection, null, null, sortOrder);
-//
-//        if (cursor != null && cursor.moveToFirst()) {
-//            int contactColumn = cursor.getColumnIndex(CallLog.Calls._ID);
-//            int nameColumn = cursor.getColumnIndex(CallLog.Calls.CACHED_NAME);
-//            int numberColumn = cursor.getColumnIndex(CallLog.Calls.NUMBER);
-//            int typeColumn = cursor.getColumnIndex(CallLog.Calls.TYPE);
-//            int callDate = cursor.getColumnIndex(CallLog.Calls.DATE);
-//
-//            do {
-//                String contactId = cursor.getString(contactColumn);
-//                String contactName = cursor.getString(nameColumn);
-//                String contactNumber = cursor.getString(numberColumn);
-//                int contactType = cursor.getInt(typeColumn);
-//                @SuppressLint("Range") long contactDate = cursor.getLong(callDate);
-//
-//                SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
-//                String formattedDate = dateFormat.format(new Date(contactDate));
-//
-//                String callType = "Unknown";
-//                switch (contactType) {
-//                    case CallLog.Calls.INCOMING_TYPE:
-//                        callType = "Incoming";
-//                        break;
-//                    case CallLog.Calls.OUTGOING_TYPE:
-//                        callType = "Outgoing";
-//                        break;
-//                    case CallLog.Calls.MISSED_TYPE:
-//                        callType = "Missed";
-//                        break;
-//                }
-//
-////                cursorLog.moveToFirst();
-////                String number = cursorLog.getString(cursorLog.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
-////                contactId = getContactIdFromNumber(contactNumber);
-////                Contacts.People.loadContactPhoto(getContext(),
-////                        ContentUris.withAppendedId(Contacts.People.CONTENT_URI, Long.parseLong((contactId))),0,null);
-//
-////                String image = getContactImage(getContext(),contactId);
-//
-////                Bitmap image = loadContactPhoto(getContext(),contactNumber);
-//
-//                Log.d("AAA", "ID: " +contactId +", Image: " + "" + ", Name: " + contactName + ", Number: " + contactNumber + ", Date: " + formattedDate + ", Type: " + callType);
-//                Recent recent = new Recent(contactId, "", contactName, contactNumber, formattedDate, callType);
-//                recentArrayList.add(recent);
-//            } while (cursor.moveToNext());
-//            cursor.close();
-//        }
         recentListAdapter = new RecentListAdapter(getContext(), recentArrayList);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(recentListAdapter);
-    }
-
-    private String getContactIdFromNumber(String number) {
-        String[] projection = new String[]{Contacts.Phones._ID};
-        Uri contactUri = Uri.withAppendedPath(Contacts.Phones.CONTENT_FILTER_URL,
-                Uri.encode(number));
-        Cursor c = getContext().getContentResolver().query(contactUri, projection,
-                null, null, null);
-        if (c.moveToFirst()) {
-            @SuppressLint("Range") String contactId=c.getString(c.getColumnIndex(Contacts.Phones._ID));
-            return contactId;
-        }
-        return null;
-    }
-
-
-    private static String getContactImage(Context context, String contactId) {
-        // Query the contact image using the contact ID
-        String contactImage = null;
-        Uri contactUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, contactId);
-        Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
-        Cursor photoCursor = context.getContentResolver().query(photoUri, new String[]{ContactsContract.Contacts.Photo.PHOTO}, null, null, null);
-
-        if (photoCursor != null && photoCursor.moveToFirst()) {
-            byte[] photoData = photoCursor.getBlob(0);
-            contactImage = getBase64Image(photoData);
-            photoCursor.close();
-        }
-
-        return contactImage;
-    }
-
-    private static String getBase64Image(byte[] photoData) {
-        if (photoData != null) {
-            return android.util.Base64.encodeToString(photoData, android.util.Base64.DEFAULT);
-        }
-        return null;
     }
 
     private void checkPermission() {
@@ -222,7 +132,6 @@ public class RecentsFragment extends Fragment {
     }
 
     private void init(View view) {
-        back = view.findViewById(R.id.back);
         recyclerView = view.findViewById(R.id.recents_recyclerview);
         no_recents_linear = view.findViewById(R.id.no_recents);
     }

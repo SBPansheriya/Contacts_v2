@@ -17,12 +17,14 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.contacts.Activity.CreateContactActivity;
 import com.contacts.Adapter.KeypadListAdapter;
 import com.contacts.Class.Constant;
 import com.contacts.Fragment.KeypadFragment;
@@ -59,6 +61,7 @@ public class MyBottomSheetDialog extends BottomSheetDialogFragment {
         ImageView btn_call = view.findViewById(R.id.btn_call);
         ImageView btn_backpress = view.findViewById(R.id.btn_backpress);
         EditText editText = view.findViewById(R.id.dailer_show);
+        TextView add_contact_by_keypad = view.findViewById(R.id.add_contact_by_keypad);
 
         btn_0.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,6 +224,15 @@ public class MyBottomSheetDialog extends BottomSheetDialogFragment {
                     recyclerView.setVisibility(View.GONE);
                 }
 
+            }
+        });
+
+        add_contact_by_keypad.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), CreateContactActivity.class);
+                intent.putExtra("number",editText.getText().toString());
+                startActivity(intent);
             }
         });
 

@@ -65,6 +65,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.framelayout, favoritesFragment)
+                    .addToBackStack(null)
                     .commit();
             return true;
         }
@@ -72,6 +73,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.framelayout, recentsFragment)
+                    .addToBackStack(null)
                     .commit();
             return true;
         }
@@ -82,6 +84,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.framelayout, contactsFragment)
+                    .addToBackStack(null)
                     .commit();
             return true;
         }
@@ -89,6 +92,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.framelayout, groupsFragment)
+                    .addToBackStack(null)
                     .commit();
             return true;
         }
@@ -99,6 +103,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.framelayout, keypadFragment)
+                    .addToBackStack(null)
                     .commit();
             return true;
         }

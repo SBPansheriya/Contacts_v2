@@ -73,6 +73,10 @@ public class CreateContactActivity extends AppCompatActivity {
             }
         });
 
+        String number = getIntent().getStringExtra("number");
+
+        pphone.setText(number);
+
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

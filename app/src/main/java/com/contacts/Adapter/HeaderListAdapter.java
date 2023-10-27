@@ -1,12 +1,11 @@
 package com.contacts.Adapter;
 
-import android.annotation.SuppressLint;
-import android.util.Log;
+import static com.contacts.Class.Constant.usersArrayList;
+
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,31 +13,25 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.contacts.Fragment.ContactsFragment;
-import com.contacts.Fragment.FavoritesFragment;
 import com.contacts.Model.Header;
 import com.contacts.Model.Users;
 import com.contacts.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.HeaderViewHolder> {
 
     ContactsFragment contactsFragment;
     ArrayList<Header> headerArrayList;
-    ArrayList<Users> usersList;
+    RecyclerView recyclerView;
     ContactListAdapter contactListAdapter;
     boolean isEdit = false;
 
-    public HeaderListAdapter(ContactsFragment contactsFragment, ArrayList<Header> headerArrayList) {
+    public HeaderListAdapter(ContactsFragment contactsFragment, RecyclerView recyclerView, ArrayList<Header> headerArrayList) {
         this.contactsFragment = contactsFragment;
         this.headerArrayList = headerArrayList;
-    }
-
-    public void setFilteredList(ArrayList<Users> filteredList) {
-        this.usersList = filteredList;
-        notifyDataSetChanged();
+        this.recyclerView = recyclerView;
     }
 
     @NonNull
@@ -57,6 +50,11 @@ public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.He
         contactListAdapter = new ContactListAdapter(contactsFragment, headerArrayList.get(position).usersList, isEdit);
         holder.Contact_recyclerView.setLayoutManager(manager);
         holder.Contact_recyclerView.setAdapter(contactListAdapter);
+    }
+
+    public void setHeaderArrayList(ArrayList<Header> headerArrayList) {
+        this.headerArrayList = headerArrayList;
+        notifyDataSetChanged();
     }
 
     @Override

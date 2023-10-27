@@ -1,11 +1,6 @@
 package com.contacts.Fragment;
 
-
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
 import static com.contacts.Class.Constant.usersArrayList;
-import static com.contacts.Fragment.KeypadFragment.keypadListAdapter;
-import static com.contacts.Fragment.KeypadFragment.recyclerView;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -16,9 +11,6 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -31,37 +23,30 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.ContactsContract;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.contacts.Activity.ContactDetailActivity;
-import com.contacts.Adapter.ContactListAdapter;
 import com.contacts.Adapter.HeaderListAdapter;
 import com.contacts.Activity.CreateContactActivity;
-import com.contacts.Class.Constant;
 import com.contacts.Model.Alphabet;
 import com.contacts.Model.Header;
 import com.contacts.Model.Users;
 import com.contacts.R;
-import com.contacts.Splash;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.github.ybq.android.spinkit.style.ThreeBounce;
@@ -95,6 +80,7 @@ public class ContactsFragment extends Fragment {
     RelativeLayout progressLayout;
     FastScrollerView fastScrollerView;
     ArrayList<Alphabet> alphabetArrayList = new ArrayList<>();
+    ArrayList<Header> headerArrayList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -142,7 +128,7 @@ public class ContactsFragment extends Fragment {
                         if (!isMatch) {
                             usersArrayList.add(users);
                         }
-                        getContactList();
+                        getContactList(false);
                     }
                 }
             }
@@ -181,6 +167,7 @@ public class ContactsFragment extends Fragment {
                 share.setVisibility(View.VISIBLE);
                 delete.setVisibility(View.VISIBLE);
                 headerListAdapter.setEdit(true);
+
             }
         });
 
@@ -188,6 +175,7 @@ public class ContactsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 edit.setVisibility(View.VISIBLE);
+                floatingActionButton.setVisibility(View.VISIBLE);
                 selectall.setVisibility(View.GONE);
                 deselectall.setVisibility(View.GONE);
                 cancel.setVisibility(View.GONE);
@@ -201,7 +189,6 @@ public class ContactsFragment extends Fragment {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                getActivity().onBackPressed();
                 Fragment mFragment = new FavoritesFragment();
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
@@ -225,7 +212,7 @@ public class ContactsFragment extends Fragment {
             Contact_found_linear.setVisibility(View.INVISIBLE);
         }
 
-        totalcontact.setText(usersArrayList.size() + "  " + "Contacts");
+        totalcontact.setText(usersArrayList.size() + " " + "Contacts");
 
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -239,7 +226,7 @@ public class ContactsFragment extends Fragment {
                     if (dialog.getWindow() != null) {
                         dialog.getWindow().setGravity(Gravity.CENTER);
                         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-                         dialog.setCancelable(false);
+                        dialog.setCancelable(false);
                     }
                     dialog.setContentView(R.layout.dailog_layout);
                     dialog.setCancelable(false);
@@ -308,33 +295,57 @@ public class ContactsFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                filterList(newText);
+                filterContacts(newText);
                 return true;
             }
         });
-
         return view;
     }
 
-    private void filterList(String text) {
-        ArrayList<Users> filteredList = new ArrayList<>();
-        for (Users users : usersArrayList) {
-            String name = users.getFirst() + " " + users.getLast();
-            if (name.toLowerCase().contains(text.toLowerCase())) {
-                filteredList.add(users);
+    public void filterContacts(String query) {
+        query = query.toLowerCase();
+        getContactList(true);
+
+        if (!TextUtils.isEmpty(query)) {
+            for (Header header : headerArrayList ) {
+                List<Users> filteredContacts = new ArrayList<>();
+
+                for (Users contact : header.usersList) {
+                    if (contact.getFirst().toLowerCase().contains(query) || contact.getLast().toLowerCase().contains(query)) {
+                        filteredContacts.add(contact);
+                    }
+                }
+
+                header.usersList.clear();
+                header.usersList.addAll(filteredContacts);
+            }
+
+            if (headerArrayList.size() > 0) {
+                ArrayList<Header> removeHeaders = new ArrayList<>();
+                for (int i = 0; i < headerArrayList.size(); i++) {
+                    if (headerArrayList.get(i).usersList.size() == 0) {
+                        removeHeaders.add(headerArrayList.get(i));
+                    }
+                }
+
+                if (removeHeaders.size() > 0) {
+                    for (int i = 0; i < removeHeaders.size(); i++) {
+                        for (int i1 = 0; i1 < headerArrayList.size(); i1++) {
+                            if (removeHeaders.get(i).header.equals(headerArrayList.get(i1).header)) {
+                                headerArrayList.remove(i1);
+                                break;
+                            }
+                        }
+                    }
+                }
             }
         }
 
-        if (filteredList.isEmpty()) {
-            Toast.makeText(getContext(), "No data found", Toast.LENGTH_SHORT).show();
-        } else {
-            headerListAdapter.setFilteredList(filteredList);
-        }
+        headerListAdapter.setHeaderArrayList(headerArrayList);
     }
 
     private void deleteSelectedItems() {
         ArrayList<Users> itemsToRemove = new ArrayList<>();
-
         for (Users users : usersArrayList) {
             if (users.isSelected()) {
                 itemsToRemove.add(users);
@@ -350,7 +361,7 @@ public class ContactsFragment extends Fragment {
                 }
             }
         }
-        getContactList();
+        getContactList(false);
     }
 
     public void shareSelectedUsers() {
@@ -408,7 +419,7 @@ public class ContactsFragment extends Fragment {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private void getContactList() {
+    private void getContactList(boolean isFilter) {
         if (usersArrayList.size() > 0) {
             Comparator<Users> nameComparator = new Comparator<Users>() {
                 @Override
@@ -421,8 +432,7 @@ public class ContactsFragment extends Fragment {
         }
 
         if (usersArrayList.size() > 0) {
-            ArrayList<Header> headerArrayList = new ArrayList<>();
-
+            headerArrayList = new ArrayList<>();
             for (char i = 'A'; i <= 'Z'; i++) {
                 Header header = new Header(String.valueOf(i), new ArrayList<>());
                 headerArrayList.add(header);
@@ -469,12 +479,18 @@ public class ContactsFragment extends Fragment {
                 }
             }
 
-            LinearLayoutManager manager = new LinearLayoutManager(getContext());
-            headerListAdapter = new HeaderListAdapter(ContactsFragment.this, headerArrayList);
-            recyclerView.setLayoutManager(manager);
-            recyclerView.setAdapter(headerListAdapter);
+            if (!isFilter) {
+                updateUi();
+            }
         }
         progressLayout.setVisibility(View.GONE);
+    }
+
+    private void updateUi() {
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        headerListAdapter = new HeaderListAdapter(ContactsFragment.this,recyclerView, headerArrayList);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(headerListAdapter);
     }
 
     public void intentPass(Users users) {
@@ -487,15 +503,14 @@ public class ContactsFragment extends Fragment {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, 100);
         } else {
-            getContactList();
-            progressLayout.setVisibility(View.GONE);
+            getContactList(false);
         }
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            getContactList();
+            getContactList(false);
             progressLayout.setVisibility(View.GONE);
         } else {
             Toast.makeText(context, "Permission Denied.", Toast.LENGTH_SHORT).show();

@@ -48,16 +48,22 @@ public class Splash extends AppCompatActivity {
         window.setStatusBarColor(ContextCompat.getColor(Splash.this, R.color.white));
 
         // check permission
-        if (checkPermissions()){
+        if (checkPermissions()) {
             getContactList();
             getRecentContacts();
             readFavoriteContacts();
             navigateToHomeActivity();
         }
+        else {
+            getContactList();
+            getRecentContacts();
+            readFavoriteContacts();
+        }
+
     }
 
     private boolean checkPermissions() {
-        String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS, Manifest.permission.READ_CALL_LOG};
+        String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS, Manifest.permission.READ_CALL_LOG};
         boolean allPermissionsGranted = true;
 
         for (String permission : permissions) {
@@ -67,13 +73,14 @@ public class Splash extends AppCompatActivity {
                 break;
             }
         }
-
         return allPermissionsGranted;
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+
         if (requestCode == 123) {
             boolean allPermissionsGranted = true;
 
@@ -85,11 +92,10 @@ public class Splash extends AppCompatActivity {
             }
 
             if (allPermissionsGranted) {
-                // Permissions granted, proceed to the main activity
                 navigateToHomeActivity();
             } else {
                 // Permissions denied, you can show a message or take appropriate action
-                Toast.makeText(this, "Permissions denied. App cannot continue.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Permissions denied.", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -303,11 +309,11 @@ public class Splash extends AppCompatActivity {
 //                Contacts.People.loadContactPhoto(getContext(),
 //                        ContentUris.withAppendedId(Contacts.People.CONTENT_URI, Long.parseLong((contactId))),0,null);
 
-                String image = getContactImage(this,contactId);
+                String image = getContactImage(this, contactId);
 
 //                Bitmap image = loadContactPhoto(getContext(),contactNumber);
 
-                Log.d("AAA", "ID: " +contactId +", Image: " + image + ", Name: " + contactName + ", Number: " + contactNumber + ", Date: " + formattedDate + ", Type: " + callType);
+                Log.d("AAA", "ID: " + contactId + ", Image: " + image + ", Name: " + contactName + ", Number: " + contactNumber + ", Date: " + formattedDate + ", Type: " + callType);
                 Recent recent = new Recent(contactId, image, contactName, contactNumber, formattedDate, callType);
                 recentArrayList.add(recent);
             } while (cursor.moveToNext());

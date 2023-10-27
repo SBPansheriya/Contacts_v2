@@ -6,12 +6,12 @@ import java.io.File;
 import java.io.Serializable;
 
 public class Recent implements Serializable {
-    String contactId;
-    String iamge;
-    String contactname;
-    String contactnumber;
-    String date;
-    String status;
+    public String contactId;
+    public String iamge;
+    public String contactname;
+    public String contactnumber;
+    public String date;
+    public String status;
 
     public Recent(String contactId, String iamge, String contactname, String contactnumber, String date, String status) {
         this.contactId = contactId;

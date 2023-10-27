@@ -2,10 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/create_contact_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:id="@+id/create_contact_activity"
     tools:context=".Activity.CreateContactActivity">
 
     <RelativeLayout
@@ -102,132 +102,143 @@
             android:textSize="14dp" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/title4"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title3"
-        android:layout_marginBottom="20dp"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="26dp"
-            android:layout_gravity="top"
-            android:layout_marginStart="10dp"
-            android:src="@drawable/person" />
+        android:layout_below="@+id/title3">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/title4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginBottom="5dp"
-                android:textColor="@color/darkgray2"
-                android:text="First name"/>
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/firstname"
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="26dp"
+                    android:layout_gravity="top"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/person" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginBottom="5dp"
+                        android:text="First name"
+                        android:textColor="@color/darkgray2" />
+
+                    <EditText
+                        android:id="@+id/firstname"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:background="@drawable/border2"
+                        android:padding="10dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:text="Last name"
+                        android:textColor="@color/darkgray2" />
+
+                    <EditText
+                        android:id="@+id/lastname"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:background="@drawable/border2"
+                        android:padding="10dp" />
+
+
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:background="@drawable/border2"
-                android:padding="10dp" />
+                android:layout_below="@+id/title4"
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginBottom="5dp"
-                android:textColor="@color/darkgray2"
-                android:text="Last name"/>
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="26dp"
+                    android:layout_gravity="top"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/call" />
 
-            <EditText
-                android:id="@+id/lastname"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:background="@drawable/border2"
-                android:padding="10dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginBottom="5dp"
+                        android:text="Phone"
+                        android:textColor="@color/darkgray2" />
 
+                    <EditText
+                        android:id="@+id/pphone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:background="@drawable/border2"
+                        android:inputType="number"
+                        android:maxLength="10"
+                        android:padding="10dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:text="Office"
+                        android:textColor="@color/darkgray2"
+                        android:visibility="gone" />
+
+                    <EditText
+                        android:id="@+id/ophone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:background="@drawable/border2"
+                        android:inputType="number"
+                        android:padding="10dp"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/title4"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="26dp"
-            android:layout_gravity="top"
-            android:layout_marginStart="10dp"
-            android:src="@drawable/call" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginBottom="5dp"
-                android:textColor="@color/darkgray2"
-                android:text="Phone"/>
-
-            <EditText
-                android:id="@+id/pphone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLength="10"
-                android:inputType="number"
-                android:layout_marginHorizontal="20dp"
-                android:background="@drawable/border2"
-                android:padding="10dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginBottom="5dp"
-                android:textColor="@color/darkgray2"
-                android:text="Office"
-                android:visibility="gone"/>
-
-            <EditText
-                android:id="@+id/ophone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:layout_marginHorizontal="20dp"
-                android:background="@drawable/border2"
-                android:padding="10dp"
-                android:visibility="gone"/>
-        </LinearLayout>
-    </LinearLayout>
     <Button
         android:id="@+id/save_Contact"
         android:layout_width="match_parent"
         android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
         android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="30dp"
         android:background="@drawable/border"
-        app:backgroundTint="@color/blue"
         android:gravity="center"
-        android:layout_alignParentBottom="true"
         android:text="Save"
         android:textColor="@color/white"
-        android:textSize="16dp" />
+        android:textSize="16dp"
+        app:backgroundTint="@color/blue" />
 
 </RelativeLayout>

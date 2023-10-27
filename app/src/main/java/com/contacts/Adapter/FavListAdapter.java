@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.contacts.Activity.ContactDetailActivity;
+import com.contacts.Fragment.ContactsFragment;
 import com.contacts.Fragment.FavoritesFragment;
 import com.contacts.Model.Users;
 import com.contacts.R;
@@ -28,7 +29,6 @@ import java.util.List;
 
 public class FavListAdapter extends RecyclerView.Adapter<FavListAdapter.favouriteviewholder>{
 
-    Context context;
     FavoritesFragment favoritesFragment;
     ArrayList<Users> favoriteContacts;
 
@@ -59,9 +59,11 @@ public class FavListAdapter extends RecyclerView.Adapter<FavListAdapter.favourit
         holder.info_plite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(favoritesFragment.getContext(), ContactDetailActivity.class);
-                intent.putExtra("user", favoriteContacts.get(position));
-                favoritesFragment.startActivity(intent);
+                ((FavoritesFragment)favoritesFragment).intentPassFav(favoriteContacts.get(position));
+
+//                Intent intent = new Intent(favoritesFragment.getContext(), ContactDetailActivity.class);
+//                intent.putExtra("user", favoriteContacts.get(position));
+//                favoritesFragment.startActivity(intent);
             }
         });
     }
@@ -73,8 +75,8 @@ public class FavListAdapter extends RecyclerView.Adapter<FavListAdapter.favourit
 
     public class favouriteviewholder extends RecyclerView.ViewHolder {
         ImageView fav_person_image,info_plite,scrollcontact;
-
         TextView fav_person_name;
+
         public favouriteviewholder(@NonNull View itemView) {
             super(itemView);
             fav_person_image = itemView.findViewById(R.id.fav_personImage);
