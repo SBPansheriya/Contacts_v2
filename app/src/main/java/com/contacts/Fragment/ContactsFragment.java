@@ -1,5 +1,6 @@
 package com.contacts.Fragment;
 
+import static android.app.Activity.RESULT_OK;
 import static com.contacts.Class.Constant.usersArrayList;
 
 import android.Manifest;
@@ -110,7 +111,7 @@ public class ContactsFragment extends Fragment {
         }
 
         launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            if (result.getResultCode() == Activity.RESULT_OK) {
+            if (result.getResultCode() == RESULT_OK) {
                 Intent data = result.getData();
                 // do your operation from here....
                 if (data != null) {
@@ -488,7 +489,7 @@ public class ContactsFragment extends Fragment {
 
     private void updateUi() {
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        headerListAdapter = new HeaderListAdapter(ContactsFragment.this,recyclerView, headerArrayList);
+        headerListAdapter = new HeaderListAdapter(ContactsFragment.this, headerArrayList);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(headerListAdapter);
     }

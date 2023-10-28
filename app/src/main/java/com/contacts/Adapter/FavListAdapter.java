@@ -1,5 +1,7 @@
 package com.contacts.Adapter;
 
+import static com.contacts.Class.Constant.favoriteList;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -30,11 +32,11 @@ import java.util.List;
 public class FavListAdapter extends RecyclerView.Adapter<FavListAdapter.favouriteviewholder>{
 
     FavoritesFragment favoritesFragment;
-    ArrayList<Users> favoriteContacts;
+    ArrayList<Users> favoriteList;
 
-    public FavListAdapter(FavoritesFragment favoritesFragment, ArrayList<Users> favoriteContacts) {
+    public FavListAdapter(FavoritesFragment favoritesFragment, ArrayList<Users> favoriteList) {
         this.favoritesFragment = favoritesFragment;
-        this.favoriteContacts = favoriteContacts;
+        this.favoriteList = favoriteList;
     }
 
     @NonNull
@@ -48,18 +50,18 @@ public class FavListAdapter extends RecyclerView.Adapter<FavListAdapter.favourit
     public void onBindViewHolder(@NonNull favouriteviewholder holder, int position) {
 
 
-        if (favoriteContacts.get(position).image == null) {
+        if (favoriteList.get(position).image == null) {
             holder.fav_person_image.setImageResource(R.drawable.person_placeholder);
         } else {
-            Picasso.get().load(favoriteContacts.get(position).image).into(holder.fav_person_image);
+            Picasso.get().load(favoriteList.get(position).image).into(holder.fav_person_image);
         }
 
-        holder.fav_person_name.setText(favoriteContacts.get(position).first + " " + favoriteContacts.get(position).last);
+        holder.fav_person_name.setText(favoriteList.get(position).first + " " + favoriteList.get(position).last);
 
         holder.info_plite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((FavoritesFragment)favoritesFragment).intentPassFav(favoriteContacts.get(position));
+                ((FavoritesFragment)favoritesFragment).intentPassFav(favoriteList.get(position));
 
 //                Intent intent = new Intent(favoritesFragment.getContext(), ContactDetailActivity.class);
 //                intent.putExtra("user", favoriteContacts.get(position));
@@ -70,7 +72,7 @@ public class FavListAdapter extends RecyclerView.Adapter<FavListAdapter.favourit
 
     @Override
     public int getItemCount() {
-        return favoriteContacts.size();
+        return favoriteList.size();
     }
 
     public class favouriteviewholder extends RecyclerView.ViewHolder {
@@ -86,8 +88,8 @@ public class FavListAdapter extends RecyclerView.Adapter<FavListAdapter.favourit
         }
     }
 
-    public void onItemMove(int fromPosition, int toPosition) {
-        Collections.swap(favoriteContacts, fromPosition, toPosition);
-        notifyItemMoved(fromPosition, toPosition);
-    }
+//    public void onItemMove(int fromPosition, int toPosition) {
+//        Collections.swap(favoriteContacts, fromPosition, toPosition);
+//        notifyItemMoved(fromPosition, toPosition);
+//    }
 }

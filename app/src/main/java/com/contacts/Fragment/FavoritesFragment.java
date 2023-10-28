@@ -97,14 +97,12 @@ public class FavoritesFragment extends Fragment {
         launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK) {
                 Intent data = result.getData();
-                // do your operation from here....
                 if (data != null) {
                     users = (Users) result.getData().getSerializableExtra("user");
                     if (users != null) {
-                        for (int i = 0; i < usersArrayList.size(); i++) {
-                            if (usersArrayList.get(i).contactId.equalsIgnoreCase(users.contactId)) {
-                                usersArrayList.remove(i);
-//                                usersArrayList.add(i, users);
+                        for (int i = 0; i < favoriteList.size(); i++) {
+                            if (favoriteList.get(i).contactId.equalsIgnoreCase(users.contactId)) {
+                                favoriteList.remove(i);
                                 break;
                             }
                         }
@@ -170,7 +168,7 @@ public class FavoritesFragment extends Fragment {
     private void init(View view) {
         addFav = view.findViewById(R.id.create_fav);
         edit = view.findViewById(R.id.fav_edit);
-        done = view.findViewById(R.id.add_fav_contact);
+//        done = view.findViewById(R.id.add_fav_contact);
         recyclerView = view.findViewById(R.id.recyclerView);
         no_fav_found_linear = view.findViewById(R.id.no_fav_found_linear);
         add_fav_contact = view.findViewById(R.id.add_fav_contact);

@@ -74,7 +74,6 @@ public class RecentsFragment extends Fragment {
         checkPermission();
         checkPermission1();
 
-
         if (recentArrayList.isEmpty()) {
             no_recents_linear.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.INVISIBLE);
@@ -88,6 +87,7 @@ public class RecentsFragment extends Fragment {
                     recent = (Recent) result.getData().getSerializableExtra("recents");
                     if (recent != null) {
                         recentArrayList.add(recent);
+                        getRecentContacts();
                     }
                 }
             }

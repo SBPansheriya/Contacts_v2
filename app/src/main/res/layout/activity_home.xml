@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="@drawable/bottom_border"
-            app:itemActiveIndicatorStyle="@android:color/transparent"
+            app:itemActiveIndicatorStyle="@null"
             app:itemIconSize="32dp"
             app:itemIconTint="@color/nav_item_color"
             app:itemTextColor="@color/nav_item_color"

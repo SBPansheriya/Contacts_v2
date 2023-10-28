@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.contacts.Fragment.ContactsFragment;
@@ -43,6 +45,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     GroupsFragment groupsFragment = new GroupsFragment();
     KeypadFragment keypadFragment = new KeypadFragment();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,52 +65,50 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     public boolean
     onNavigationItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.fav) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.framelayout, favoritesFragment)
-                    .addToBackStack(null)
-                    .commit();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.framelayout, new FavoritesFragment());
+            transaction.addToBackStack(null);
+            transaction.commit();
             return true;
         }
         if (item.getItemId() == R.id.recents) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.framelayout, recentsFragment)
-                    .addToBackStack(null)
-                    .commit();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.framelayout, new RecentsFragment());
+            transaction.addToBackStack(null);
+            transaction.commit();
             return true;
         }
         if (item.getItemId() == R.id.contact) {
+
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.framelayout, contactsFragment);
             Bundle bundle = new Bundle();
             bundle.putString("btn","contact");
             contactsFragment.setArguments(bundle);
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.framelayout, contactsFragment)
-                    .addToBackStack(null)
-                    .commit();
+            transaction.addToBackStack(null);
+            transaction.commit();
+
             return true;
         }
         if (item.getItemId() == R.id.group) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.framelayout, groupsFragment)
-                    .addToBackStack(null)
-                    .commit();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.framelayout, new GroupsFragment());
+            transaction.addToBackStack(null);
+            transaction.commit();
             return true;
         }
         if (item.getItemId() == R.id.keypad) {
             BottomSheetDialogFragment bottomSheetDialog = new MyBottomSheetDialog();
             bottomSheetDialog.getShowsDialog();
             bottomSheetDialog.show(getSupportFragmentManager(), bottomSheetDialog.getTag());
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.framelayout, keypadFragment)
-                    .addToBackStack(null)
-                    .commit();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.framelayout, new KeypadFragment());
+            transaction.addToBackStack(null);
+            transaction.commit();
             return true;
         }
-        return  false;
+
+        return  true;
     }
     private void  init(){
         bottomNavigationView = findViewById(R.id.bottomNavigationView);

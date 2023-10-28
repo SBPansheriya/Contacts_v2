@@ -181,7 +181,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     }
 
     private void setData() {
-        selected_person_name.setText("" + user.first + " " + "" + user.last);
+        selected_person_name.setText("" + user.first + " " + user.last);
         selected_person_pnum.setText(user.personPhone);
         if (user.image == null) {
             selected_person_image.setImageResource(R.drawable.person_placeholder);
@@ -220,7 +220,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         }
         else {
             for (int i = 0; i < favoriteList.size(); i++) {
-                if (contactId.equalsIgnoreCase(user.contactId)) {
+                if (favoriteList.get(i).contactId.equalsIgnoreCase(contactId)) {
                     favoriteList.remove(i);
                     break;
                 }
