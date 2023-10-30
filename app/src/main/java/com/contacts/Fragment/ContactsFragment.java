@@ -12,6 +12,7 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -53,6 +54,7 @@ import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.github.ybq.android.spinkit.style.ThreeBounce;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.reddit.indicatorfastscroll.FastScrollItemIndicator;
+import com.reddit.indicatorfastscroll.FastScrollerThumbView;
 import com.reddit.indicatorfastscroll.FastScrollerView;
 
 import java.util.ArrayList;
@@ -113,7 +115,6 @@ public class ContactsFragment extends Fragment {
         launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK) {
                 Intent data = result.getData();
-                // do your operation from here....
                 if (data != null) {
                     users = (Users) result.getData().getSerializableExtra("user");
                     if (users != null) {
@@ -142,11 +143,7 @@ public class ContactsFragment extends Fragment {
             }
             Alphabet alphabet1 = new Alphabet("#");
             alphabetArrayList.add(alphabet1);
-
-            alphabet = alphabetArrayList.get(position);
-            return new FastScrollItemIndicator.Text(
-                    alphabet.getAlphabet().substring(0, 1).toUpperCase()
-            );
+            return new FastScrollItemIndicator.Text(alphabetArrayList.get(position).getAlphabet().substring(0, 1).toUpperCase());
         });
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -168,7 +165,6 @@ public class ContactsFragment extends Fragment {
                 share.setVisibility(View.VISIBLE);
                 delete.setVisibility(View.VISIBLE);
                 headerListAdapter.setEdit(true);
-
             }
         });
 
@@ -191,11 +187,7 @@ public class ContactsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Fragment mFragment = new FavoritesFragment();
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.framelayout, mFragment)
-                        .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, mFragment).setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE).commit();
             }
         });
 
@@ -248,6 +240,7 @@ public class ContactsFragment extends Fragment {
                         public void onClick(View view) {
                             deleteSelectedItems();
                             edit.setVisibility(View.VISIBLE);
+                            floatingActionButton.setVisibility(View.VISIBLE);
                             selectall.setVisibility(View.GONE);
                             deselectall.setVisibility(View.GONE);
                             cancel.setVisibility(View.GONE);
@@ -308,7 +301,7 @@ public class ContactsFragment extends Fragment {
         getContactList(true);
 
         if (!TextUtils.isEmpty(query)) {
-            for (Header header : headerArrayList ) {
+            for (Header header : headerArrayList) {
                 List<Users> filteredContacts = new ArrayList<>();
 
                 for (Users contact : header.usersList) {
@@ -316,7 +309,6 @@ public class ContactsFragment extends Fragment {
                         filteredContacts.add(contact);
                     }
                 }
-
                 header.usersList.clear();
                 header.usersList.addAll(filteredContacts);
             }
@@ -341,7 +333,6 @@ public class ContactsFragment extends Fragment {
                 }
             }
         }
-
         headerListAdapter.setHeaderArrayList(headerArrayList);
     }
 
@@ -412,9 +403,7 @@ public class ContactsFragment extends Fragment {
         ContentResolver contentResolver = context.getContentResolver();
         Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.parseLong(contactId));
 
-        contentResolver.delete(ContactsContract.RawContacts.CONTENT_URI,
-                ContactsContract.RawContacts.CONTACT_ID + " = ?",
-                new String[]{String.valueOf(contactId)});
+        contentResolver.delete(ContactsContract.RawContacts.CONTENT_URI, ContactsContract.RawContacts.CONTACT_ID + " = ?", new String[]{String.valueOf(contactId)});
 
         contentResolver.delete(contactUri, null, null);
     }
@@ -425,7 +414,6 @@ public class ContactsFragment extends Fragment {
             Comparator<Users> nameComparator = new Comparator<Users>() {
                 @Override
                 public int compare(Users user1, Users user2) {
-                    // Use compareTo() to compare the names in alphabetical order
                     return user1.getFirst().compareTo(user2.getFirst());
                 }
             };

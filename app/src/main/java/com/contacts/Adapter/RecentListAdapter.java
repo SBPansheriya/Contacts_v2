@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.contacts.Fragment.RecentsFragment;
 import com.contacts.Model.Recent;
 import com.contacts.R;
 import com.squareup.picasso.Picasso;
@@ -22,11 +23,11 @@ import java.util.ArrayList;
 
 public class RecentListAdapter extends RecyclerView.Adapter<RecentListAdapter.recentviewholder> {
 
-    Context context;
+    RecentsFragment recentsFragment;
     ArrayList<Recent> recentArrayList;
 
-    public RecentListAdapter(Context context, ArrayList<Recent> recentArrayList) {
-        this.context = context;
+    public RecentListAdapter(RecentsFragment recentsFragment, ArrayList<Recent> recentArrayList) {
+        this.recentsFragment = recentsFragment;
         this.recentArrayList = recentArrayList;
     }
 
@@ -71,10 +72,10 @@ public class RecentListAdapter extends RecyclerView.Adapter<RecentListAdapter.re
         holder.recent_call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//              Toast.makeText(context, "Calling " + recentArrayList.get(position).getContactname(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + recentArrayList.get(position).getContactnumber()));
-                context.startActivity(intent);
-                Toast.makeText(context, "Calling " + recentArrayList.get(position).getContactname(), Toast.LENGTH_SHORT).show();
+                recentsFragment.startActivity(intent);
+                Toast.makeText(recentsFragment.getContext(), "Calling " + recentArrayList.get(position).getContactname(), Toast.LENGTH_SHORT).show();
+                notifyDataSetChanged();
             }
         });
     }

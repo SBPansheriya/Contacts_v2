@@ -1,8 +1,5 @@
 package com.contacts.Adapter;
 
-import static com.contacts.Class.Constant.usersArrayList;
-
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.contacts.Fragment.ContactsFragment;
 import com.contacts.Model.Header;
-import com.contacts.Model.Users;
 import com.contacts.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.HeaderViewHolder> {
 

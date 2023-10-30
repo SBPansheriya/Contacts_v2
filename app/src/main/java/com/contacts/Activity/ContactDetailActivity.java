@@ -6,12 +6,15 @@ import static com.contacts.Class.Constant.favoriteList;
 import static com.contacts.Class.Constant.recentArrayList;
 import static com.contacts.Class.Constant.usersArrayList;
 
+import static java.security.AccessController.getContext;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -33,6 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.contacts.Adapter.FavListAdapter;
+import com.contacts.Adapter.RecentListAdapter;
 import com.contacts.Class.Constant;
 import com.contacts.Model.Recent;
 import com.contacts.Model.Users;
@@ -73,7 +77,6 @@ public class ContactDetailActivity extends AppCompatActivity {
                 // do your operation from here....
                 if (data != null) {
                     user = (Users) result.getData().getSerializableExtra("user");
-
                     if (user != null) {
                         setData();
                     }
@@ -88,7 +91,7 @@ public class ContactDetailActivity extends AppCompatActivity {
                 startActivity(intent);
                 Toast.makeText(ContactDetailActivity.this, "Calling " + user.first + " " + user.last, Toast.LENGTH_SHORT).show();
 
-                recent = new Recent(user.contactId, "", user.first, user.last, user.personPhone, "");
+                recent = new Recent(user.contactId, user.image, user.first, user.last, user.personPhone, "");
                 recentArrayList.add(recent);
             }
         });
@@ -181,7 +184,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     }
 
     private void setData() {
-        selected_person_name.setText("" + user.first + " " + user.last);
+        selected_person_name.setText(user.first + " " + user.last);
         selected_person_pnum.setText(user.personPhone);
         if (user.image == null) {
             selected_person_image.setImageResource(R.drawable.person_placeholder);
@@ -248,7 +251,6 @@ public class ContactDetailActivity extends AppCompatActivity {
     public void onBackPressed() {
         Intent intent = new Intent();
         intent.putExtra("user", user);
-        intent.putExtra("recents", recent);
         setResult(RESULT_OK, intent);
         finish();
     }

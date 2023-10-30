@@ -82,7 +82,6 @@ public class RecentsFragment extends Fragment {
         launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK) {
                 Intent data = result.getData();
-                // do your operation from here....
                 if (data != null) {
                     recent = (Recent) result.getData().getSerializableExtra("recents");
                     if (recent != null) {
@@ -97,7 +96,7 @@ public class RecentsFragment extends Fragment {
     }
 
     private void getRecentContacts() {
-        recentListAdapter = new RecentListAdapter(getContext(), recentArrayList);
+        recentListAdapter = new RecentListAdapter(RecentsFragment.this, recentArrayList);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(recentListAdapter);

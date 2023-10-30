@@ -23,7 +23,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Window;
 import android.widget.Toast;
@@ -32,6 +34,8 @@ import com.contacts.Activity.HomeActivity;
 import com.contacts.Model.Recent;
 import com.contacts.Model.Users;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -79,7 +83,6 @@ public class Splash extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
 
         if (requestCode == 123) {
             boolean allPermissionsGranted = true;
@@ -267,7 +270,8 @@ public class Splash extends AppCompatActivity {
                 CallLog.Calls.CACHED_NAME,
                 CallLog.Calls.NUMBER,
                 CallLog.Calls.TYPE,
-                CallLog.Calls.DATE
+                CallLog.Calls.DATE,
+                CallLog.Calls.CACHED_PHOTO_ID
         };
 
         String sortOrder = CallLog.Calls.DATE + " DESC";
@@ -303,43 +307,64 @@ public class Splash extends AppCompatActivity {
                         break;
                 }
 
-//                cursorLog.moveToFirst();
-//                String number = cursorLog.getString(cursorLog.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
-//                contactId = getContactIdFromNumber(contactNumber);
-//                Contacts.People.loadContactPhoto(getContext(),
-//                        ContentUris.withAppendedId(Contacts.People.CONTENT_URI, Long.parseLong((contactId))),0,null);
+                Bitmap bitmap = getContactPhoto(contactId);
 
-                String image = getContactImage(this, contactId);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
+                byte [] b = baos.toByteArray();
+                String path = Base64.encodeToString(b, Base64.DEFAULT);
 
-//                Bitmap image = loadContactPhoto(getContext(),contactNumber);
+                Log.d("SSS", "ID: " + contactId + ", Image: " + path + ", Name: " + contactName + ", Number: " + contactNumber + ", Date: " + formattedDate + ", Type: " + callType);
 
-                Log.d("AAA", "ID: " + contactId + ", Image: " + image + ", Name: " + contactName + ", Number: " + contactNumber + ", Date: " + formattedDate + ", Type: " + callType);
-                Recent recent = new Recent(contactId, image, contactName, contactNumber, formattedDate, callType);
+                Recent recent = new Recent(contactId, path, contactName, contactNumber, formattedDate, callType);
                 recentArrayList.add(recent);
+
             } while (cursor.moveToNext());
             cursor.close();
         }
     }
 
-    private static String getContactImage(Context context, String contactId) {
-        String contactImage = null;
-        Uri contactUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, contactId);
-        Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
-        Cursor photoCursor = context.getContentResolver().query(photoUri, new String[]{ContactsContract.Contacts.Photo.PHOTO}, null, null, null);
+    private Bitmap getContactPhoto(String contactId) {
+        Uri contactUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(contactId));
+        InputStream photoInputStream = ContactsContract.Contacts.openContactPhotoInputStream(getContentResolver(), contactUri);
 
-        if (photoCursor != null && photoCursor.moveToFirst()) {
-            byte[] photoData = photoCursor.getBlob(0);
-            contactImage = getBase64Image(photoData);
-            photoCursor.close();
+        if (photoInputStream != null) {
+            return BitmapFactory.decodeStream(photoInputStream);
+        } else {
+            return BitmapFactory.decodeResource(getResources(), R.drawable.person_placeholder);
         }
 
-        return contactImage;
-    }
 
-    private static String getBase64Image(byte[] photoData) {
-        if (photoData != null) {
-            return android.util.Base64.encodeToString(photoData, android.util.Base64.DEFAULT);
-        }
-        return null;
+//        if (usersArrayList.size() > 0) {
+//            for (int i = 0; i < usersArrayList.size(); i++) {
+//
+//                if (usersArrayList.get(i).contactId.equalsIgnoreCase(contactId)) {
+//                    Uri uri = Uri.parse(usersArrayList.get(i).getImage());
+//
+//                }
+//            }
+//        }
+
     }
+//    private static String getContactImage(Context context, String contactId) {
+//        String contactImage = null;
+//        Uri contactUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, contactId);
+//        Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
+//        Cursor photoCursor = context.getContentResolver().query(photoUri, new String[]{ContactsContract.Contacts.Photo.PHOTO}, null, null, null);
+//
+//        if (photoCursor != null && photoCursor.moveToFirst()) {
+//            byte[] photoData = photoCursor.getBlob(0);
+//            contactImage = getBase64Image(photoData);
+//            photoCursor.close();
+//        }
+//
+//        return contactImage;
+//    }
+//
+//    private static String getBase64Image(byte[] photoData) {
+//        if (photoData != null) {
+//            return android.util.Base64.encodeToString(photoData, android.util.Base64.DEFAULT);
+//        }
+//        return null;
+//    }
 }

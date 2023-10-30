@@ -228,6 +228,7 @@
                         android:id="@+id/show_contact_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:descendantFocusability="blocksDescendants"
                         android:layout_marginVertical="5dp"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="10dp"
@@ -245,6 +246,7 @@
                         android:outlineSpotShadowColor="@color/black"
                         android:soundEffectsEnabled="true"
                         android:textColor="@color/blue"
+                        android:visibility="visible"
                         app:fastScrollerTextPadding="1dp" />
 
                 </LinearLayout>
