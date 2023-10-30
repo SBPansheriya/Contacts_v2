@@ -1,8 +1,12 @@
 package com.contacts.Adapter;
 
+import static com.contacts.Class.Constant.usersArrayList;
+
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +23,7 @@ import com.contacts.Model.Recent;
 import com.contacts.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class RecentListAdapter extends RecyclerView.Adapter<RecentListAdapter.recentviewholder> {
@@ -41,8 +46,21 @@ public class RecentListAdapter extends RecyclerView.Adapter<RecentListAdapter.re
     @Override
     public void onBindViewHolder(@NonNull recentviewholder holder, int position) {
 
-        if (recentArrayList.get(position).getIamge() == null) {
-            holder.recent_personImage.setImageResource(R.drawable.person_placeholder);
+        if (TextUtils.isEmpty(recentArrayList.get(position).getIamge())) {
+
+            if (usersArrayList.size() > 0) {
+                for (int i = 0; i < usersArrayList.size(); i++) {
+
+                    if (usersArrayList.get(i).getPersonPhone().contains(recentArrayList.get(position).getContactnumber()) ||
+                    usersArrayList.get(i).getOfficePhone().contains(recentArrayList.get(position).getContactnumber())) {
+                        Picasso.get().load(usersArrayList.get(i).getImage()).into(holder.recent_personImage);
+                        break;
+                    }
+                }
+            } else {
+                holder.recent_personImage.setImageResource(R.drawable.person_placeholder);
+            }
+
         } else {
             Picasso.get().load(recentArrayList.get(position).getIamge()).into(holder.recent_personImage);
         }

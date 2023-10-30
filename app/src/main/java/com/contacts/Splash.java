@@ -266,28 +266,31 @@ public class Splash extends AppCompatActivity {
 
         ContentResolver contentResolver = getContentResolver();
         String[] projection = {
-                CallLog.Calls._ID,
+                ContactsContract.Contacts._ID,
                 CallLog.Calls.CACHED_NAME,
                 CallLog.Calls.NUMBER,
                 CallLog.Calls.TYPE,
                 CallLog.Calls.DATE,
-                CallLog.Calls.CACHED_PHOTO_ID
+                CallLog.Calls.CACHED_PHOTO_URI
         };
 
         String sortOrder = CallLog.Calls.DATE + " DESC";
-        Cursor cursor = contentResolver.query(CallLog.Calls.CONTENT_URI, projection, null, null, sortOrder);
+        Cursor cursor = contentResolver.query(CallLog.Calls.CONTENT_URI, null, null, null, sortOrder);
 
         if (cursor != null && cursor.moveToFirst()) {
-            int contactColumn = cursor.getColumnIndex(CallLog.Calls._ID);
+            int contactColumn = cursor.getColumnIndex(ContactsContract.Contacts._ID);
             int nameColumn = cursor.getColumnIndex(CallLog.Calls.CACHED_NAME);
             int numberColumn = cursor.getColumnIndex(CallLog.Calls.NUMBER);
             int typeColumn = cursor.getColumnIndex(CallLog.Calls.TYPE);
             int callDate = cursor.getColumnIndex(CallLog.Calls.DATE);
+            int image = cursor.getColumnIndex(CallLog.Calls.CACHED_PHOTO_URI);
 
             do {
                 String contactId = cursor.getString(contactColumn);
                 String contactName = cursor.getString(nameColumn);
                 String contactNumber = cursor.getString(numberColumn);
+                String image_str = cursor.getString(image);
+
                 int contactType = cursor.getInt(typeColumn);
                 @SuppressLint("Range") long contactDate = cursor.getLong(callDate);
 
@@ -307,14 +310,13 @@ public class Splash extends AppCompatActivity {
                         break;
                 }
 
-                Bitmap bitmap = getContactPhoto(contactId);
+                String path = "";
+                if (TextUtils.isEmpty(image_str)) {
 
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
-                byte [] b = baos.toByteArray();
-                String path = Base64.encodeToString(b, Base64.DEFAULT);
-
-                Log.d("SSS", "ID: " + contactId + ", Image: " + path + ", Name: " + contactName + ", Number: " + contactNumber + ", Date: " + formattedDate + ", Type: " + callType);
+                    path = "";
+                } else {
+                    path = image_str;
+                }
 
                 Recent recent = new Recent(contactId, path, contactName, contactNumber, formattedDate, callType);
                 recentArrayList.add(recent);
@@ -325,25 +327,40 @@ public class Splash extends AppCompatActivity {
     }
 
     private Bitmap getContactPhoto(String contactId) {
-        Uri contactUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(contactId));
-        InputStream photoInputStream = ContactsContract.Contacts.openContactPhotoInputStream(getContentResolver(), contactUri);
+//        Uri contactUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(contactId));
+//        InputStream photoInputStream = ContactsContract.Contacts.openContactPhotoInputStream(getContentResolver(), contactUri);
+//
+//        if (photoInputStream != null) {
+//            return BitmapFactory.decodeStream(photoInputStream);
+//        } else {
+//            return BitmapFactory.decodeResource(getResources(), R.drawable.person_placeholder);
+//        }
 
-        if (photoInputStream != null) {
-            return BitmapFactory.decodeStream(photoInputStream);
+        Uri contactUri = null;
+        if (usersArrayList.size() > 0) {
+            for (int i = 0; i < usersArrayList.size(); i++) {
+
+                if (usersArrayList.get(i).contactId.equalsIgnoreCase(contactId)) {
+                    contactUri = Uri.parse(usersArrayList.get(i).getImage());
+                    break;
+                }
+            }
+
+
+            if (contactUri != null) {
+                InputStream photoInputStream = ContactsContract.Contacts.openContactPhotoInputStream(getContentResolver(), contactUri);
+
+                if (photoInputStream != null) {
+                    return BitmapFactory.decodeStream(photoInputStream);
+                } else {
+                    return BitmapFactory.decodeResource(getResources(), R.drawable.person_placeholder);
+                }
+            } else {
+                return BitmapFactory.decodeResource(getResources(), R.drawable.person_placeholder);
+            }
         } else {
             return BitmapFactory.decodeResource(getResources(), R.drawable.person_placeholder);
         }
-
-
-//        if (usersArrayList.size() > 0) {
-//            for (int i = 0; i < usersArrayList.size(); i++) {
-//
-//                if (usersArrayList.get(i).contactId.equalsIgnoreCase(contactId)) {
-//                    Uri uri = Uri.parse(usersArrayList.get(i).getImage());
-//
-//                }
-//            }
-//        }
 
     }
 //    private static String getContactImage(Context context, String contactId) {
