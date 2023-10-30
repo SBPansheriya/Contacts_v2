@@ -134,4 +134,9 @@ public class RecentsFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recents_recyclerview);
         no_recents_linear = view.findViewById(R.id.no_recents);
     }
+
+    public void call(String phoneNUmber) {
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNUmber));
+        startActivity(intent);
+    }
 }

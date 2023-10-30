@@ -1,5 +1,6 @@
 package com.contacts.Adapter;
 
+import static com.contacts.Class.Constant.recentArrayList;
 import static com.contacts.Class.Constant.usersArrayList;
 
 import android.content.Context;
@@ -90,10 +91,7 @@ public class RecentListAdapter extends RecyclerView.Adapter<RecentListAdapter.re
         holder.recent_call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + recentArrayList.get(position).getContactnumber()));
-                recentsFragment.startActivity(intent);
-                Toast.makeText(recentsFragment.getContext(), "Calling " + recentArrayList.get(position).getContactname(), Toast.LENGTH_SHORT).show();
-                notifyDataSetChanged();
+                ((RecentsFragment) recentsFragment).call(recentArrayList.get(position).getContactnumber());
             }
         });
     }
