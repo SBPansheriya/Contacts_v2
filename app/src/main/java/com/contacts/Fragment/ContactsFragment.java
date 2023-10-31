@@ -531,14 +531,15 @@ public class ContactsFragment extends Fragment {
         }
     }
 
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            getContactList(false);
-            progressLayout.setVisibility(View.GONE);
-        } else {
-            Toast.makeText(context, "Permission Denied.", Toast.LENGTH_SHORT).show();
-            checkPermission();
+        if (requestCode == 100) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getContactList(false);
+            } else {
+                checkPermission();
+            }
         }
     }
 

@@ -31,7 +31,6 @@
             android:elevation="100dp"
             app:itemActiveIndicatorStyle="@null"
             app:itemIconSize="32dp"
-            app:elevation="20dp"
             app:itemIconTint="@color/nav_item_color"
             app:itemTextColor="@color/nav_item_color"
             app:labelVisibilityMode="labeled"

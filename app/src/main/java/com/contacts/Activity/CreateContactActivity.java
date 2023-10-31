@@ -186,7 +186,6 @@ public class CreateContactActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             savedData();
-            cameraPermission();
         } else {
             Toast.makeText(CreateContactActivity.this, "Permission Denied.", Toast.LENGTH_SHORT).show();
             checkPermission();

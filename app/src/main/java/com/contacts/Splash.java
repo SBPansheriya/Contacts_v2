@@ -5,6 +5,7 @@ import static com.contacts.Class.Constant.recentArrayList;
 import static com.contacts.Class.Constant.usersArrayList;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -12,7 +13,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -23,10 +24,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
-import android.provider.MediaStore;
+import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Base64;
-import android.util.Log;
 import android.view.Window;
 import android.widget.Toast;
 
@@ -34,7 +33,6 @@ import com.contacts.Activity.HomeActivity;
 import com.contacts.Model.Recent;
 import com.contacts.Model.Users;
 
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,6 +42,7 @@ import java.util.Locale;
 
 public class Splash extends AppCompatActivity {
 
+    String[] permissions;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,12 +53,13 @@ public class Splash extends AppCompatActivity {
         checkPermissions();
     }
 
+
     private void checkPermissions() {
-        String[] permissions = { Manifest.permission.READ_CONTACTS, Manifest.permission.READ_CALL_LOG};
+       permissions = new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.READ_CALL_LOG};
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED ||
                 ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this, permissions, 123);
+            ActivityCompat.requestPermissions(Splash.this, permissions, 123);
         } else {
             getContactList();
             getRecentContacts();
@@ -73,7 +73,7 @@ public class Splash extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == 123) {
-            checkPermissions();
+            showPermissionDialog();
         }
     }
 
@@ -87,6 +87,48 @@ public class Splash extends AppCompatActivity {
                 finish();
             }
         }, 500);
+    }
+
+    private void showPermissionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Permission Required");
+        builder.setMessage("This app requires access to contacts and call logs to function properly.");
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS) ||
+                        shouldShowRequestPermissionRationale(Manifest.permission.READ_CALL_LOG)){
+                    checkPermissions();
+                } else {
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+                    intent.setData(uri);
+                    startActivityForResult(intent,123);
+                    Toast.makeText(Splash.this, "Setting", Toast.LENGTH_SHORT).show();
+                }
+
+                dialog.cancel();
+            }
+        });
+
+        builder.setCancelable(true);
+        builder.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        try {
+            super.onActivityResult(requestCode, resultCode, data);
+
+            if (requestCode == 123) {
+                checkPermissions();
+            }
+        } catch (Exception ex) {
+            Toast.makeText(Splash.this, ex.toString(),
+                    Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @SuppressLint("NotifyDataSetChanged")

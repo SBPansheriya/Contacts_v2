@@ -3,16 +3,9 @@ package com.contacts.Fragment;
 import static com.contacts.Class.Constant.recentArrayList;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -25,13 +18,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.provider.CallLog;
-import android.provider.Contacts;
-import android.provider.ContactsContract;
-import android.provider.MediaStore;
-import android.text.format.DateUtils;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,22 +26,9 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.contacts.Adapter.RecentListAdapter;
-import com.contacts.Activity.HomeActivity;
-import com.contacts.Class.Constant;
-import com.contacts.KeypadScreen;
+import com.contacts.Activity.KeypadScreen;
 import com.contacts.Model.Recent;
-import com.contacts.Model.Users;
 import com.contacts.R;
-import com.contacts.Splash;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 public class RecentsFragment extends Fragment {
 

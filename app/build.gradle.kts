@@ -38,7 +38,6 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.reddit:indicator-fast-scroll:1.4.0")
-    implementation ("com.github.myinnos:AlphabetIndex-Fast-Scroll-RecyclerView:1.0.95")
     implementation ("com.google.code.gson:gson:2.10.1")
     implementation ("com.github.ybq:Android-SpinKit:1.4.0")
     implementation ("com.squareup.picasso:picasso:2.8")

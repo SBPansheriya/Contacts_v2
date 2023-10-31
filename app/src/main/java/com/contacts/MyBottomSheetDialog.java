@@ -1,7 +1,7 @@
 package com.contacts;
 
-import static com.contacts.KeypadScreen.keypadListAdapter;
-import static com.contacts.KeypadScreen.recyclerView;
+import static com.contacts.Activity.KeypadScreen.keypadListAdapter;
+import static com.contacts.Activity.KeypadScreen.recyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -14,22 +14,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.contacts.Activity.CreateContactActivity;
-import com.contacts.Adapter.KeypadListAdapter;
 import com.contacts.Class.Constant;
-import com.contacts.Fragment.KeypadFragment;
 import com.contacts.Model.Users;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayList;

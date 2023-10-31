@@ -108,11 +108,11 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
         holder.personName.setText(usersList.get(position).first + " " + usersList.get(position).last);
 
-        /*if (TextUtils.isEmpty(usersList.get(position).image)) {
+        if (TextUtils.isEmpty(usersList.get(position).image)) {
             holder.personImage.setImageResource(R.drawable.person_placeholder);
         } else {
             Picasso.get().load(usersList.get(position).image).into(holder.personImage);
-        }*/
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

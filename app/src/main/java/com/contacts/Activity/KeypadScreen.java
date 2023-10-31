@@ -1,4 +1,4 @@
-package com.contacts;
+package com.contacts.Activity;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,8 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.contacts.Adapter.KeypadListAdapter;
 import com.contacts.Class.Constant;
-import com.contacts.Fragment.KeypadFragment;
 import com.contacts.Model.Users;
+import com.contacts.R;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
@@ -63,7 +61,6 @@ public class KeypadScreen extends AppCompatActivity {
         ImageView btn_star = bottomSheetDialog.findViewById(R.id.btn_star);
         ImageView btn_call = bottomSheetDialog.findViewById(R.id.btn_call);
         ImageView btn_backpress = bottomSheetDialog.findViewById(R.id.btn_backpress);
-//        SearchView searchView = bottomSheetDialog.findViewById(R.id.dailer_show);
         EditText editText = bottomSheetDialog.findViewById(R.id.dailer_show);
 
         btn_0.setOnClickListener(new View.OnClickListener() {

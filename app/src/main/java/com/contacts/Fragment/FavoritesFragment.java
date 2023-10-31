@@ -1,7 +1,6 @@
 package com.contacts.Fragment;
 
 import static com.contacts.Class.Constant.favoriteList;
-import static com.contacts.Class.Constant.usersArrayList;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -31,12 +30,9 @@ import android.widget.Toast;
 
 import com.contacts.Activity.ContactDetailActivity;
 import com.contacts.Adapter.FavListAdapter;
-import com.contacts.KeypadScreen;
+import com.contacts.Activity.KeypadScreen;
 import com.contacts.Model.Users;
-import com.contacts.MyBottomSheetDialog;
 import com.contacts.R;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class FavoritesFragment extends Fragment {
 

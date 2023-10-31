@@ -12,8 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.contacts.Fragment.KeypadFragment;
-import com.contacts.KeypadScreen;
+import com.contacts.Activity.KeypadScreen;
 import com.contacts.Model.Users;
 import com.contacts.R;
 import com.squareup.picasso.Picasso;
