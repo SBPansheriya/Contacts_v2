@@ -19,12 +19,13 @@ public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.He
 
     ContactsFragment contactsFragment;
     ArrayList<Header> headerArrayList;
-    ContactListAdapter contactListAdapter;
     boolean isEdit = false;
+    String button;
 
-    public HeaderListAdapter(ContactsFragment contactsFragment, ArrayList<Header> headerArrayList) {
+    public HeaderListAdapter(ContactsFragment contactsFragment, ArrayList<Header> headerArrayList, String button) {
         this.contactsFragment = contactsFragment;
         this.headerArrayList = headerArrayList;
+        this.button = button;
     }
 
     @NonNull
@@ -39,12 +40,10 @@ public class HeaderListAdapter extends RecyclerView.Adapter<HeaderListAdapter.He
 
         holder.header.setText(headerArrayList.get(position).header);
 
-        LinearLayoutManager manager = new LinearLayoutManager(contactsFragment.getContext());
-        contactListAdapter = new ContactListAdapter(contactsFragment, headerArrayList.get(position).usersList, isEdit);
+        LinearLayoutManager manager = new LinearLayoutManager(contactsFragment.getContext(),LinearLayoutManager.VERTICAL,false);
+        ContactListAdapter contactListAdapter = new ContactListAdapter(contactsFragment, headerArrayList.get(position).usersList, isEdit,button);
         holder.Contact_recyclerView.setLayoutManager(manager);
         holder.Contact_recyclerView.setAdapter(contactListAdapter);
-        holder.Contact_recyclerView.setNestedScrollingEnabled(false);
-        holder.Contact_recyclerView.scrollToPosition(getItemCount());
     }
 
     public void setHeaderArrayList(ArrayList<Header> headerArrayList) {

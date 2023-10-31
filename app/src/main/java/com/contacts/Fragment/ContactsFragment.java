@@ -73,6 +73,7 @@ public class ContactsFragment extends Fragment {
     RelativeLayout progressLayout;
     FastScrollerView fastScrollerView;
     ArrayList<Header> headerArrayList = new ArrayList<>();
+    String button = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -85,9 +86,7 @@ public class ContactsFragment extends Fragment {
         spin_kit.setIndeterminateDrawable(threeBounce);
         progressLayout.setVisibility(View.VISIBLE);
 
-        checkPermission();
-
-        String button = getArguments().getString("btn");
+        button = getArguments().getString("btn");
 
         if (button.equals("fav")) {
             tbmenu.setVisibility(View.VISIBLE);
@@ -100,6 +99,8 @@ public class ContactsFragment extends Fragment {
         if (button.equals("contact")) {
             tbmenu.setVisibility(View.GONE);
         }
+
+        checkPermission();
 
         launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK) {
@@ -508,8 +509,8 @@ public class ContactsFragment extends Fragment {
             headerListAdapter.setHeaderArrayList(headerArrayList);
             headerListAdapter.notifyDataSetChanged();
         } else  {
-            LinearLayoutManager manager = new LinearLayoutManager(getContext());
-            headerListAdapter = new HeaderListAdapter(ContactsFragment.this, headerArrayList);
+            LinearLayoutManager manager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
+            headerListAdapter = new HeaderListAdapter(ContactsFragment.this, headerArrayList,button);
             recyclerView.setLayoutManager(manager);
             recyclerView.setAdapter(headerListAdapter);
         }
@@ -521,7 +522,6 @@ public class ContactsFragment extends Fragment {
         intent.putExtra("user", users);
         launchSomeActivity.launch(intent);
     }
-
 
     private void checkPermission() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {

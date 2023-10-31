@@ -2,11 +2,9 @@ package com.contacts.Adapter;
 
 import static com.contacts.Class.Constant.favoriteList;
 
-import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
@@ -14,14 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.contacts.Activity.ContactDetailActivity;
 import com.contacts.Class.Constant;
 import com.contacts.Fragment.ContactsFragment;
 import com.contacts.Model.Users;
@@ -29,7 +25,6 @@ import com.contacts.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> {
 
@@ -38,12 +33,14 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     ArrayList<Users> filteredData;
     int favorites;
     boolean isEdit = false;
+    String button;
 
-    public ContactListAdapter(ContactsFragment contactsFragment, ArrayList<Users> usersList, boolean isEdit) {
+    public ContactListAdapter(ContactsFragment contactsFragment, ArrayList<Users> usersList, boolean isEdit, String button) {
         this.contactsFragment = contactsFragment;
         this.usersList = usersList;
         this.filteredData = new ArrayList<>(usersList);
         this.isEdit = isEdit;
+        this.button = button;
     }
 
     @NonNull
@@ -56,7 +53,6 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     @Override
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
 
-        String button = contactsFragment.getArguments().getString("btn");
 
         if (Constant.favoriteList.size() > 0) {
             boolean isMatch = false;
@@ -73,7 +69,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                 holder.no_fav_add.setVisibility(View.VISIBLE);
                 holder.fav_add.setVisibility(View.GONE);
             }
-        } else {
+        }
+        else {
             holder.no_fav_add.setVisibility(View.VISIBLE);
             holder.fav_add.setVisibility(View.GONE);
         }
@@ -111,11 +108,11 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
         holder.personName.setText(usersList.get(position).first + " " + usersList.get(position).last);
 
-        if (TextUtils.isEmpty(usersList.get(position).image)) {
+        /*if (TextUtils.isEmpty(usersList.get(position).image)) {
             holder.personImage.setImageResource(R.drawable.person_placeholder);
         } else {
             Picasso.get().load(usersList.get(position).image).into(holder.personImage);
-        }
+        }*/
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,7 +130,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             holder.personImage.setVisibility(View.GONE);
             holder.checkBox.setVisibility(View.VISIBLE);
             holder.itemView.setClickable(false);
-        } else {
+        }
+        else {
             holder.personImage.setVisibility(View.VISIBLE);
             holder.checkBox.setVisibility(View.GONE);
             holder.itemView.setClickable(true);
