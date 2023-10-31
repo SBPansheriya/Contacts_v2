@@ -16,7 +16,7 @@
     <color name="lightblue">#1A1B72C0</color> // com
     <color name="mediumblue">#331B72C0</color> // com
     <color name="lightblack">#FFFFFF</color>  // com
-    <color name="lightblackbottom">#1A000000</color>  // com
+    <color name="lightblackbottom">#FFFFFF</color>  // com
     <color name="mediumblack">#12000000</color>  // com
     <color name="nickel">#6C7072</color>  // com
     <color name="gray90">#6C7072</color>  // com

@@ -1,6 +1,5 @@
 package com.contacts.Adapter;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -13,8 +12,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.contacts.Activity.ContactDetailActivity;
 import com.contacts.Fragment.KeypadFragment;
+import com.contacts.KeypadScreen;
 import com.contacts.Model.Users;
 import com.contacts.R;
 import com.squareup.picasso.Picasso;
@@ -23,10 +22,10 @@ import java.util.ArrayList;
 
 public class KeypadListAdapter extends RecyclerView.Adapter<KeypadListAdapter.keypadviewholder> {
 
-    KeypadFragment keypadFragment;
+    KeypadScreen keypadFragment;
     ArrayList<Users> usersArrayList;
 
-    public KeypadListAdapter(KeypadFragment keypadFragment, ArrayList<Users> usersArrayList) {
+    public KeypadListAdapter(KeypadScreen keypadFragment, ArrayList<Users> usersArrayList) {
         this.keypadFragment = keypadFragment;
         this.usersArrayList = usersArrayList;
     }
@@ -39,7 +38,7 @@ public class KeypadListAdapter extends RecyclerView.Adapter<KeypadListAdapter.ke
     @NonNull
     @Override
     public KeypadListAdapter.keypadviewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(keypadFragment.getContext()).inflate(R.layout.keypad_list_item, parent, false);
+        View view = LayoutInflater.from(keypadFragment).inflate(R.layout.keypad_list_item, parent, false);
         return new keypadviewholder(view);
     }
 
@@ -61,7 +60,7 @@ public class KeypadListAdapter extends RecyclerView.Adapter<KeypadListAdapter.ke
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + user.personPhone));
                 keypadFragment.startActivity(intent);
-                Toast.makeText(keypadFragment.getContext(), "Calling " + user.first + " " + user.last, Toast.LENGTH_SHORT).show();
+                Toast.makeText(keypadFragment, "Calling " + user.first + " " + user.last, Toast.LENGTH_SHORT).show();
             }
         });
 

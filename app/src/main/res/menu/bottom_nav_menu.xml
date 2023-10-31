@@ -16,8 +16,8 @@
         android:id="@+id/group"
         android:title="Groups"
         android:icon="@drawable/groupperson"/>
-    <item
-        android:id="@+id/keypad"
-        android:title="Keypad"
-        android:icon="@drawable/keypad"/>
+<!--    <item-->
+<!--        android:id="@+id/keypad"-->
+<!--        android:title="Keypad"-->
+<!--        android:icon="@drawable/keypad"/>-->
 </menu>

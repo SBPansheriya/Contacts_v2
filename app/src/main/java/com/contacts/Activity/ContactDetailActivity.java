@@ -24,10 +24,13 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -40,11 +43,10 @@ import com.contacts.Adapter.RecentListAdapter;
 import com.contacts.Class.Constant;
 import com.contacts.Model.Recent;
 import com.contacts.Model.Users;
+
+import com.contacts.PhoneStateBroadcastReceiver;
 import com.contacts.R;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
-import java.util.Objects;
 
 public class ContactDetailActivity extends AppCompatActivity {
 
@@ -53,8 +55,9 @@ public class ContactDetailActivity extends AppCompatActivity {
     TextView selected_person_name, selected_person_pnum, selected_person_onum, message_whatsapp;
     int favorite;
     Users user;
-    Recent recent;
     ActivityResultLauncher<Intent> launchSomeActivity;
+    private static final int REQUEST_PHONE_STATE_PERMISSION = 1;
+    private PhoneStateBroadcastReceiver phoneStateReceiver;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -87,12 +90,13 @@ public class ContactDetailActivity extends AppCompatActivity {
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + user.personPhone));
-                startActivity(intent);
-                Toast.makeText(ContactDetailActivity.this, "Calling " + user.first + " " + user.last, Toast.LENGTH_SHORT).show();
-
-                recent = new Recent(user.contactId, user.image, user.first, user.last, user.personPhone, "");
-                recentArrayList.add(recent);
+                if (checkPermission() || checkPermission1()) {
+                    call();
+                    registerPhoneStateListener();
+                } else {
+                    ActivityCompat.requestPermissions(ContactDetailActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 100);
+                    ActivityCompat.requestPermissions(ContactDetailActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, 100);
+                }
             }
         });
 
@@ -195,19 +199,43 @@ public class ContactDetailActivity extends AppCompatActivity {
 
     }
 
-    private void checkPermission() {
-        if (ContextCompat.checkSelfPermission(ContactDetailActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(ContactDetailActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 100);
+    private void registerPhoneStateListener() {
+        phoneStateReceiver = new PhoneStateBroadcastReceiver();
+        IntentFilter intentFilter = new IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
+        registerReceiver(phoneStateReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (phoneStateReceiver != null) {
+            unregisterReceiver(phoneStateReceiver);
         }
+    }
+
+    private boolean checkPermission() {
+        return ContextCompat.checkSelfPermission(ContactDetailActivity.this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private boolean checkPermission1() {
+      return ContextCompat.checkSelfPermission(ContactDetailActivity.this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            call();
+            registerPhoneStateListener();
         } else {
             Toast.makeText(ContactDetailActivity.this, "Permission Denied.", Toast.LENGTH_SHORT).show();
             checkPermission();
+            checkPermission1();
         }
+    }
+    private void call(){
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + user.personPhone));
+        startActivity(intent);
+        Toast.makeText(ContactDetailActivity.this, "Calling " + user.first + " " + user.last, Toast.LENGTH_SHORT).show();
     }
 
     public void addToFavorites(Context context, String contactId, int favorite) {

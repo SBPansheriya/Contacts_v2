@@ -228,12 +228,21 @@
                         android:id="@+id/show_contact_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:descendantFocusability="blocksDescendants"
                         android:layout_marginVertical="5dp"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="10dp"
                         android:layout_weight="1"
+                        android:baselineAligned="false"
+                        android:descendantFocusability="blocksDescendants"
                         tools:listitem="@layout/header_list_item" />
+
+                    <!--                    <com.simplecityapps.recyclerview_fastscroll.views.FastScrollerView-->
+                    <!--                        android:id="@+id/fastscroller"-->
+                    <!--                        android:layout_width="20dp"-->
+                    <!--                        android:layout_height="match_parent"-->
+                    <!--                        android:layout_alignParentEnd="true"-->
+                    <!--                        android:layout_alignParentTop="true"-->
+                    <!--                        tools:ignore="MissingClass" />-->
 
                     <com.reddit.indicatorfastscroll.FastScrollerView
                         android:id="@+id/fastscroller"
@@ -251,18 +260,16 @@
 
                 </LinearLayout>
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                <ImageView
                     android:id="@+id/add_contact"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentBottom="true"
                     android:layout_marginEnd="20dp"
                     android:backgroundTint="@color/blue"
-                    android:src="@drawable/baseline_add_24"
-                    android:visibility="visible"
-                    app:elevation="0dp"
-                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
+                    android:src="@drawable/floating"
+                    android:visibility="visible" />
             </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>

@@ -42,24 +42,23 @@ import java.util.List;
 
 public class KeypadFragment extends Fragment {
 
-    public static KeypadListAdapter keypadListAdapter;
-    public static RecyclerView recyclerView;
-    String s;
-    ArrayList<Users> filteredList;
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_keypad, container, false);
-
-        init(view);
-
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        keypadListAdapter = new KeypadListAdapter(KeypadFragment.this, Constant.usersArrayList);
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(keypadListAdapter);
-        keypadListAdapter.notifyDataSetChanged();
-
+//    public static KeypadListAdapter keypadListAdapter;
+//    public static RecyclerView recyclerView;
+//    String s;
+//
+//    @Override
+//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//                             Bundle savedInstanceState) {
+//        View view = inflater.inflate(R.layout.fragment_keypad, container, false);
+//
+//        init(view);
+//
+//        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+//        keypadListAdapter = new KeypadListAdapter(KeypadFragment.this, Constant.usersArrayList);
+//        recyclerView.setLayoutManager(manager);
+//        recyclerView.setAdapter(keypadListAdapter);
+//        keypadListAdapter.notifyDataSetChanged();
+//
 //        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
 //        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout);
 //        bottomSheetDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
@@ -245,10 +244,10 @@ public class KeypadFragment extends Fragment {
 //
 //            }
 //        });
-        return view;
-    }
-
-    private void init(View view) {
-        recyclerView = view.findViewById(R.id.keypadrecyclerview);
-    }
+//        return view;
+//    }
+//
+//    private void init(View view) {
+//        recyclerView = view.findViewById(R.id.keypadrecyclerview);
+//    }
 }

@@ -61,7 +61,7 @@ public class CreateContactActivity extends AppCompatActivity {
         window.setStatusBarColor(ContextCompat.getColor(CreateContactActivity.this, R.color.white));
         init();
 
-        ActivityCompat.requestPermissions(CreateContactActivity.this, new String[]{Manifest.permission.WRITE_CONTACTS}, 100);
+//        ActivityCompat.requestPermissions(CreateContactActivity.this, new String[]{Manifest.permission.WRITE_CONTACTS}, 100);
 
 //        checkPermission();
         user = (Users) getIntent().getSerializableExtra("user");
@@ -80,11 +80,11 @@ public class CreateContactActivity extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TextUtils.isEmpty(firstname.getText().toString()) || TextUtils.isEmpty(pphone.getText().toString())) {
-                    Toast.makeText(CreateContactActivity.this, "Please Fill Data", Toast.LENGTH_SHORT).show();
-                } else {
-                    createContact();
-                    Toast.makeText(CreateContactActivity.this, "Contact saved", Toast.LENGTH_SHORT).show();
+                if (checkPermission1()){
+                    savedData();
+                }
+                else {
+                    ActivityCompat.requestPermissions(CreateContactActivity.this, new String[]{Manifest.permission.WRITE_CONTACTS}, 100);
                 }
             }
         });
@@ -92,8 +92,12 @@ public class CreateContactActivity extends AppCompatActivity {
         addPersonImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(takePicture, CAMERA_REQUEST);
+                if (checkPermission()){
+                    cameraPermission();
+                }
+                else {
+                    ActivityCompat.requestPermissions(CreateContactActivity.this, new String[]{Manifest.permission.CAMERA}, 100);
+                }
             }
         });
     }
@@ -156,17 +160,35 @@ public class CreateContactActivity extends AppCompatActivity {
         finish();
     }
 
-    private void checkPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
+    private boolean checkPermission1() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void savedData(){
+        if (TextUtils.isEmpty(firstname.getText().toString()) || TextUtils.isEmpty(pphone.getText().toString())) {
+            Toast.makeText(CreateContactActivity.this, "Please Fill Data", Toast.LENGTH_SHORT).show();
+        } else {
+            createContact();
+            Toast.makeText(CreateContactActivity.this, "Contact saved", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private boolean checkPermission() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void cameraPermission(){
+        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(takePicture, CAMERA_REQUEST);
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            savedData();
+            cameraPermission();
         } else {
-            Toast.makeText(this, "Permission Denied.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CreateContactActivity.this, "Permission Denied.", Toast.LENGTH_SHORT).show();
             checkPermission();
         }
     }

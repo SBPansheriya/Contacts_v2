@@ -51,33 +51,21 @@ public class Splash extends AppCompatActivity {
         Window window = Splash.this.getWindow();
         window.setStatusBarColor(ContextCompat.getColor(Splash.this, R.color.white));
 
-        // check permission
-        if (checkPermissions()) {
+        checkPermissions();
+    }
+
+    private void checkPermissions() {
+        String[] permissions = { Manifest.permission.READ_CONTACTS, Manifest.permission.READ_CALL_LOG};
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, permissions, 123);
+        } else {
             getContactList();
             getRecentContacts();
             readFavoriteContacts();
             navigateToHomeActivity();
         }
-        else {
-            getContactList();
-            getRecentContacts();
-            readFavoriteContacts();
-        }
-
-    }
-
-    private boolean checkPermissions() {
-        String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS, Manifest.permission.READ_CALL_LOG};
-        boolean allPermissionsGranted = true;
-
-        for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                allPermissionsGranted = false;
-                ActivityCompat.requestPermissions(this, permissions, 123);
-                break;
-            }
-        }
-        return allPermissionsGranted;
     }
 
     @Override
@@ -85,21 +73,7 @@ public class Splash extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == 123) {
-            boolean allPermissionsGranted = true;
-
-            for (int grantResult : grantResults) {
-                if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                    allPermissionsGranted = false;
-                    break;
-                }
-            }
-
-            if (allPermissionsGranted) {
-                navigateToHomeActivity();
-            } else {
-                // Permissions denied, you can show a message or take appropriate action
-                Toast.makeText(this, "Permissions denied.", Toast.LENGTH_SHORT).show();
-            }
+            checkPermissions();
         }
     }
 
@@ -260,7 +234,7 @@ public class Splash extends AppCompatActivity {
         return phoneNumber;
     }
 
-    private void getRecentContacts() {
+    public void getRecentContacts() {
 
         recentArrayList = new ArrayList<>();
 
@@ -275,7 +249,7 @@ public class Splash extends AppCompatActivity {
         };
 
         String sortOrder = CallLog.Calls.DATE + " DESC";
-        Cursor cursor = contentResolver.query(CallLog.Calls.CONTENT_URI, null, null, null, sortOrder);
+        Cursor cursor = contentResolver.query(CallLog.Calls.CONTENT_URI, projection, null, null, sortOrder);
 
         if (cursor != null && cursor.moveToFirst()) {
             int contactColumn = cursor.getColumnIndex(ContactsContract.Contacts._ID);
@@ -312,7 +286,6 @@ public class Splash extends AppCompatActivity {
 
                 String path = "";
                 if (TextUtils.isEmpty(image_str)) {
-
                     path = "";
                 } else {
                     path = image_str;
@@ -363,25 +336,4 @@ public class Splash extends AppCompatActivity {
         }
 
     }
-//    private static String getContactImage(Context context, String contactId) {
-//        String contactImage = null;
-//        Uri contactUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, contactId);
-//        Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
-//        Cursor photoCursor = context.getContentResolver().query(photoUri, new String[]{ContactsContract.Contacts.Photo.PHOTO}, null, null, null);
-//
-//        if (photoCursor != null && photoCursor.moveToFirst()) {
-//            byte[] photoData = photoCursor.getBlob(0);
-//            contactImage = getBase64Image(photoData);
-//            photoCursor.close();
-//        }
-//
-//        return contactImage;
-//    }
-//
-//    private static String getBase64Image(byte[] photoData) {
-//        if (photoData != null) {
-//            return android.util.Base64.encodeToString(photoData, android.util.Base64.DEFAULT);
-//        }
-//        return null;
-//    }
 }

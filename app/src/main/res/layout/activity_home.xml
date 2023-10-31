@@ -11,9 +11,16 @@
         android:id="@+id/framelayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/bottomNavigationView">
+        android:layout_above="@+id/title3">
 
     </FrameLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/title3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="50dp"
+        android:layout_alignParentBottom="true">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationView"
@@ -21,13 +28,15 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="@drawable/bottom_border"
+            android:elevation="100dp"
             app:itemActiveIndicatorStyle="@null"
             app:itemIconSize="32dp"
+            app:elevation="20dp"
             app:itemIconTint="@color/nav_item_color"
             app:itemTextColor="@color/nav_item_color"
             app:labelVisibilityMode="labeled"
             app:menu="@menu/bottom_nav_menu" />
-
+    </androidx.cardview.widget.CardView>
     <RelativeLayout
         android:id="@+id/progressLayout"
         android:layout_width="0dp"

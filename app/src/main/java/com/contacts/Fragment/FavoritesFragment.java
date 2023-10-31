@@ -31,8 +31,11 @@ import android.widget.Toast;
 
 import com.contacts.Activity.ContactDetailActivity;
 import com.contacts.Adapter.FavListAdapter;
+import com.contacts.KeypadScreen;
 import com.contacts.Model.Users;
+import com.contacts.MyBottomSheetDialog;
 import com.contacts.R;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class FavoritesFragment extends Fragment {
@@ -40,6 +43,7 @@ public class FavoritesFragment extends Fragment {
     FavListAdapter favListAdapter;
     RecyclerView recyclerView;
     TextView add_fav_contact;
+    ImageView open_keypad;
     LinearLayout no_fav_found_linear;
     TextView done;
     Button addFav;
@@ -78,13 +82,20 @@ public class FavoritesFragment extends Fragment {
             }
         });
 
+        open_keypad.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), KeypadScreen.class);
+                startActivity(intent);
+            }
+        });
+
         add_fav_contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Fragment mFragment = new ContactsFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("btn", "fav");
-//                launchSomeActivity.launch(bundle);
                 mFragment.setArguments(bundle);
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
@@ -172,5 +183,6 @@ public class FavoritesFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         no_fav_found_linear = view.findViewById(R.id.no_fav_found_linear);
         add_fav_contact = view.findViewById(R.id.add_fav_contact);
+        open_keypad = view.findViewById(R.id.open_keypad);
     }
 }

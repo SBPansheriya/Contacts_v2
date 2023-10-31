@@ -4,15 +4,12 @@ import static android.app.Activity.RESULT_OK;
 import static com.contacts.Class.Constant.usersArrayList;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -25,7 +22,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.ContactsContract;
@@ -38,27 +34,22 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.contacts.Activity.ContactDetailActivity;
 import com.contacts.Adapter.HeaderListAdapter;
 import com.contacts.Activity.CreateContactActivity;
-import com.contacts.Model.Alphabet;
 import com.contacts.Model.Header;
 import com.contacts.Model.Users;
 import com.contacts.R;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.github.ybq.android.spinkit.style.ThreeBounce;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.reddit.indicatorfastscroll.FastScrollItemIndicator;
-import com.reddit.indicatorfastscroll.FastScrollerThumbView;
 import com.reddit.indicatorfastscroll.FastScrollerView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -73,16 +64,14 @@ public class ContactsFragment extends Fragment {
     Button create_btn;
     SearchView searchView;
     TextView selectall, totalcontact, deselectall;
-    FloatingActionButton floatingActionButton;
+    ImageView add_contact;
     ViewGroup viewGroup;
     Context context;
     Users users;
-    Alphabet alphabet;
     SpinKitView spin_kit;
     ActivityResultLauncher<Intent> launchSomeActivity;
     RelativeLayout progressLayout;
     FastScrollerView fastScrollerView;
-    ArrayList<Alphabet> alphabetArrayList = new ArrayList<>();
     ArrayList<Header> headerArrayList = new ArrayList<>();
 
     @Override
@@ -136,17 +125,17 @@ public class ContactsFragment extends Fragment {
             }
         });
 
-        fastScrollerView.setupWithRecyclerView(recyclerView, (position) -> {
-            for (char i = 'A'; i <= 'Z'; i++) {
-                alphabet = new Alphabet(String.valueOf(i));
-                alphabetArrayList.add(alphabet);
-            }
-            Alphabet alphabet1 = new Alphabet("#");
-            alphabetArrayList.add(alphabet1);
-            return new FastScrollItemIndicator.Text(alphabetArrayList.get(position).getAlphabet().substring(0, 1).toUpperCase());
-        });
+        fastScrollerView.setupWithRecyclerView(
+                recyclerView,
+                (position) -> {
+                    Header header = headerArrayList.get(position);
+                    return new FastScrollItemIndicator.Text(
+                            header.header.substring(0, 1).toUpperCase()
+                    );
+                }
+        );
 
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+        add_contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), CreateContactActivity.class);
@@ -159,7 +148,7 @@ public class ContactsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 edit.setVisibility(View.GONE);
-                floatingActionButton.setVisibility(View.GONE);
+                add_contact.setVisibility(View.GONE);
                 selectall.setVisibility(View.VISIBLE);
                 cancel.setVisibility(View.VISIBLE);
                 share.setVisibility(View.VISIBLE);
@@ -172,7 +161,7 @@ public class ContactsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 edit.setVisibility(View.VISIBLE);
-                floatingActionButton.setVisibility(View.VISIBLE);
+                add_contact.setVisibility(View.VISIBLE);
                 selectall.setVisibility(View.GONE);
                 deselectall.setVisibility(View.GONE);
                 cancel.setVisibility(View.GONE);
@@ -240,7 +229,7 @@ public class ContactsFragment extends Fragment {
                         public void onClick(View view) {
                             deleteSelectedItems();
                             edit.setVisibility(View.VISIBLE);
-                            floatingActionButton.setVisibility(View.VISIBLE);
+                            add_contact.setVisibility(View.VISIBLE);
                             selectall.setVisibility(View.GONE);
                             deselectall.setVisibility(View.GONE);
                             cancel.setVisibility(View.GONE);
@@ -408,16 +397,15 @@ public class ContactsFragment extends Fragment {
         contentResolver.delete(contactUri, null, null);
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private void getContactList(boolean isFilter) {
-        if (usersArrayList.size() > 0) {
+        /*if (usersArrayList.size() > 0) {
             Comparator<Users> nameComparator = new Comparator<Users>() {
                 @Override
                 public int compare(Users user1, Users user2) {
                     return user1.getFirst().compareTo(user2.getFirst());
                 }
             };
-            Collections.sort(usersArrayList, nameComparator);
+            usersArrayList.sort(nameComparator);
         }
 
         if (usersArrayList.size() > 0) {
@@ -471,15 +459,61 @@ public class ContactsFragment extends Fragment {
             if (!isFilter) {
                 updateUi();
             }
+        }*/
+
+        if (usersArrayList.size() > 0) {
+            Comparator<Users> nameComparator = Comparator.comparing(Users::getFirst);
+            usersArrayList.sort(nameComparator);
+
+            headerArrayList = new ArrayList<>();
+            for (char i = 'A'; i <= 'Z'; i++) {
+                Header header = new Header(String.valueOf(i), new ArrayList<>());
+                headerArrayList.add(header);
+            }
+            Header header1 = new Header("#", new ArrayList<>());
+            headerArrayList.add(header1);
+
+            usersArrayList.forEach(user -> {
+                if (!TextUtils.isEmpty(user.getFirst())) {
+                    String firstLetter = String.valueOf(user.getFirst().toUpperCase().charAt(0));
+                    boolean isMatch = headerArrayList.stream()
+                            .anyMatch(header -> Objects.equals(header.header, firstLetter));
+
+                    if (isMatch) {
+                        headerArrayList.stream()
+                                .filter(header -> Objects.equals(header.header, firstLetter))
+                                .findFirst()
+                                .ifPresent(header -> header.usersList.add(user));
+                    } else {
+                        if (headerArrayList.size() > 0) {
+                            headerArrayList.get(headerArrayList.size() - 1).usersList.add(user);
+                        }
+
+                    }
+                }
+            });
+
+            headerArrayList.removeIf(header -> header.usersList.isEmpty());
+
+            if (!isFilter) {
+                updateUi(headerArrayList);
+            }
         }
+
         progressLayout.setVisibility(View.GONE);
     }
 
-    private void updateUi() {
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        headerListAdapter = new HeaderListAdapter(ContactsFragment.this, headerArrayList);
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(headerListAdapter);
+    private void updateUi(ArrayList<Header> headerArrayList) {
+        if (headerListAdapter != null) {
+            headerListAdapter.setHeaderArrayList(headerArrayList);
+            headerListAdapter.notifyDataSetChanged();
+        } else  {
+            LinearLayoutManager manager = new LinearLayoutManager(getContext());
+            headerListAdapter = new HeaderListAdapter(ContactsFragment.this, headerArrayList);
+            recyclerView.setLayoutManager(manager);
+            recyclerView.setAdapter(headerListAdapter);
+        }
+
     }
 
     public void intentPass(Users users) {
@@ -487,6 +521,7 @@ public class ContactsFragment extends Fragment {
         intent.putExtra("user", users);
         launchSomeActivity.launch(intent);
     }
+
 
     private void checkPermission() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
@@ -509,7 +544,7 @@ public class ContactsFragment extends Fragment {
 
     private void init(View view) {
         recyclerView = view.findViewById(R.id.show_contact_recyclerview);
-        floatingActionButton = view.findViewById(R.id.add_contact);
+        add_contact = view.findViewById(R.id.add_contact);
         edit = view.findViewById(R.id.edit);
         cancel = view.findViewById(R.id.cancel);
         share = view.findViewById(R.id.share);

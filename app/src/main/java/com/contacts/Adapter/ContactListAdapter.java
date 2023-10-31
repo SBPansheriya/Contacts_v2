@@ -158,7 +158,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         }
         else {
             for (int i = 0; i < favoriteList.size(); i++) {
-                if (contactId.equalsIgnoreCase(users.contactId)) {
+                if (favoriteList.get(i).contactId.equalsIgnoreCase(users.contactId)) {
                     favoriteList.remove(i);
                     break;
                 }

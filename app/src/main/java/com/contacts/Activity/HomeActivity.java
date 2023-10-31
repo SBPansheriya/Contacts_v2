@@ -34,17 +34,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.navigation.NavigationBarView;
 
-public class HomeActivity extends AppCompatActivity implements BottomNavigationView
-        .OnNavigationItemSelectedListener{
+public class HomeActivity extends AppCompatActivity{
 
     BottomNavigationView bottomNavigationView;
-    FavoritesFragment  favoritesFragment = new FavoritesFragment();
-    RecentsFragment recentsFragment = new RecentsFragment();
-    ContactsFragment contactsFragment = new ContactsFragment();
-    GroupsFragment groupsFragment = new GroupsFragment();
-    KeypadFragment keypadFragment = new KeypadFragment();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,64 +47,100 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         Window window = HomeActivity.this.getWindow();
         window.setStatusBarColor(ContextCompat.getColor(HomeActivity.this, R.color.white));
         init();
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+
+                if (item.getItemId() == R.id.fav) {
+                    openFragment(new FavoritesFragment());
+                    return true;
+                }
+                if (item.getItemId() == R.id.recents) {
+                    openFragment(new RecentsFragment());
+                    return true;
+                }
+                if (item.getItemId() == R.id.contact) {
+
+                    Fragment fragment = new ContactsFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("btn", "contact");
+                    fragment.setArguments(bundle);
+                    openFragment(fragment);
+
+                    return true;
+                }
+                if (item.getItemId() == R.id.group) {
+                    openFragment(new GroupsFragment());
+                    return true;
+                }
+
+                return true;
+            }
+        });
+
         bottomNavigationView.setSelectedItemId(R.id.fav);
-        bottomNavigationView.setOnItemSelectedListener(this);
+        openFragment(new FavoritesFragment());
+    }
+
+    private void openFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.framelayout, favoritesFragment)
+                .replace(R.id.framelayout, fragment)
                 .commit();
     }
 
-    @Override
-    public boolean
-    onNavigationItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.fav) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.framelayout, new FavoritesFragment());
-            transaction.addToBackStack(null);
-            transaction.commit();
-            return true;
-        }
-        if (item.getItemId() == R.id.recents) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.framelayout, new RecentsFragment());
-            transaction.addToBackStack(null);
-            transaction.commit();
-            return true;
-        }
-        if (item.getItemId() == R.id.contact) {
+//    @Override
+//    public boolean
+//    onNavigationItemSelected(@NonNull MenuItem item) {
+//        if (item.getItemId() == R.id.fav) {
+//            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//            transaction.replace(R.id.framelayout, new FavoritesFragment());
+//            transaction.addToBackStack(null);
+//            transaction.commit();
+//            return true;
+//        }
+//        if (item.getItemId() == R.id.recents) {
+//            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//            transaction.replace(R.id.framelayout, new RecentsFragment());
+//            transaction.addToBackStack(null);
+//            transaction.commit();
+//            return true;
+//        }
+//        if (item.getItemId() == R.id.contact) {
+//
+//            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//            transaction.replace(R.id.framelayout, contactsFragment);
+//            Bundle bundle = new Bundle();
+//            bundle.putString("btn", "contact");
+//            contactsFragment.setArguments(bundle);
+//            transaction.addToBackStack(null);
+//            transaction.commit();
+//
+//            return true;
+//        }
+//        if (item.getItemId() == R.id.group) {
+//            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//            transaction.replace(R.id.framelayout, new GroupsFragment());
+//            transaction.addToBackStack(null);
+//            transaction.commit();
+//            return true;
+//        }
+////        if (item.getItemId() == R.id.keypad) {
+////            BottomSheetDialogFragment bottomSheetDialog = new MyBottomSheetDialog();
+////            bottomSheetDialog.getShowsDialog();
+////            bottomSheetDialog.show(getSupportFragmentManager(), bottomSheetDialog.getTag());
+////            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+////            transaction.replace(R.id.framelayout, new KeypadFragment());
+////            transaction.addToBackStack(null);
+////            transaction.commit();
+////            return true;
+////        }
+//        return true;
+//    }
 
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.framelayout, contactsFragment);
-            Bundle bundle = new Bundle();
-            bundle.putString("btn","contact");
-            contactsFragment.setArguments(bundle);
-            transaction.addToBackStack(null);
-            transaction.commit();
-
-            return true;
-        }
-        if (item.getItemId() == R.id.group) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.framelayout, new GroupsFragment());
-            transaction.addToBackStack(null);
-            transaction.commit();
-            return true;
-        }
-        if (item.getItemId() == R.id.keypad) {
-            BottomSheetDialogFragment bottomSheetDialog = new MyBottomSheetDialog();
-            bottomSheetDialog.getShowsDialog();
-            bottomSheetDialog.show(getSupportFragmentManager(), bottomSheetDialog.getTag());
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.framelayout, new KeypadFragment());
-            transaction.addToBackStack(null);
-            transaction.commit();
-            return true;
-        }
-
-        return  true;
-    }
-    private void  init(){
+    private void init() {
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
     }
 }

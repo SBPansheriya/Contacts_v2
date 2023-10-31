@@ -3,8 +3,10 @@ package com.contacts.Adapter;
 import static com.contacts.Class.Constant.recentArrayList;
 import static com.contacts.Class.Constant.usersArrayList;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -17,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.contacts.Fragment.RecentsFragment;
@@ -88,12 +92,19 @@ public class RecentListAdapter extends RecyclerView.Adapter<RecentListAdapter.re
 
         holder.recent_date.setText(recentArrayList.get(position).getDate());
 
-        holder.recent_call.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((RecentsFragment) recentsFragment).call(recentArrayList.get(position).getContactnumber());
             }
         });
+
+//        holder.recent_call.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                ((RecentsFragment) recentsFragment).call(recentArrayList.get(position).getContactnumber());
+//            }
+//        });
     }
 
     @Override

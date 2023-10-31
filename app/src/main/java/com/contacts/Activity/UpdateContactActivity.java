@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -69,8 +70,6 @@ public class UpdateContactActivity extends AppCompatActivity {
             Picasso.get().load(user.image).into(personimage);
         }
 
-        ActivityCompat.requestPermissions(UpdateContactActivity.this, new String[]{Manifest.permission.WRITE_CONTACTS}, 100);
-
         update_firstname.setText(user.first);
         update_lastname.setText(user.last);
         update_pphone.setText(user.personPhone);
@@ -87,22 +86,24 @@ public class UpdateContactActivity extends AppCompatActivity {
         personimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checkPermission();
-                Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(takePicture, CAMERA_REQUEST);
+                if (checkPermission()){
+                    cameraPermission();
+                }
+                else {
+                    ActivityCompat.requestPermissions(UpdateContactActivity.this, new String[]{Manifest.permission.CAMERA}, 100);
+                }
             }
         });
 
         update_contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                imagepath = imagepath + "/" + imagename;
-                String firstname = update_firstname.getText().toString();
-                String lastname = update_lastname.getText().toString();
-                String pphone = update_pphone.getText().toString();
-                String ophone = update_ophone.getText().toString();
-
-                getUpdateContactList(user.contactId, firstname, lastname, pphone, ophone, newUri);
+                if (checkPermission1()){
+                    updatedData();
+                }
+                else {
+                    ActivityCompat.requestPermissions(UpdateContactActivity.this, new String[]{Manifest.permission.WRITE_CONTACTS}, 100);
+                }
             }
         });
     }
@@ -194,9 +195,6 @@ public class UpdateContactActivity extends AppCompatActivity {
             }
             user.image = newImage.toString();
         }
-//        else {
-//            user.image = null;
-//        }
         user.first = newFirstName;
         user.last = newLastName;
         user.personPhone = newPersonalPhoneNumber;
@@ -212,20 +210,37 @@ public class UpdateContactActivity extends AppCompatActivity {
         }
 
         Toast.makeText(UpdateContactActivity.this, "Contact saved", Toast.LENGTH_SHORT).show();
-
         onBackPressed();
     }
 
-    private void checkPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
-        }
+    private boolean checkPermission() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void cameraPermission(){
+        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(takePicture, CAMERA_REQUEST);
+    }
+
+    private boolean checkPermission1() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void updatedData(){
+        imagepath = imagepath + "/" + imagename;
+        String firstname = update_firstname.getText().toString();
+        String lastname = update_lastname.getText().toString();
+        String pphone = update_pphone.getText().toString();
+        String ophone = update_ophone.getText().toString();
+
+        getUpdateContactList(user.contactId, firstname, lastname, pphone, ophone, newUri);
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+            cameraPermission();
+            updatedData();
         } else {
             Toast.makeText(this, "Permission Denied.", Toast.LENGTH_SHORT).show();
             checkPermission();

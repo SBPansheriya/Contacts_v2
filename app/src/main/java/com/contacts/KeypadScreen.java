@@ -1,9 +1,5 @@
 package com.contacts;
 
-import static com.contacts.KeypadScreen.keypadListAdapter;
-import static com.contacts.KeypadScreen.recyclerView;
-
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,54 +10,61 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.contacts.Activity.CreateContactActivity;
 import com.contacts.Adapter.KeypadListAdapter;
 import com.contacts.Class.Constant;
 import com.contacts.Fragment.KeypadFragment;
 import com.contacts.Model.Users;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 
-public class MyBottomSheetDialog extends BottomSheetDialogFragment {
+public class KeypadScreen extends AppCompatActivity {
 
+    public static KeypadListAdapter keypadListAdapter;
+    public static RecyclerView recyclerView;
     String s;
 
-    @SuppressLint("ResourceType")
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.bottom_sheet_dialog_layout, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_keypad);
 
-        onStart();
+        init();
 
-        ImageView btn_1 = view.findViewById(R.id.btn_1);
-        ImageView btn_2 = view.findViewById(R.id.btn_2);
-        ImageView btn_3 = view.findViewById(R.id.btn_3);
-        ImageView btn_4 = view.findViewById(R.id.btn_4);
-        ImageView btn_5 = view.findViewById(R.id.btn_5);
-        ImageView btn_6 = view.findViewById(R.id.btn_6);
-        ImageView btn_7 = view.findViewById(R.id.btn_7);
-        ImageView btn_8 = view.findViewById(R.id.btn_8);
-        ImageView btn_9 = view.findViewById(R.id.btn_9);
-        ImageView btn_0 = view.findViewById(R.id.btn_0);
-        ImageView btn_hash = view.findViewById(R.id.btn_hash);
-        ImageView btn_star = view.findViewById(R.id.btn_star);
-        ImageView btn_call = view.findViewById(R.id.btn_call);
-        ImageView btn_backpress = view.findViewById(R.id.btn_backpress);
-        EditText editText = view.findViewById(R.id.dailer_show);
-        TextView add_contact_by_keypad = view.findViewById(R.id.add_contact_by_keypad);
+        LinearLayoutManager manager = new LinearLayoutManager(KeypadScreen.this);
+        keypadListAdapter = new KeypadListAdapter(KeypadScreen.this, Constant.usersArrayList);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(keypadListAdapter);
+        keypadListAdapter.notifyDataSetChanged();
+
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(KeypadScreen.this);
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout);
+        bottomSheetDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        bottomSheetDialog.show();
+
+        ImageView btn_1 = bottomSheetDialog.findViewById(R.id.btn_1);
+        ImageView btn_2 = bottomSheetDialog.findViewById(R.id.btn_2);
+        ImageView btn_3 = bottomSheetDialog.findViewById(R.id.btn_3);
+        ImageView btn_4 = bottomSheetDialog.findViewById(R.id.btn_4);
+        ImageView btn_5 = bottomSheetDialog.findViewById(R.id.btn_5);
+        ImageView btn_6 = bottomSheetDialog.findViewById(R.id.btn_6);
+        ImageView btn_7 = bottomSheetDialog.findViewById(R.id.btn_7);
+        ImageView btn_8 = bottomSheetDialog.findViewById(R.id.btn_8);
+        ImageView btn_9 = bottomSheetDialog.findViewById(R.id.btn_9);
+        ImageView btn_0 = bottomSheetDialog.findViewById(R.id.btn_0);
+        ImageView btn_hash = bottomSheetDialog.findViewById(R.id.btn_hash);
+        ImageView btn_star = bottomSheetDialog.findViewById(R.id.btn_star);
+        ImageView btn_call = bottomSheetDialog.findViewById(R.id.btn_call);
+        ImageView btn_backpress = bottomSheetDialog.findViewById(R.id.btn_backpress);
+//        SearchView searchView = bottomSheetDialog.findViewById(R.id.dailer_show);
+        EditText editText = bottomSheetDialog.findViewById(R.id.dailer_show);
 
         btn_0.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,8 +212,10 @@ public class MyBottomSheetDialog extends BottomSheetDialogFragment {
                 ArrayList<Users> filteredList = new ArrayList<>();
 
                 for (int i = 0; i < Constant.usersArrayList.size(); i++) {
+
                     final String number = Constant.usersArrayList.get(i).getPersonPhone().toLowerCase();
                     if (number.contains(query)) {
+
                         filteredList.add(Constant.usersArrayList.get(i));
                     }
                 }
@@ -220,29 +225,13 @@ public class MyBottomSheetDialog extends BottomSheetDialogFragment {
                 } else {
                     recyclerView.setVisibility(View.GONE);
                 }
+
             }
         });
-
-        add_contact_by_keypad.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), CreateContactActivity.class);
-                intent.putExtra("number", editText.getText().toString());
-                startActivity(intent);
-            }
-        });
-
-        return view;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        if (getDialog() != null && getDialog().getWindow() != null) {
-            getDialog().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        }
+    private void init() {
+        recyclerView = findViewById(R.id.keypadrecyclerview);
     }
-
 }
 

@@ -42,6 +42,7 @@ import android.widget.Toast;
 import com.contacts.Adapter.RecentListAdapter;
 import com.contacts.Activity.HomeActivity;
 import com.contacts.Class.Constant;
+import com.contacts.KeypadScreen;
 import com.contacts.Model.Recent;
 import com.contacts.Model.Users;
 import com.contacts.R;
@@ -60,6 +61,7 @@ public class RecentsFragment extends Fragment {
 
     RecentListAdapter recentListAdapter;
     RecyclerView recyclerView;
+    ImageView open_keypad;
     LinearLayout no_recents_linear;
     Recent recent;
     ActivityResultLauncher<Intent> launchSomeActivity;
@@ -92,10 +94,17 @@ public class RecentsFragment extends Fragment {
             }
         });
 
+        open_keypad.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), KeypadScreen.class);
+                startActivity(intent);
+            }
+        });
         return view;
     }
 
-    private void getRecentContacts() {
+    public void getRecentContacts() {
         recentListAdapter = new RecentListAdapter(RecentsFragment.this, recentArrayList);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);
@@ -110,12 +119,9 @@ public class RecentsFragment extends Fragment {
         }
     }
 
-    private void checkPermission1() {
+    public void checkPermission1() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE}, 100);
-        }
-        else {
-            getRecentContacts();
         }
     }
 
@@ -133,6 +139,7 @@ public class RecentsFragment extends Fragment {
     private void init(View view) {
         recyclerView = view.findViewById(R.id.recents_recyclerview);
         no_recents_linear = view.findViewById(R.id.no_recents);
+        open_keypad = view.findViewById(R.id.open_keypad);
     }
 
     public void call(String phoneNUmber) {
