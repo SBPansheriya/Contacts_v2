@@ -13,33 +13,13 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-//public class CallEndListener extends PhoneStateListener {
-//    @Override
-//    public void onCallStateChanged(int state, String incomingNumber) {
-//        super.onCallStateChanged(state, incomingNumber);
-//
-//        switch (state) {
-//            case TelephonyManager.CALL_STATE_IDLE:
-//                // Call has ended
-//                Log.d("CallEndListener", "Call ended");
-//                // Add your code to handle the call end event here
-//                break;
-//            case TelephonyManager.CALL_STATE_OFFHOOK:
-//                // Call is in progress
-//                break;
-//            case TelephonyManager.CALL_STATE_RINGING:
-//                // Incoming call
-//                break;
-//        }
-//    }
-//}
-
 public class PhoneStateBroadcastReceiver extends BroadcastReceiver {
 
     private static final String TAG = "PhoneStateBroadcastReceiver";
     Context mContext;
     String incoming_number;
     private int prev_state;
+    Splash splash = new Splash();
 
     public void onReceive(@NonNull Context context, Intent intent) {
         TelephonyManager telephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE); //TelephonyManager object
@@ -79,13 +59,17 @@ public class PhoneStateBroadcastReceiver extends BroadcastReceiver {
 
                     if ((prev_state == TelephonyManager.CALL_STATE_OFFHOOK)) {
                         prev_state = state;
+                        handleCallEnded();
                     }
                     if ((prev_state == TelephonyManager.CALL_STATE_RINGING)) {
                         prev_state = state;
-                        //Rejected or Missed call
                     }
                     break;
             }
         }
+    }
+
+    private void handleCallEnded() {
+//        splash.getRecentContacts();
     }
 }

@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,9 +27,15 @@ import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.contacts.Activity.CreateContactActivity;
 import com.contacts.Activity.HomeActivity;
 import com.contacts.Model.Recent;
 import com.contacts.Model.Users;
@@ -53,12 +60,12 @@ public class Splash extends AppCompatActivity {
         checkPermissions();
     }
 
-
     private void checkPermissions() {
-       permissions = new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.READ_CALL_LOG};
+       permissions = new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.READ_CALL_LOG, Manifest.permission.WRITE_CONTACTS};
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_DENIED) {
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_DENIED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(Splash.this, permissions, 123);
         } else {
             getContactList();
@@ -72,8 +79,15 @@ public class Splash extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == 123) {
-            showPermissionDialog();
+
+        if (requestCode == 123 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            getContactList();
+            getRecentContacts();
+            readFavoriteContacts();
+            navigateToHomeActivity();
+        }
+        else {
+            dialog();
         }
     }
 
@@ -97,8 +111,9 @@ public class Splash extends AppCompatActivity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS) ||
-                        shouldShowRequestPermissionRationale(Manifest.permission.READ_CALL_LOG)){
+                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS) &&
+                        shouldShowRequestPermissionRationale(Manifest.permission.READ_CALL_LOG) &&
+                        shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CONTACTS)){
                     checkPermissions();
                 } else {
                     Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -114,6 +129,39 @@ public class Splash extends AppCompatActivity {
 
         builder.setCancelable(true);
         builder.show();
+    }
+
+    private void dialog() {
+        Dialog dialog = new Dialog(Splash.this);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setGravity(Gravity.CENTER);
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.setCancelable(false);
+        }
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        dialog.setContentView(R.layout.dialog_permission);
+        dialog.setCancelable(false);
+        dialog.show();
+
+        Button gotosettings = dialog.findViewById(R.id.gotosettings);
+
+        gotosettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS) &&
+                        shouldShowRequestPermissionRationale(Manifest.permission.READ_CALL_LOG) &&
+                        shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CONTACTS)){
+                    checkPermissions();
+                } else {
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+                    intent.setData(uri);
+                    startActivityForResult(intent,123);
+                    Toast.makeText(Splash.this, "Setting", Toast.LENGTH_SHORT).show();
+                }
+                dialog.dismiss();
+            }
+        });
     }
 
     @Override

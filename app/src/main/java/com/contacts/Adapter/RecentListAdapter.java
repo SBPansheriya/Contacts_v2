@@ -98,7 +98,6 @@ public class RecentListAdapter extends RecyclerView.Adapter<RecentListAdapter.re
                 ((RecentsFragment) recentsFragment).call(recentArrayList.get(position).getContactnumber());
             }
         });
-
 //        holder.recent_call.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {

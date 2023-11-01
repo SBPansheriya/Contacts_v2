@@ -41,4 +41,5 @@ dependencies {
     implementation ("com.google.code.gson:gson:2.10.1")
     implementation ("com.github.ybq:Android-SpinKit:1.4.0")
     implementation ("com.squareup.picasso:picasso:2.8")
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
 }

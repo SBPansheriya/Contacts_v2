@@ -30,6 +30,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -66,7 +67,6 @@ public class ContactsFragment extends Fragment {
     TextView selectall, totalcontact, deselectall;
     ImageView add_contact;
     ViewGroup viewGroup;
-    Context context;
     Users users;
     SpinKitView spin_kit;
     ActivityResultLauncher<Intent> launchSomeActivity;
@@ -81,7 +81,6 @@ public class ContactsFragment extends Fragment {
 
         init(view);
 
-        searchView.clearFocus();
         Sprite threeBounce = new ThreeBounce();
         spin_kit.setIndeterminateDrawable(threeBounce);
         progressLayout.setVisibility(View.VISIBLE);

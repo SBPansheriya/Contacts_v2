@@ -1,6 +1,9 @@
 package com.contacts.Activity;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -8,11 +11,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -20,8 +26,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,6 +38,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.contacts.Class.Constant;
 import com.contacts.Fragment.ContactsFragment;
 import com.contacts.Model.Users;
@@ -53,6 +63,9 @@ public class UpdateContactActivity extends AppCompatActivity {
     Button update_contact;
     private static final int CAMERA_REQUEST = 100;
     Users user;
+    Bitmap bitmap;
+    int no;
+    ActivityResultLauncher<Intent> launchSomeActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,26 +99,53 @@ public class UpdateContactActivity extends AppCompatActivity {
         personimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (checkPermission()){
-                    cameraPermission();
-                }
-                else {
-                    ActivityCompat.requestPermissions(UpdateContactActivity.this, new String[]{Manifest.permission.CAMERA}, 100);
-                }
+                checkPermissionsForCamera();
             }
         });
 
         update_contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (checkPermission1()){
-                    updatedData();
-                }
-                else {
-                    ActivityCompat.requestPermissions(UpdateContactActivity.this, new String[]{Manifest.permission.WRITE_CONTACTS}, 100);
-                }
+                checkPermissionsForSave();
             }
         });
+
+        launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent data = result.getData();
+                if (data != null && data.getData() != null) {
+                    Uri selectedImageUri = data.getData();
+                    if (selectedImageUri != null) {
+                        Glide.with(UpdateContactActivity.this).load(selectedImageUri).into(personimage);
+                    } else {
+                        if (user.image != null) {
+                            Glide.with(UpdateContactActivity.this).load(user.image).into(personimage);
+                        }
+                    }
+                } else {
+                    Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+            }
+        });
+//        launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+//                result -> {
+//                    if (result.getResultCode() == Activity.RESULT_OK) {
+//                        Uri selectedImageUri = result.getData().getData();
+//                        personimage.setImageURI(selectedImageUri);
+////                        bitmap = null;
+////                        try {
+////                            bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+////                        } catch (IOException e) {
+////                            e.printStackTrace();
+////                        }
+////
+////                        if (bitmap != null) {
+////                            personimage.setImageBitmap(bitmap);
+////                        }
+//                    }
+//                });
     }
 
     public void getUpdateContactList(String contactId, String newFirstName, String newLastName, String newPersonalPhoneNumber, String newOfficePhoneNumber, Uri newImage) {
@@ -151,7 +191,6 @@ public class UpdateContactActivity extends AppCompatActivity {
         String[] selectionArgs1 = new String[]{contactId, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE};
         contentResolver1.update(ContactsContract.Data.CONTENT_URI, contactNameValues, selection1, selectionArgs1);
 
-
         // update photo
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
         ContentProviderOperation.Builder builder = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI);
@@ -159,7 +198,7 @@ public class UpdateContactActivity extends AppCompatActivity {
         if (newImage != null) {
             if (user.image != null) {
                 try {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), newImage);
+                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), newImage);
                     ByteArrayOutputStream image = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, image);
 
@@ -172,13 +211,12 @@ public class UpdateContactActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-            else {
+            } else {
                 try {
                     ContentValues values = new ContentValues();
                     ContentResolver contentResolver3 = getContentResolver();
 
-                    Bitmap bitmap = null;
+                    bitmap = null;
 
                     bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), newImage);
                     ByteArrayOutputStream image = new ByteArrayOutputStream();
@@ -204,7 +242,7 @@ public class UpdateContactActivity extends AppCompatActivity {
 
             if (Constant.usersArrayList.get(i).contactId.equalsIgnoreCase(contactId)) {
                 Constant.usersArrayList.remove(i);
-                Constant.usersArrayList.add(i,user);
+                Constant.usersArrayList.add(i, user);
                 break;
             }
         }
@@ -213,38 +251,170 @@ public class UpdateContactActivity extends AppCompatActivity {
         onBackPressed();
     }
 
-    private boolean checkPermission() {
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+    private void openImagePicker() {
+        Intent i = new Intent();
+        i.setType("image/*");
+        i.setAction(Intent.ACTION_GET_CONTENT);
+
+        launchSomeActivity.launch(i);
     }
 
-    private void cameraPermission(){
-        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(takePicture, CAMERA_REQUEST);
+    private void dialog() {
+        Dialog dialog = new Dialog(UpdateContactActivity.this);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setGravity(Gravity.CENTER);
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.setCancelable(false);
+        }
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        dialog.setContentView(R.layout.dialog_camera_and_gallery);
+        dialog.setCancelable(false);
+        dialog.show();
+
+        ImageView camera = dialog.findViewById(R.id.camera);
+        ImageView gallery = dialog.findViewById(R.id.gallery);
+        Button cancel1 = dialog.findViewById(R.id.cancel);
+
+        camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cameraPermission();
+                dialog.dismiss();
+            }
+        });
+
+        gallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openImagePicker();
+                dialog.dismiss();
+            }
+        });
+
+        cancel1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
     }
 
-    private boolean checkPermission1() {
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void updatedData(){
+    private void updatedData() {
         imagepath = imagepath + "/" + imagename;
         String firstname = update_firstname.getText().toString();
         String lastname = update_lastname.getText().toString();
         String pphone = update_pphone.getText().toString();
         String ophone = update_ophone.getText().toString();
 
-        getUpdateContactList(user.contactId, firstname, lastname, pphone, ophone, newUri);
+        if (TextUtils.isEmpty(firstname) || TextUtils.isEmpty(pphone)) {
+            Toast.makeText(UpdateContactActivity.this, "Please Fill Data", Toast.LENGTH_SHORT).show();
+        } else {
+            getUpdateContactList(user.contactId, firstname, lastname, pphone, ophone, newUri);
+            Toast.makeText(UpdateContactActivity.this, "Contact saved", Toast.LENGTH_SHORT).show();
+        }
     }
 
+    private void checkPermissionsForSave() {
+        no = 0;
+        String[] permissions = new String[]{Manifest.permission.WRITE_CONTACTS};
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(UpdateContactActivity.this, permissions, 101);
+        } else {
+            updatedData();
+        }
+    }
+
+    private void cameraPermission() {
+        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(takePicture, CAMERA_REQUEST);
+    }
+
+    private void checkPermissionsForCamera() {
+        no = 1;
+        String[] permissions = new String[]{Manifest.permission.CAMERA};
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(UpdateContactActivity.this, permissions, 100);
+        } else {
+            dialog();
+        }
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            cameraPermission();
+            dialog();
+        } else if (requestCode == 101 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             updatedData();
         } else {
-            Toast.makeText(this, "Permission Denied.", Toast.LENGTH_SHORT).show();
-            checkPermission();
+            showPermissionDialog();
         }
+    }
+
+    private void showPermissionDialog1() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Permission Required");
+        if (no == 1){
+            builder.setMessage("This app requires access to Camera to function properly.");
+        }
+        else {
+            builder.setMessage("This app requires access to Write contact to function properly.");
+        }
+        builder.setMessage("This app requires access to Camera to function properly.");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                    checkPermissionsForCamera();
+                } else if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CONTACTS)) {
+                    checkPermissionsForSave();
+                } else {
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+                    intent.setData(uri);
+                    startActivityForResult(intent, 100);
+                    Toast.makeText(UpdateContactActivity.this, "Setting", Toast.LENGTH_SHORT).show();
+                }
+                dialog.cancel();
+            }
+        });
+        builder.setCancelable(true);
+        builder.show();
+    }
+
+    private void showPermissionDialog() {
+        Dialog dialog = new Dialog(UpdateContactActivity.this);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setGravity(Gravity.CENTER);
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.setCancelable(false);
+        }
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        dialog.setContentView(R.layout.dialog_permission);
+        dialog.setCancelable(false);
+        dialog.show();
+
+        Button gotosettings = dialog.findViewById(R.id.gotosettings);
+
+        gotosettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                    checkPermissionsForCamera();
+                } else if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CONTACTS)) {
+                    checkPermissionsForSave();
+                } else {
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+                    intent.setData(uri);
+                    startActivityForResult(intent, 100);
+                    Toast.makeText(UpdateContactActivity.this, "Setting", Toast.LENGTH_SHORT).show();
+                }
+                dialog.dismiss();
+            }
+        });
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

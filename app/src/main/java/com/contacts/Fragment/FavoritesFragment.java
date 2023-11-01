@@ -1,6 +1,7 @@
 package com.contacts.Fragment;
 
 import static com.contacts.Class.Constant.favoriteList;
+import static com.contacts.Class.Constant.usersArrayList;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
