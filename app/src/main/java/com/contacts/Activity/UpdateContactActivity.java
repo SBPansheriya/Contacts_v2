@@ -64,7 +64,6 @@ public class UpdateContactActivity extends AppCompatActivity {
     private static final int CAMERA_REQUEST = 100;
     Users user;
     Bitmap bitmap;
-    int no;
     ActivityResultLauncher<Intent> launchSomeActivity;
 
     @Override
@@ -114,9 +113,9 @@ public class UpdateContactActivity extends AppCompatActivity {
             if (result.getResultCode() == Activity.RESULT_OK) {
                 Intent data = result.getData();
                 if (data != null && data.getData() != null) {
-                    Uri selectedImageUri = data.getData();
-                    if (selectedImageUri != null) {
-                        Glide.with(UpdateContactActivity.this).load(selectedImageUri).into(personimage);
+                    newUri = data.getData();
+                    if (newUri != null) {
+                        Glide.with(UpdateContactActivity.this).load(newUri).into(personimage);
                     } else {
                         if (user.image != null) {
                             Glide.with(UpdateContactActivity.this).load(user.image).into(personimage);
@@ -315,7 +314,7 @@ public class UpdateContactActivity extends AppCompatActivity {
     }
 
     private void checkPermissionsForSave() {
-        no = 0;
+
         String[] permissions = new String[]{Manifest.permission.WRITE_CONTACTS};
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_DENIED) {
@@ -331,7 +330,7 @@ public class UpdateContactActivity extends AppCompatActivity {
     }
 
     private void checkPermissionsForCamera() {
-        no = 1;
+
         String[] permissions = new String[]{Manifest.permission.CAMERA};
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
@@ -351,37 +350,6 @@ public class UpdateContactActivity extends AppCompatActivity {
         } else {
             showPermissionDialog();
         }
-    }
-
-    private void showPermissionDialog1() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Permission Required");
-        if (no == 1){
-            builder.setMessage("This app requires access to Camera to function properly.");
-        }
-        else {
-            builder.setMessage("This app requires access to Write contact to function properly.");
-        }
-        builder.setMessage("This app requires access to Camera to function properly.");
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
-                    checkPermissionsForCamera();
-                } else if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CONTACTS)) {
-                    checkPermissionsForSave();
-                } else {
-                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    Uri uri = Uri.fromParts("package", getPackageName(), null);
-                    intent.setData(uri);
-                    startActivityForResult(intent, 100);
-                    Toast.makeText(UpdateContactActivity.this, "Setting", Toast.LENGTH_SHORT).show();
-                }
-                dialog.cancel();
-            }
-        });
-        builder.setCancelable(true);
-        builder.show();
     }
 
     private void showPermissionDialog() {

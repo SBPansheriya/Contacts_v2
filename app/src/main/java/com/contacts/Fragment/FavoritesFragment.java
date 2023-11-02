@@ -6,8 +6,10 @@ import static com.contacts.Class.Constant.usersArrayList;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -20,6 +22,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.Settings;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,13 +59,14 @@ public class FavoritesFragment extends Fragment {
 
         init(view);
 
-        checkPermission();
+        readFavoriteContacts();
 
         if (favoriteList.isEmpty()) {
             no_fav_found_linear.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.INVISIBLE);
             edit.setVisibility(View.INVISIBLE);
             add_fav_contact.setVisibility(View.INVISIBLE);
+            favListAdapter.notifyDataSetChanged();
         }
 
         addFav.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +88,7 @@ public class FavoritesFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), KeypadScreen.class);
+                intent.putExtra("check","fav");
                 startActivity(intent);
             }
         });
@@ -138,25 +144,67 @@ public class FavoritesFragment extends Fragment {
         return view;
     }
 
-    private void checkPermission() {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, 100);
-        } else {
-            readFavoriteContacts();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 100) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                readFavoriteContacts();
-            } else {
-                Toast.makeText(getContext(), "Permission denied. Cannot read contacts.", Toast.LENGTH_SHORT).show();
-                checkPermission();
-            }
-        }
-    }
+//    public void checkPermission1() {
+//        String[] permissions = new String[]{Manifest.permission.CALL_PHONE};
+//
+//        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED) {
+//            ActivityCompat.requestPermissions(getActivity(), permissions, 100);
+//        } else {
+//            readFavoriteContacts();
+//        }
+//    }
+//
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//            readFavoriteContacts();
+//        } else {
+//            showPermissionDialog();
+//        }
+//    }
+//
+//    private void showPermissionDialog() {
+//        Dialog dialog = new Dialog(getContext());
+//        if (dialog.getWindow() != null) {
+//            dialog.getWindow().setGravity(Gravity.CENTER);
+//            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+//            dialog.setCancelable(false);
+//        }
+//        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//        dialog.setContentView(R.layout.dialog_permission);
+//        dialog.setCancelable(false);
+//        dialog.show();
+//
+//        Button gotosettings = dialog.findViewById(R.id.gotosettings);
+//
+//        gotosettings.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE)) {
+//                    checkPermission1();
+//                } else {
+//                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+//                    Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+//                    intent.setData(uri);
+//                    startActivityForResult(intent, 100);
+//                    Toast.makeText(FavoritesFragment.this.getContext(), "Setting", Toast.LENGTH_SHORT).show();
+//                }
+//                dialog.dismiss();
+//            }
+//        });
+//    }
+//
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        try {
+//            super.onActivityResult(requestCode, resultCode, data);
+//            if (requestCode == 100) {
+//                checkPermission1();
+//            }
+//        } catch (Exception ex) {
+//            Toast.makeText(getContext(), ex.toString(), Toast.LENGTH_SHORT).show();
+//        }
+//    }
 
     @SuppressLint("NotifyDataSetChanged")
     private void readFavoriteContacts() {

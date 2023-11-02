@@ -219,7 +219,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
@@ -230,35 +230,36 @@
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="5dp"
                         android:layout_marginStart="20dp"
-                        android:layout_marginEnd="10dp"
+                        android:layout_marginEnd="40dp"
                         android:layout_weight="1"
                         android:baselineAligned="false"
                         android:descendantFocusability="blocksDescendants"
                         tools:listitem="@layout/header_list_item" />
 
-                    <!--                    <com.simplecityapps.recyclerview_fastscroll.views.FastScrollerView-->
-                    <!--                        android:id="@+id/fastscroller"-->
-                    <!--                        android:layout_width="20dp"-->
-                    <!--                        android:layout_height="match_parent"-->
-                    <!--                        android:layout_alignParentEnd="true"-->
-                    <!--                        android:layout_alignParentTop="true"-->
-                    <!--                        tools:ignore="MissingClass" />-->
+                    <com.reddit.indicatorfastscroll.FastScrollerThumbView
+                        android:id="@+id/letter_fastscroller_thumb"
+                        android:layout_width="56dp"
+                        android:layout_height="match_parent"
+                        app:fastScrollerThumbColor="@color/blue"
+                        android:layout_alignTop="@+id/fastscroller"
+                        android:layout_alignBottom="@+id/fastscroller"
+                        android:layout_marginEnd="16dp"
+                        android:layout_toStartOf="@+id/fastscroller" />
 
                     <com.reddit.indicatorfastscroll.FastScrollerView
                         android:id="@+id/fastscroller"
                         android:layout_width="30dp"
                         android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp"
                         android:layout_marginBottom="60dp"
                         android:contextClickable="true"
                         android:focusableInTouchMode="true"
-                        android:nestedScrollingEnabled="false"
-                        android:outlineSpotShadowColor="@color/black"
-                        android:soundEffectsEnabled="true"
                         android:textColor="@color/blue"
                         android:visibility="visible"
                         app:fastScrollerTextPadding="1dp" />
 
-                </LinearLayout>
+                </RelativeLayout>
 
                 <ImageView
                     android:id="@+id/add_contact"

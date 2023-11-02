@@ -65,7 +65,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     int favorite;
     Users user;
     ActivityResultLauncher<Intent> launchSomeActivity;
-    private PhoneStateBroadcastReceiver phoneStateReceiver;
+
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -204,37 +204,21 @@ public class ContactDetailActivity extends AppCompatActivity {
     private BroadcastReceiver callEndedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if ("com.yourpackage.CALL_ENDED".equals(intent.getAction())) {
+            if ("com.contacts.CALL_ENDED".equals(intent.getAction())) {
                 String incomingNumber = intent.getStringExtra("incoming_number");
-                // Call your function here with the incomingNumber
-                // For example, callMyFunction(incomingNumber);
             }
         }
     };
 
-    private void registerPhoneStateListener() {
-        phoneStateReceiver = new PhoneStateBroadcastReceiver();
-        IntentFilter intentFilter = new IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
-        registerReceiver(phoneStateReceiver, intentFilter);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (phoneStateReceiver != null) {
-            unregisterReceiver(phoneStateReceiver);
-        }
-    }
 
     private void checkPermissions() {
-       String[] permissions = new String[]{Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE};
+        String[] permissions = new String[]{Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE};
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED ||
                 ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(ContactDetailActivity.this, permissions, 123);
         } else {
             call();
-//            registerPhoneStateListener();
         }
     }
 
@@ -269,45 +253,18 @@ public class ContactDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE) ||
-                        shouldShowRequestPermissionRationale(Manifest.permission.READ_PHONE_STATE)){
+                        shouldShowRequestPermissionRationale(Manifest.permission.READ_PHONE_STATE)) {
                     checkPermissions();
                 } else {
                     Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                     Uri uri = Uri.fromParts("package", getPackageName(), null);
                     intent.setData(uri);
-                    startActivityForResult(intent,123);
+                    startActivityForResult(intent, 123);
                     Toast.makeText(ContactDetailActivity.this, "Setting", Toast.LENGTH_SHORT).show();
                 }
                 dialog.dismiss();
             }
         });
-    }
-
-    private void showPermissionDialog1() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Permission Required");
-        builder.setMessage("This app requires access to call phone to function properly.");
-
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE) ||
-                        shouldShowRequestPermissionRationale(Manifest.permission.READ_PHONE_STATE)){
-                    checkPermissions();
-                } else {
-                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    Uri uri = Uri.fromParts("package", getPackageName(), null);
-                    intent.setData(uri);
-                    startActivityForResult(intent,123);
-                    Toast.makeText(ContactDetailActivity.this, "Setting", Toast.LENGTH_SHORT).show();
-                }
-
-                dialog.cancel();
-            }
-        });
-
-        builder.setCancelable(true);
-        builder.show();
     }
 
     @Override
@@ -322,10 +279,9 @@ public class ContactDetailActivity extends AppCompatActivity {
             Toast.makeText(ContactDetailActivity.this, ex.toString(),
                     Toast.LENGTH_SHORT).show();
         }
-
     }
 
-    private void call(){
+    private void call() {
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + user.personPhone));
         startActivity(intent);
         Toast.makeText(ContactDetailActivity.this, "Calling " + user.first + " " + user.last, Toast.LENGTH_SHORT).show();
@@ -339,10 +295,9 @@ public class ContactDetailActivity extends AppCompatActivity {
         contentResolver.update(rawContactUri, values, null, null);
 
         user = new Users(contactId, user.image, user.first, user.last, user.personPhone, "");
-        if (favorite == 1){
+        if (favorite == 1) {
             favoriteList.add(user);
-        }
-        else {
+        } else {
             for (int i = 0; i < favoriteList.size(); i++) {
                 if (favoriteList.get(i).contactId.equalsIgnoreCase(contactId)) {
                     favoriteList.remove(i);

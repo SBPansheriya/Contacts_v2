@@ -48,6 +48,7 @@ import com.github.ybq.android.spinkit.SpinKitView;
 import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.github.ybq.android.spinkit.style.ThreeBounce;
 import com.reddit.indicatorfastscroll.FastScrollItemIndicator;
+import com.reddit.indicatorfastscroll.FastScrollerThumbView;
 import com.reddit.indicatorfastscroll.FastScrollerView;
 
 import java.util.ArrayList;
@@ -72,6 +73,7 @@ public class ContactsFragment extends Fragment {
     ActivityResultLauncher<Intent> launchSomeActivity;
     RelativeLayout progressLayout;
     FastScrollerView fastScrollerView;
+    FastScrollerThumbView fastScrollerThumbView;
     ArrayList<Header> headerArrayList = new ArrayList<>();
     String button = "";
 
@@ -134,6 +136,8 @@ public class ContactsFragment extends Fragment {
                     );
                 }
         );
+
+        fastScrollerThumbView.setupWithFastScroller(fastScrollerView);
 
         add_contact.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -398,69 +402,6 @@ public class ContactsFragment extends Fragment {
     }
 
     private void getContactList(boolean isFilter) {
-        /*if (usersArrayList.size() > 0) {
-            Comparator<Users> nameComparator = new Comparator<Users>() {
-                @Override
-                public int compare(Users user1, Users user2) {
-                    return user1.getFirst().compareTo(user2.getFirst());
-                }
-            };
-            usersArrayList.sort(nameComparator);
-        }
-
-        if (usersArrayList.size() > 0) {
-            headerArrayList = new ArrayList<>();
-            for (char i = 'A'; i <= 'Z'; i++) {
-                Header header = new Header(String.valueOf(i), new ArrayList<>());
-                headerArrayList.add(header);
-            }
-            Header header1 = new Header("#", new ArrayList<>());
-            headerArrayList.add(header1);
-
-            for (int i = 0; i < usersArrayList.size(); i++) {
-                if (!TextUtils.isEmpty(usersArrayList.get(i).first)) {
-                    boolean isMatch = false;
-                    for (int i1 = 0; i1 < headerArrayList.size(); i1++) {
-                        String header = headerArrayList.get(i1).header;
-                        String firstLetter = String.valueOf(usersArrayList.get(i).first.toUpperCase().charAt(0));
-
-                        if (Objects.equals(header, firstLetter)) {
-                            isMatch = true;
-                            headerArrayList.get(i1).usersList.add(usersArrayList.get(i));
-                            break;
-                        }
-                    }
-                    if (!isMatch) {
-                        headerArrayList.get(headerArrayList.size() - 1).usersList.add(usersArrayList.get(i));
-                    }
-                }
-            }
-
-            if (headerArrayList.size() > 0) {
-                ArrayList<Header> removeHeaders = new ArrayList<>();
-                for (int i = 0; i < headerArrayList.size(); i++) {
-                    if (headerArrayList.get(i).usersList.size() == 0) {
-                        removeHeaders.add(headerArrayList.get(i));
-                    }
-                }
-
-                if (removeHeaders.size() > 0) {
-                    for (int i = 0; i < removeHeaders.size(); i++) {
-                        for (int i1 = 0; i1 < headerArrayList.size(); i1++) {
-                            if (removeHeaders.get(i).header.equals(headerArrayList.get(i1).header)) {
-                                headerArrayList.remove(i1);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (!isFilter) {
-                updateUi();
-            }
-        }*/
-
         if (usersArrayList.size() > 0) {
             Comparator<Users> nameComparator = Comparator.comparing(Users::getFirst);
             usersArrayList.sort(nameComparator);
@@ -562,5 +503,6 @@ public class ContactsFragment extends Fragment {
         tbmenu = view.findViewById(R.id.tbMenu);
         back = view.findViewById(R.id.back);
         fastScrollerView = view.findViewById(R.id.fastscroller);
+        fastScrollerThumbView = view.findViewById(R.id.letter_fastscroller_thumb);
     }
 }

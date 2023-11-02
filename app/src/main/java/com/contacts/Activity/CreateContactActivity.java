@@ -270,31 +270,6 @@ public class CreateContactActivity extends AppCompatActivity {
         }
     }
 
-    private void showPermissionDialog1() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Permission Required");
-        builder.setMessage("This app requires access to Camera to function properly.");
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
-                    checkPermissionsForCamera();
-                } else if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CONTACTS)) {
-                    checkPermissionsForSave();
-                } else {
-                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    Uri uri = Uri.fromParts("package", getPackageName(), null);
-                    intent.setData(uri);
-                    startActivityForResult(intent, 100);
-                    Toast.makeText(CreateContactActivity.this, "Setting", Toast.LENGTH_SHORT).show();
-                }
-                dialog.cancel();
-            }
-        });
-        builder.setCancelable(true);
-        builder.show();
-    }
-
     private void showPermissionDialog() {
         Dialog dialog = new Dialog(CreateContactActivity.this);
         if (dialog.getWindow() != null) {

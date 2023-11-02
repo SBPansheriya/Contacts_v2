@@ -178,5 +178,4 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             no_fav_add = itemView.findViewById(R.id.no_fav_add);
         }
     }
-
 }

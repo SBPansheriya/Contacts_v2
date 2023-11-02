@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,9 +37,16 @@ import android.widget.Toast;
 import com.contacts.Activity.UpdateContactActivity;
 import com.contacts.Adapter.RecentListAdapter;
 import com.contacts.Activity.KeypadScreen;
+import com.contacts.Model.Alphabet;
+import com.contacts.Model.Header;
 import com.contacts.Model.Recent;
+import com.contacts.PhoneStateBroadcastReceiver;
 import com.contacts.R;
 import com.contacts.Splash;
+import com.reddit.indicatorfastscroll.FastScrollItemIndicator;
+import com.reddit.indicatorfastscroll.FastScrollerView;
+
+import java.util.ArrayList;
 
 public class RecentsFragment extends Fragment {
 
@@ -47,6 +56,7 @@ public class RecentsFragment extends Fragment {
     LinearLayout no_recents_linear;
     Recent recent;
     ActivityResultLauncher<Intent> launchSomeActivity;
+    private PhoneStateBroadcastReceiver phoneStateReceiver;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,6 +67,10 @@ public class RecentsFragment extends Fragment {
 
         checkPermission();
         checkPermission1();
+
+        IntentFilter intentFilter = new IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
+        phoneStateReceiver = new PhoneStateBroadcastReceiver();
+        getContext().registerReceiver(phoneStateReceiver, intentFilter);
 
         if (recentArrayList.isEmpty()) {
             no_recents_linear.setVisibility(View.VISIBLE);
@@ -80,6 +94,7 @@ public class RecentsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), KeypadScreen.class);
+                intent.putExtra("check","recents");
                 startActivity(intent);
             }
         });
@@ -153,29 +168,6 @@ public class RecentsFragment extends Fragment {
         });
     }
 
-    private void showPermissionDialog1() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Permission Required");
-        builder.setMessage("This app requires access to Call Phone to function properly.");
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE)) {
-                    checkPermission1();
-                } else {
-                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
-                    intent.setData(uri);
-                    startActivityForResult(intent, 100);
-                    Toast.makeText(RecentsFragment.this.getContext(), "Setting", Toast.LENGTH_SHORT).show();
-                }
-                dialog.cancel();
-            }
-        });
-        builder.setCancelable(true);
-        builder.show();
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         try {
@@ -186,7 +178,6 @@ public class RecentsFragment extends Fragment {
         } catch (Exception ex) {
             Toast.makeText(getContext(), ex.toString(), Toast.LENGTH_SHORT).show();
         }
-
     }
 
     private void init(View view) {
@@ -195,8 +186,8 @@ public class RecentsFragment extends Fragment {
         open_keypad = view.findViewById(R.id.open_keypad);
     }
 
-    public void call(String phoneNUmber) {
-        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNUmber));
+    public void call(String phoneNumber) {
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber));
         startActivity(intent);
     }
 }

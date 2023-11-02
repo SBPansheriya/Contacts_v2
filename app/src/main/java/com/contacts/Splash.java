@@ -103,34 +103,6 @@ public class Splash extends AppCompatActivity {
         }, 500);
     }
 
-    private void showPermissionDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Permission Required");
-        builder.setMessage("This app requires access to contacts and call logs to function properly.");
-
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS) &&
-                        shouldShowRequestPermissionRationale(Manifest.permission.READ_CALL_LOG) &&
-                        shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CONTACTS)){
-                    checkPermissions();
-                } else {
-                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    Uri uri = Uri.fromParts("package", getPackageName(), null);
-                    intent.setData(uri);
-                    startActivityForResult(intent,123);
-                    Toast.makeText(Splash.this, "Setting", Toast.LENGTH_SHORT).show();
-                }
-
-                dialog.cancel();
-            }
-        });
-
-        builder.setCancelable(true);
-        builder.show();
-    }
-
     private void dialog() {
         Dialog dialog = new Dialog(Splash.this);
         if (dialog.getWindow() != null) {
