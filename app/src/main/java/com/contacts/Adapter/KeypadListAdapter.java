@@ -1,5 +1,6 @@
 package com.contacts.Adapter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.contacts.Activity.KeypadScreen;
+import com.contacts.Fragment.FavoritesFragment;
 import com.contacts.Model.Users;
 import com.contacts.R;
 import com.squareup.picasso.Picasso;
@@ -21,11 +23,11 @@ import java.util.ArrayList;
 
 public class KeypadListAdapter extends RecyclerView.Adapter<KeypadListAdapter.keypadviewholder> {
 
-    KeypadScreen keypadFragment;
+    KeypadScreen keypadScreen;
     ArrayList<Users> usersArrayList;
 
-    public KeypadListAdapter(KeypadScreen keypadFragment, ArrayList<Users> usersArrayList) {
-        this.keypadFragment = keypadFragment;
+    public KeypadListAdapter(KeypadScreen keypadScreen, ArrayList<Users> usersArrayList) {
+        this.keypadScreen = keypadScreen;
         this.usersArrayList = usersArrayList;
     }
 
@@ -37,7 +39,7 @@ public class KeypadListAdapter extends RecyclerView.Adapter<KeypadListAdapter.ke
     @NonNull
     @Override
     public KeypadListAdapter.keypadviewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(keypadFragment).inflate(R.layout.keypad_list_item, parent, false);
+        View view = LayoutInflater.from(keypadScreen).inflate(R.layout.keypad_list_item, parent, false);
         return new keypadviewholder(view);
     }
 
@@ -57,9 +59,7 @@ public class KeypadListAdapter extends RecyclerView.Adapter<KeypadListAdapter.ke
         holder.keypad_call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + user.personPhone));
-                keypadFragment.startActivity(intent);
-                Toast.makeText(keypadFragment, "Calling " + user.first + " " + user.last, Toast.LENGTH_SHORT).show();
+                ((KeypadScreen) keypadScreen).call(usersArrayList.get(position).getPersonPhone());
             }
         });
 

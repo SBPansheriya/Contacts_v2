@@ -7,9 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
@@ -33,23 +31,30 @@ public class PhoneStateBroadcastReceiver extends BroadcastReceiver {
     Context mContext;
     String incoming_number;
     private int prev_state;
+    public CallListener callListener;
+
+    public PhoneStateBroadcastReceiver() {
+    }
 
     public void onReceive(@NonNull Context context, Intent intent) {
         TelephonyManager telephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE); //TelephonyManager object
-        CustomPhoneStateListener customPhoneListener = new CustomPhoneStateListener();
+        CustomPhoneStateListener customPhoneListener = new CustomPhoneStateListener(callListener);
         telephony.listen(customPhoneListener, PhoneStateListener.LISTEN_CALL_STATE); //Register our listener with TelephonyManager
 
         Bundle bundle = intent.getExtras();
         String phoneNr = bundle.getString("incoming_number");
         Log.v(TAG, "phoneNr: " + phoneNr);
         mContext = context;
-
-        getRecentContacts();
     }
 
     public class CustomPhoneStateListener extends PhoneStateListener {
 
         private static final String TAG = "CustomPhoneStateListener";
+        CallListener callListener;
+
+        public CustomPhoneStateListener(CallListener callListener) {
+            this.callListener = callListener;
+        }
 
         @Override
         public void onCallStateChanged(int state, String incomingNumber) {
@@ -74,6 +79,10 @@ public class PhoneStateBroadcastReceiver extends BroadcastReceiver {
 
                     if ((prev_state == TelephonyManager.CALL_STATE_OFFHOOK)) {
                         prev_state = state;
+                        if (callListener != null) {
+                            callListener.callEnd();
+                        }
+
                         getRecentContacts();
                     }
                     if ((prev_state == TelephonyManager.CALL_STATE_RINGING)) {
@@ -148,5 +157,9 @@ public class PhoneStateBroadcastReceiver extends BroadcastReceiver {
             } while (cursor.moveToNext());
             cursor.close();
         }
+    }
+
+    public interface CallListener {
+        void callEnd();
     }
 }

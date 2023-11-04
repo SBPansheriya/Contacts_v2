@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.contacts.Activity.ContactDetailActivity;
 import com.contacts.Fragment.ContactsFragment;
 import com.contacts.Fragment.FavoritesFragment;
+import com.contacts.Fragment.RecentsFragment;
 import com.contacts.Model.Users;
 import com.contacts.R;
 import com.google.gson.Gson;
@@ -62,7 +63,7 @@ public class FavListAdapter extends RecyclerView.Adapter<FavListAdapter.favourit
         if (favoriteList.get(position).image == null) {
             holder.fav_person_image.setImageResource(R.drawable.person_placeholder);
         } else {
-            Picasso.get().load(favoriteList.get(position).image).into(holder.fav_person_image);
+            Picasso.get().load(usersArrayList.get(position).image).into(holder.fav_person_image);
         }
 
         holder.fav_person_name.setText(favoriteList.get(position).first + " " + favoriteList.get(position).last);
@@ -113,8 +114,7 @@ public class FavListAdapter extends RecyclerView.Adapter<FavListAdapter.favourit
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + favoriteList.get(position).personPhone));
-                favoritesFragment.startActivity(intent);
+                ((FavoritesFragment) favoritesFragment).call(favoriteList.get(position).getPersonPhone());
             }
         });
 

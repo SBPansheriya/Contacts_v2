@@ -5,12 +5,9 @@ import static com.contacts.Class.Constant.usersArrayList;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.app.Activity;
@@ -20,10 +17,10 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -40,8 +37,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.contacts.Class.Constant;
-import com.contacts.Fragment.ContactsFragment;
+import com.canhub.cropper.CropImage;
+import com.canhub.cropper.CropImageActivity;
+import com.canhub.cropper.CropImageContract;
+import com.canhub.cropper.CropImageContractOptions;
+import com.canhub.cropper.CropImageOptions;
+import com.canhub.cropper.CropImageView;
 import com.contacts.Model.Users;
 import com.contacts.R;
 
@@ -49,7 +50,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.Random;
 
 public class CreateContactActivity extends AppCompatActivity {
@@ -62,12 +62,14 @@ public class CreateContactActivity extends AppCompatActivity {
     Users user;
     Bitmap bitmap;
     ActivityResultLauncher<Intent> launchSomeActivity;
+    ActivityResultLauncher<CropImageContractOptions> cropImage;
     private static final int CAMERA_REQUEST = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_contact);
+        getSupportActionBar().hide();
         Window window = CreateContactActivity.this.getWindow();
         window.setStatusBarColor(ContextCompat.getColor(CreateContactActivity.this, R.color.white));
         init();
@@ -103,26 +105,43 @@ public class CreateContactActivity extends AppCompatActivity {
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         Uri selectedImageUri = result.getData().getData();
-                        bitmap = null;
-                        try {
-                            bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        if (bitmap != null) {
-                            addPersonImage.setImageBitmap(bitmap);
-                        }
-
+                        startCrop(selectedImageUri);
                     }
                 });
+
+        cropImage = registerForActivityResult(new CropImageContract(),result -> {
+            if (result.isSuccessful()) {
+                // Use the returned uri.
+                Uri uriContent = result.getUriContent();
+                bitmap = null;
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uriContent);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                if (bitmap != null) {
+                    addPersonImage.setImageBitmap(bitmap);
+                }
+            } else {
+                Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void startCrop(Uri selectedImageUri) {
+
+        // Start cropping activity for pre-acquired image saved on the device and customize settings.
+        CropImageOptions options = new CropImageOptions();
+        options.guidelines = CropImageView.Guidelines.ON;
+        CropImageContractOptions cropImageContractOptions = new CropImageContractOptions(selectedImageUri,options);
+        cropImage.launch(cropImageContractOptions);
     }
 
     private void openImagePicker() {
         Intent i = new Intent();
         i.setType("image/*");
         i.setAction(Intent.ACTION_GET_CONTENT);
-
         launchSomeActivity.launch(i);
     }
 
@@ -246,6 +265,7 @@ public class CreateContactActivity extends AppCompatActivity {
     private void cameraPermission() {
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(takePicture, CAMERA_REQUEST);
+
     }
 
     private void checkPermissionsForCamera() {
@@ -309,6 +329,10 @@ public class CreateContactActivity extends AppCompatActivity {
             bitmap = (Bitmap) data.getExtras().get("data");
             addPersonImage.setImageBitmap(bitmap);
             imagepath = saveToInternalStorage(bitmap);
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+            String path = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "title", null);
+            startCrop(Uri.parse(path));
         }
     }
 

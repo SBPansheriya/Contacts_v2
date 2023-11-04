@@ -72,6 +72,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_detail);
+        getSupportActionBar().hide();
         Window window = ContactDetailActivity.this.getWindow();
         window.setStatusBarColor(ContextCompat.getColor(ContactDetailActivity.this, R.color.white));
 

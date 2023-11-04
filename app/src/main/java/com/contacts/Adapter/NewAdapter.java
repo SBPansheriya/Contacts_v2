@@ -20,28 +20,33 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.contacts.Class.Constant;
 import com.contacts.Fragment.ContactsFragment;
-import com.contacts.Model.Header;
+import com.contacts.Fragment.NewContactsFragment;
 import com.contacts.Model.Users;
 import com.contacts.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> {
+public class NewAdapter extends RecyclerView.Adapter<NewAdapter.ContactViewHolder> {
 
-    ContactsFragment contactsFragment;
+    NewContactsFragment newContactsFragment;
     ArrayList<Users> usersList;
     ArrayList<Users> filteredData;
     int favorites;
     boolean isEdit = false;
     String button;
 
-    public ContactListAdapter(ContactsFragment contactsFragment, ArrayList<Users> usersList, boolean isEdit, String button) {
-        this.contactsFragment = contactsFragment;
-        this.usersList = usersList;
+    public NewAdapter(NewContactsFragment newContactsFragment, ArrayList<Users> usersArrayList, boolean isEdit, String button) {
+        this.newContactsFragment = newContactsFragment;
+        this.usersList = usersArrayList;
         this.filteredData = new ArrayList<>(usersList);
         this.isEdit = isEdit;
         this.button = button;
+    }
+
+    public void setFilteredList(ArrayList<Users> filteredList){
+        this.usersList = filteredList;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -53,8 +58,6 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
-
-
         if (Constant.favoriteList.size() > 0) {
             boolean isMatch = false;
             for (int i = 0; i < Constant.favoriteList.size(); i++) {
@@ -78,6 +81,13 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
         if (button.equals("fav")){
             holder.no_fav_add.setVisibility(View.VISIBLE);
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+
+                    return false;
+                }
+            });
         }
         if (button.equals("no_fav_found")){
             holder.no_fav_add.setVisibility(View.VISIBLE);
@@ -93,7 +103,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                 holder.fav_add.setVisibility(View.VISIBLE);
                 holder.no_fav_add.setVisibility(View.GONE);
                 favorites = 1;
-                addToFavorites(contactsFragment.getContext(), usersList.get(position).getContactId(),usersList.get(position).image,usersList.get(position).first,usersList.get(position).last,usersList.get(position).personPhone,favorites);
+                addToFavorites(newContactsFragment.getContext(), usersList.get(position).getContactId(),usersList.get(position).image,usersList.get(position).first,usersList.get(position).last,usersList.get(position).personPhone,favorites);
             }
         });
 
@@ -103,7 +113,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                 holder.fav_add.setVisibility(View.GONE);
                 holder.no_fav_add.setVisibility(View.VISIBLE);
                 favorites = 0;
-                addToFavorites(contactsFragment.getContext(), usersList.get(position).getContactId(),usersList.get(position).image,usersList.get(position).first,usersList.get(position).last,usersList.get(position).personPhone,favorites);
+                addToFavorites(newContactsFragment.getContext(), usersList.get(position).getContactId(),usersList.get(position).image,usersList.get(position).first,usersList.get(position).last,usersList.get(position).personPhone,favorites);
             }
         });
 
@@ -118,7 +128,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((ContactsFragment)contactsFragment).intentPass(usersList.get(position));
+                ((NewContactsFragment)newContactsFragment).intentPass(usersList.get(position));
             }
         });
 
@@ -142,6 +152,11 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     @Override
     public int getItemCount() {
         return usersList.size();
+    }
+
+    public void setEdit(boolean edit) {
+        isEdit = edit;
+        notifyDataSetChanged();
     }
 
     public static void addToFavorites(Context context, String contactId,String image,String first,String last,String phone,int favorite) {

@@ -30,6 +30,6 @@
         android:layout_marginBottom="20dp"
         android:backgroundTint="@color/blue"
         android:src="@drawable/keypad_icon"
-        android:visibility="visible" />
+        android:visibility="gone" />
     </RelativeLayout>
 </FrameLayout>

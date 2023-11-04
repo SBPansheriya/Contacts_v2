@@ -1,30 +1,30 @@
 package com.contacts.Fragment;
 
+import static androidx.core.content.PermissionChecker.checkSelfPermission;
 import static com.contacts.Class.Constant.recentArrayList;
 
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.PermissionChecker;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,21 +34,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.contacts.Activity.UpdateContactActivity;
 import com.contacts.Adapter.RecentListAdapter;
 import com.contacts.Activity.KeypadScreen;
-import com.contacts.Model.Alphabet;
-import com.contacts.Model.Header;
 import com.contacts.Model.Recent;
 import com.contacts.PhoneStateBroadcastReceiver;
 import com.contacts.R;
-import com.contacts.Splash;
-import com.reddit.indicatorfastscroll.FastScrollItemIndicator;
-import com.reddit.indicatorfastscroll.FastScrollerView;
 
-import java.util.ArrayList;
-
-public class RecentsFragment extends Fragment {
+public class RecentsFragment extends Fragment implements PhoneStateBroadcastReceiver.CallListener {
 
     RecentListAdapter recentListAdapter;
     RecyclerView recyclerView;
@@ -57,6 +49,7 @@ public class RecentsFragment extends Fragment {
     Recent recent;
     ActivityResultLauncher<Intent> launchSomeActivity;
     private PhoneStateBroadcastReceiver phoneStateReceiver;
+    String selectedPhoneNUmber;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,10 +59,10 @@ public class RecentsFragment extends Fragment {
         init(view);
 
         checkPermission();
-        checkPermission1();
 
         IntentFilter intentFilter = new IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
         phoneStateReceiver = new PhoneStateBroadcastReceiver();
+        phoneStateReceiver.callListener = this::callEnd;
         getContext().registerReceiver(phoneStateReceiver, intentFilter);
 
         if (recentArrayList.isEmpty()) {
@@ -118,20 +111,25 @@ public class RecentsFragment extends Fragment {
         }
     }
 
-    public void checkPermission1() {
+    public boolean checkPermission1() {
         String[] permissions = new String[]{Manifest.permission.CALL_PHONE};
 
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(getActivity(), permissions, 100);
-        } else {
-            getRecentContacts();
-        }
+//        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED) {
+//            ActivityCompat.requestPermissions(getActivity(), permissions, 100);
+//        } else {
+//            getRecentContacts();
+//        }
+
+        return ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED;
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            getRecentContacts();
+            if (!TextUtils.isEmpty(selectedPhoneNUmber)) {
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + selectedPhoneNUmber));
+                startActivity(intent);
+            }
         } else {
             showPermissionDialog();
         }
@@ -154,9 +152,7 @@ public class RecentsFragment extends Fragment {
         gotosettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE)) {
-                    checkPermission1();
-                } else {
+                if (!shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE)) {
                     Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                     Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
                     intent.setData(uri);
@@ -187,7 +183,19 @@ public class RecentsFragment extends Fragment {
     }
 
     public void call(String phoneNumber) {
-        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber));
-        startActivity(intent);
+        selectedPhoneNUmber = phoneNumber;
+        String[] permissions = new String[]{Manifest.permission.CALL_PHONE};
+        if (checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) == PermissionChecker.PERMISSION_DENIED) {
+            requestPermissions(permissions, 100);
+        } else {
+            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber));
+            startActivity(intent);
+        }
+
+    }
+
+    @Override
+    public void callEnd() {
+        getRecentContacts();
     }
 }

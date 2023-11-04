@@ -50,10 +50,12 @@ import java.util.Locale;
 public class Splash extends AppCompatActivity {
 
     String[] permissions;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        getSupportActionBar().hide();
         Window window = Splash.this.getWindow();
         window.setStatusBarColor(ContextCompat.getColor(Splash.this, R.color.white));
 
@@ -61,10 +63,18 @@ public class Splash extends AppCompatActivity {
     }
 
     private void checkPermissions() {
-       permissions = new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.READ_CALL_LOG, Manifest.permission.WRITE_CONTACTS};
+        permissions = new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.READ_CALL_LOG,Manifest.permission.WRITE_CONTACTS};
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED ||
                 ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_DENIED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(Splash.this, permissions, 123);
+        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_DENIED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(Splash.this, permissions, 123);
+        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_DENIED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_DENIED &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(Splash.this, permissions, 123);
         } else {
@@ -85,8 +95,7 @@ public class Splash extends AppCompatActivity {
             getRecentContacts();
             readFavoriteContacts();
             navigateToHomeActivity();
-        }
-        else {
+        } else {
             dialog();
         }
     }
@@ -122,13 +131,13 @@ public class Splash extends AppCompatActivity {
             public void onClick(View view) {
                 if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS) &&
                         shouldShowRequestPermissionRationale(Manifest.permission.READ_CALL_LOG) &&
-                        shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CONTACTS)){
+                                shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CONTACTS)) {
                     checkPermissions();
                 } else {
                     Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                     Uri uri = Uri.fromParts("package", getPackageName(), null);
                     intent.setData(uri);
-                    startActivityForResult(intent,123);
+                    startActivityForResult(intent, 123);
                     Toast.makeText(Splash.this, "Setting", Toast.LENGTH_SHORT).show();
                 }
                 dialog.dismiss();

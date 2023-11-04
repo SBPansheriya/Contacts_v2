@@ -25,12 +25,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.ContactsContract;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -39,28 +37,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.contacts.Activity.ContactDetailActivity;
-import com.contacts.Adapter.ContactListAdapter;
-import com.contacts.Adapter.HeaderListAdapter;
 import com.contacts.Activity.CreateContactActivity;
 import com.contacts.Adapter.NewAdapter;
+import com.contacts.Class.Constant;
+
+import com.contacts.Model.Alphabet;
 import com.contacts.Model.Header;
 import com.contacts.Model.Users;
 import com.contacts.R;
 import com.github.ybq.android.spinkit.SpinKitView;
-import com.github.ybq.android.spinkit.sprite.Sprite;
-import com.github.ybq.android.spinkit.style.ThreeBounce;
 import com.reddit.indicatorfastscroll.FastScrollItemIndicator;
 import com.reddit.indicatorfastscroll.FastScrollerThumbView;
 import com.reddit.indicatorfastscroll.FastScrollerView;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
 
-public class ContactsFragment extends Fragment {
+public class NewContactsFragment extends Fragment {
 
-    HeaderListAdapter headerListAdapter;
     RecyclerView recyclerView;
     RelativeLayout tbmenu;
     LinearLayout no_contcat_found_linear, Contact_found_linear;
@@ -76,7 +70,6 @@ public class ContactsFragment extends Fragment {
     RelativeLayout progressLayout;
     FastScrollerView fastScrollerView;
     FastScrollerThumbView fastScrollerThumbView;
-    ArrayList<Header> headerArrayList = new ArrayList<>();
     String button = "";
     NewAdapter newAdapter;
     boolean isEdit = false;
@@ -87,9 +80,6 @@ public class ContactsFragment extends Fragment {
 
         init(view);
 
-        Sprite threeBounce = new ThreeBounce();
-        spin_kit.setIndeterminateDrawable(threeBounce);
-        progressLayout.setVisibility(View.VISIBLE);
 
         button = getArguments().getString("btn");
 
@@ -125,23 +115,32 @@ public class ContactsFragment extends Fragment {
                         if (!isMatch) {
                             usersArrayList.add(users);
                         }
-                        getContactList(false);
+                        getContactList();
                     }
                 }
             }
         });
 
-        fastScrollerView.setupWithRecyclerView(
-                recyclerView,
-                (position) -> {
-                    Header header = headerArrayList.get(position);
-                    return new FastScrollItemIndicator.Text(
-                            header.header.substring(0, 1).toUpperCase()
-                    );
-                }
-        );
-
-        fastScrollerThumbView.setupWithFastScroller(fastScrollerView);
+//        fastScrollerView.setupWithRecyclerView(
+//                recyclerView,
+//                (position) -> {
+//                    Alphabet alphabet;
+//                    ArrayList<Alphabet> alphabetArrayList = new ArrayList<>();
+//                    for (char i = 'A'; i <= 'Z'; i++) {
+//                        alphabet = new Alphabet(String.valueOf(i));
+//                        alphabetArrayList.add(alphabet);
+//                    }
+//                    alphabet = new Alphabet("#");
+//                    alphabetArrayList.add(alphabet);
+//
+////                    Users users = usersArrayList.get(position);
+//                    return new FastScrollItemIndicator.Text(
+//                            alphabetArrayList.get(position).getAlphabet().substring(0, 1).toUpperCase()
+//                    );
+//                }
+//        );
+//
+//        fastScrollerThumbView.setupWithFastScroller(fastScrollerView);
 
         add_contact.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,7 +160,7 @@ public class ContactsFragment extends Fragment {
                 cancel.setVisibility(View.VISIBLE);
                 share.setVisibility(View.VISIBLE);
                 delete.setVisibility(View.VISIBLE);
-                headerListAdapter.setEdit(true);
+                newAdapter.setEdit(true);
             }
         });
 
@@ -176,7 +175,7 @@ public class ContactsFragment extends Fragment {
                 share.setVisibility(View.GONE);
                 delete.setVisibility(View.GONE);
                 deselectAllItems();
-                headerListAdapter.setEdit(false);
+                newAdapter.setEdit(false);
             }
         });
 
@@ -212,7 +211,7 @@ public class ContactsFragment extends Fragment {
                 if (itemsToRemove.isEmpty()) {
                     Toast.makeText(getContext(), "No selected contact found", Toast.LENGTH_SHORT).show();
                 } else {
-                    Dialog dialog = new Dialog(ContactsFragment.this.getContext());
+                    Dialog dialog = new Dialog(NewContactsFragment.this.getContext());
                     if (dialog.getWindow() != null) {
                         dialog.getWindow().setGravity(Gravity.CENTER);
                         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
@@ -245,7 +244,7 @@ public class ContactsFragment extends Fragment {
                             delete.setVisibility(View.GONE);
                             deselectAllItems();
                             Toast.makeText(getContext(), "Deleted contact successfully", Toast.LENGTH_SHORT).show();
-                            headerListAdapter.setEdit(false);
+                            newAdapter.setEdit(false);
                             dialog.dismiss();
                         }
                     });
@@ -294,43 +293,21 @@ public class ContactsFragment extends Fragment {
     }
 
     public void filterContacts(String query) {
-        query = query.toLowerCase();
-        getContactList(true);
 
-        if (!TextUtils.isEmpty(query)) {
-            for (Header header : headerArrayList) {
-                List<Users> filteredContacts = new ArrayList<>();
+        query = query.toString().toLowerCase();
 
-                for (Users contact : header.usersList) {
-                    if (contact.getFirst().toLowerCase().contains(query) || contact.getLast().toLowerCase().contains(query)) {
-                        filteredContacts.add(contact);
-                    }
-                }
-                header.usersList.clear();
-                header.usersList.addAll(filteredContacts);
-            }
+        ArrayList<Users> filteredList = new ArrayList<>();
 
-            if (headerArrayList.size() > 0) {
-                ArrayList<Header> removeHeaders = new ArrayList<>();
-                for (int i = 0; i < headerArrayList.size(); i++) {
-                    if (headerArrayList.get(i).usersList.size() == 0) {
-                        removeHeaders.add(headerArrayList.get(i));
-                    }
-                }
-
-                if (removeHeaders.size() > 0) {
-                    for (int i = 0; i < removeHeaders.size(); i++) {
-                        for (int i1 = 0; i1 < headerArrayList.size(); i1++) {
-                            if (removeHeaders.get(i).header.equals(headerArrayList.get(i1).header)) {
-                                headerArrayList.remove(i1);
-                                break;
-                            }
-                        }
-                    }
-                }
+        for (int i = 0; i < Constant.usersArrayList.size(); i++) {
+            final String name = Constant.usersArrayList.get(i).getFirst().toLowerCase();
+            if (name.contains(query)) {
+                filteredList.add(Constant.usersArrayList.get(i));
             }
         }
-        headerListAdapter.setHeaderArrayList(headerArrayList);
+        if (filteredList.size() > 0) {
+            recyclerView.setVisibility(View.VISIBLE);
+            newAdapter.setFilteredList(filteredList);
+        }
     }
 
     private void deleteSelectedItems() {
@@ -350,7 +327,7 @@ public class ContactsFragment extends Fragment {
                 }
             }
         }
-        getContactList(false);
+        getContactList();
     }
 
     public void shareSelectedUsers() {
@@ -386,14 +363,14 @@ public class ContactsFragment extends Fragment {
         for (Users item : usersArrayList) {
             item.setSelected(true);
         }
-        headerListAdapter.notifyDataSetChanged();
+        newAdapter.notifyDataSetChanged();
     }
 
     private void deselectAllItems() {
         for (Users item : usersArrayList) {
             item.setSelected(false);
         }
-        headerListAdapter.notifyDataSetChanged();
+        newAdapter.notifyDataSetChanged();
     }
 
     public static void deleteContact(Context context, String contactId) {
@@ -405,60 +382,49 @@ public class ContactsFragment extends Fragment {
         contentResolver.delete(contactUri, null, null);
     }
 
-    private void getContactList(boolean isFilter) {
+    private void getContactList() {
         if (usersArrayList.size() > 0) {
             Comparator<Users> nameComparator = Comparator.comparing(Users::getFirst);
             usersArrayList.sort(nameComparator);
-
-            headerArrayList = new ArrayList<>();
-            for (char i = 'A'; i <= 'Z'; i++) {
-                Header header = new Header(String.valueOf(i), new ArrayList<>());
-                headerArrayList.add(header);
-            }
-            Header header1 = new Header("#", new ArrayList<>());
-            headerArrayList.add(header1);
-
-            usersArrayList.forEach(user -> {
-                if (!TextUtils.isEmpty(user.getFirst())) {
-                    String firstLetter = String.valueOf(user.getFirst().toUpperCase().charAt(0));
-                    boolean isMatch = headerArrayList.stream()
-                            .anyMatch(header -> Objects.equals(header.header, firstLetter));
-
-                    if (isMatch) {
-                        headerArrayList.stream()
-                                .filter(header -> Objects.equals(header.header, firstLetter))
-                                .findFirst()
-                                .ifPresent(header -> header.usersList.add(user));
-                    } else {
-                        if (headerArrayList.size() > 0) {
-                            headerArrayList.get(headerArrayList.size() - 1).usersList.add(user);
-                        }
-
-                    }
-                }
-            });
-
-            headerArrayList.removeIf(header -> header.usersList.isEmpty());
-
-            if (!isFilter) {
-                updateUi(headerArrayList);
-            }
-        }
-
-        progressLayout.setVisibility(View.GONE);
-    }
-
-    private void updateUi(ArrayList<Header> headerArrayList) {
-        if (headerListAdapter != null) {
-            headerListAdapter.setHeaderArrayList(headerArrayList);
-            headerListAdapter.notifyDataSetChanged();
-        } else  {
-            LinearLayoutManager manager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
-            headerListAdapter = new HeaderListAdapter(ContactsFragment.this, headerArrayList,button);
+//
+//            headerArrayList = new ArrayList<>();
+//            for (char i = 'A'; i <= 'Z'; i++) {
+//                Header header = new Header(String.valueOf(i), new ArrayList<>());
+//                headerArrayList.add(header);
+//            }
+//            Header header1 = new Header("#", new ArrayList<>());
+//            headerArrayList.add(header1);
+//
+//            usersArrayList.forEach(user -> {
+//                if (!TextUtils.isEmpty(user.getFirst())) {
+//                    String firstLetter = String.valueOf(user.getFirst().toUpperCase().charAt(0));
+//                    boolean isMatch = headerArrayList.stream()
+//                            .anyMatch(header -> Objects.equals(header.header, firstLetter));
+//
+//                    if (isMatch) {
+//                        headerArrayList.stream()
+//                                .filter(header -> Objects.equals(header.header, firstLetter))
+//                                .findFirst()
+//                                .ifPresent(header -> header.usersList.add(user));
+//                    } else {
+//                        if (headerArrayList.size() > 0) {
+//                            headerArrayList.get(headerArrayList.size() - 1).usersList.add(user);
+//                        }
+//
+//                    }
+//                }
+//            });
+//            headerArrayList.removeIf(header -> header.usersList.isEmpty());
+//
+//            if (!isFilter) {
+//                updateUi(headerArrayList);
+//            }
+//        }
+            LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+            newAdapter = new NewAdapter(NewContactsFragment.this, usersArrayList, isEdit, button);
             recyclerView.setLayoutManager(manager);
-            recyclerView.setAdapter(headerListAdapter);
+            recyclerView.setAdapter(newAdapter);
         }
-
     }
 
     public void intentPass(Users users) {
@@ -471,7 +437,7 @@ public class ContactsFragment extends Fragment {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, 100);
         } else {
-            getContactList(false);
+            getContactList();
         }
     }
 
@@ -480,7 +446,7 @@ public class ContactsFragment extends Fragment {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getContactList(false);
+                getContactList();
             } else {
                 checkPermission();
             }

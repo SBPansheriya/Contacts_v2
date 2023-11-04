@@ -12,8 +12,11 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +29,7 @@ import com.contacts.Fragment.ContactsFragment;
 import com.contacts.Fragment.FavoritesFragment;
 import com.contacts.Fragment.GroupsFragment;
 import com.contacts.Fragment.KeypadFragment;
+import com.contacts.Fragment.NewContactsFragment;
 import com.contacts.Fragment.RecentsFragment;
 import com.contacts.MyBottomSheetDialog;
 import com.contacts.R;
@@ -44,14 +48,19 @@ public class HomeActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        getSupportActionBar().hide();
         Window window = HomeActivity.this.getWindow();
         window.setStatusBarColor(ContextCompat.getColor(HomeActivity.this, R.color.white));
         init();
 
+//        MenuItem menuItem = menu.findItem(R.id.menu_item_1); // Change to the appropriate item
+//        Drawable icon = menuItem.getIcon();
+//        icon.setColorFilter(ContextCompat.getColor(this, R.color.selected_icon_color), PorterDuff.Mode.SRC_IN);
+//        menuItem.setIcon(icon);
+
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
 
                 if (item.getItemId() == R.id.fav) {
                     openFragment(new FavoritesFragment());
@@ -63,12 +72,11 @@ public class HomeActivity extends AppCompatActivity{
                 }
                 if (item.getItemId() == R.id.contact) {
 
-                    Fragment fragment = new ContactsFragment();
+                    Fragment fragment = new NewContactsFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("btn", "contact");
                     fragment.setArguments(bundle);
                     openFragment(fragment);
-
                     return true;
                 }
                 if (item.getItemId() == R.id.group) {

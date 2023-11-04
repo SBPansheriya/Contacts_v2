@@ -39,6 +39,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.canhub.cropper.CropImageContract;
+import com.canhub.cropper.CropImageContractOptions;
+import com.canhub.cropper.CropImageOptions;
+import com.canhub.cropper.CropImageView;
 import com.contacts.Class.Constant;
 import com.contacts.Fragment.ContactsFragment;
 import com.contacts.Model.Users;
@@ -65,11 +69,13 @@ public class UpdateContactActivity extends AppCompatActivity {
     Users user;
     Bitmap bitmap;
     ActivityResultLauncher<Intent> launchSomeActivity;
+    ActivityResultLauncher<CropImageContractOptions> cropImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_contact);
+        getSupportActionBar().hide();
         Window window = UpdateContactActivity.this.getWindow();
         window.setStatusBarColor(ContextCompat.getColor(UpdateContactActivity.this, R.color.white));
         init();
@@ -112,39 +118,17 @@ public class UpdateContactActivity extends AppCompatActivity {
         launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK) {
                 Intent data = result.getData();
-                if (data != null && data.getData() != null) {
-                    newUri = data.getData();
-                    if (newUri != null) {
-                        Glide.with(UpdateContactActivity.this).load(newUri).into(personimage);
-                    } else {
-                        if (user.image != null) {
-                            Glide.with(UpdateContactActivity.this).load(user.image).into(personimage);
-                        }
-                    }
-                } else {
-                    Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                newUri = data.getData();
+                startCrop(newUri);
             }
         });
-//        launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-//                result -> {
-//                    if (result.getResultCode() == Activity.RESULT_OK) {
-//                        Uri selectedImageUri = result.getData().getData();
-//                        personimage.setImageURI(selectedImageUri);
-////                        bitmap = null;
-////                        try {
-////                            bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
-////                        } catch (IOException e) {
-////                            e.printStackTrace();
-////                        }
-////
-////                        if (bitmap != null) {
-////                            personimage.setImageBitmap(bitmap);
-////                        }
-//                    }
-//                });
+
+        cropImage = registerForActivityResult(new CropImageContract(), result -> {
+            if (result.isSuccessful()) {
+                newUri = result.getUriContent();
+                personimage.setImageURI(newUri);
+            }
+        });
     }
 
     public void getUpdateContactList(String contactId, String newFirstName, String newLastName, String newPersonalPhoneNumber, String newOfficePhoneNumber, Uri newImage) {
@@ -250,11 +234,17 @@ public class UpdateContactActivity extends AppCompatActivity {
         onBackPressed();
     }
 
+    private void startCrop(Uri selectedImageUri) {
+        CropImageOptions options = new CropImageOptions();
+        options.guidelines = CropImageView.Guidelines.ON;
+        CropImageContractOptions cropImageContractOptions = new CropImageContractOptions(selectedImageUri,options);
+        cropImage.launch(cropImageContractOptions);
+    }
+
     private void openImagePicker() {
         Intent i = new Intent();
         i.setType("image/*");
         i.setAction(Intent.ACTION_GET_CONTENT);
-
         launchSomeActivity.launch(i);
     }
 
@@ -392,6 +382,7 @@ public class UpdateContactActivity extends AppCompatActivity {
             personimage.setImageBitmap(bitmap);
             newUri = saveToInternalStorage(bitmap);
             imagepath = newUri.getPath();
+            startCrop(newUri);
         }
     }
 

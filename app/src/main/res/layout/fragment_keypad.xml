@@ -5,6 +5,9 @@
     android:layout_height="match_parent"
     tools:context=".Fragment.KeypadFragment">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/keypadrecyclerview"
@@ -13,4 +16,16 @@
         android:visibility="gone"
         tools:listitem="@layout/keypad_list_item"/>
 
+    <ImageView
+        android:id="@+id/open_keypad"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="@color/blue"
+        android:src="@drawable/keypad_icon"
+        android:visibility="visible" />
+    </RelativeLayout>
 </FrameLayout>
