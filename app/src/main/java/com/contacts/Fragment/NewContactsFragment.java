@@ -38,6 +38,7 @@ import android.widget.Toast;
 
 import com.contacts.Activity.ContactDetailActivity;
 import com.contacts.Activity.CreateContactActivity;
+import com.contacts.Activity.HomeActivity;
 import com.contacts.Adapter.NewAdapter;
 import com.contacts.Class.Constant;
 
@@ -73,6 +74,7 @@ public class NewContactsFragment extends Fragment {
     String button = "";
     NewAdapter newAdapter;
     boolean isEdit = false;
+    HomeActivity homeActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -182,6 +184,7 @@ public class NewContactsFragment extends Fragment {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                homeActivity.onBackPressed();
                 Fragment mFragment = new FavoritesFragment();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, mFragment).setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE).commit();
             }
@@ -282,7 +285,6 @@ public class NewContactsFragment extends Fragment {
             public boolean onQueryTextSubmit(String query) {
                 return false;
             }
-
             @Override
             public boolean onQueryTextChange(String newText) {
                 filterContacts(newText);
@@ -416,9 +418,6 @@ public class NewContactsFragment extends Fragment {
 //            });
 //            headerArrayList.removeIf(header -> header.usersList.isEmpty());
 //
-//            if (!isFilter) {
-//                updateUi(headerArrayList);
-//            }
 //        }
             LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             newAdapter = new NewAdapter(NewContactsFragment.this, usersArrayList, isEdit, button);

@@ -19,7 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.contacts.Class.Constant;
-import com.contacts.Fragment.ContactsFragment;
+
 import com.contacts.Fragment.NewContactsFragment;
 import com.contacts.Model.Users;
 import com.contacts.R;
@@ -35,6 +35,7 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.ContactViewHolde
     int favorites;
     boolean isEdit = false;
     String button;
+    private int clickCount = 0;
 
     public NewAdapter(NewContactsFragment newContactsFragment, ArrayList<Users> usersArrayList, boolean isEdit, String button) {
         this.newContactsFragment = newContactsFragment;
@@ -81,11 +82,23 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.ContactViewHolde
 
         if (button.equals("fav")){
             holder.no_fav_add.setVisibility(View.VISIBLE);
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public boolean onLongClick(View view) {
+                public void onClick(View view) {
 
-                    return false;
+                    if (holder.fav_add.getVisibility() == View.VISIBLE){
+                        holder.fav_add.setVisibility(View.GONE);
+                        holder.no_fav_add.setVisibility(View.VISIBLE);
+                        favorites = 0;
+                        addToFavorites(newContactsFragment.getContext(), usersList.get(position).getContactId(),usersList.get(position).image,usersList.get(position).first,usersList.get(position).last,usersList.get(position).personPhone,favorites);
+                    }
+                    else {
+                        holder.fav_add.setVisibility(View.VISIBLE);
+                        holder.no_fav_add.setVisibility(View.GONE);
+                        favorites = 1;
+                        addToFavorites(newContactsFragment.getContext(), usersList.get(position).getContactId(),usersList.get(position).image,usersList.get(position).first,usersList.get(position).last,usersList.get(position).personPhone,favorites);
+                    }
+                    clickCount = (clickCount + 1) % 3;
                 }
             });
         }
@@ -95,6 +108,12 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.ContactViewHolde
         if (button.equals("contact")){
             holder.no_fav_add.setVisibility(View.GONE);
             holder.fav_add.setVisibility(View.GONE);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ((NewContactsFragment)newContactsFragment).intentPass(usersList.get(position));
+                }
+            });
         }
 
         holder.no_fav_add.setOnClickListener(new View.OnClickListener() {
@@ -125,12 +144,7 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.ContactViewHolde
             Picasso.get().load(usersList.get(position).image).into(holder.personImage);
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((NewContactsFragment)newContactsFragment).intentPass(usersList.get(position));
-            }
-        });
+
 
         holder.checkBox.setChecked(usersList.get(position).isSelected());
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {

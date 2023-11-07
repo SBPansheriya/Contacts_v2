@@ -28,11 +28,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.contacts.Adapter.HeaderListAdapter;
 import com.contacts.Adapter.KeypadListAdapter;
 import com.contacts.Class.Constant;
 import com.contacts.Model.Users;
-import com.contacts.MyBottomSheetDialog;
 import com.contacts.R;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;

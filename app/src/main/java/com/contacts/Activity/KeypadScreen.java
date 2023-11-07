@@ -15,6 +15,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -22,6 +23,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,6 +31,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.PermissionChecker;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,14 +46,16 @@ import com.contacts.R;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class KeypadScreen extends AppCompatActivity {
+public class KeypadScreen extends AppCompatActivity implements Serializable {
 
     public static KeypadListAdapter keypadListAdapter;
     public static RecyclerView recyclerView;
     String selectedPhoneNUmber;
     ImageView open_keypad;
+    BottomSheetDialogFragment bottomSheetDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,21 +73,217 @@ public class KeypadScreen extends AppCompatActivity {
         keypadListAdapter = new KeypadListAdapter(KeypadScreen.this, Constant.usersArrayList);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(keypadListAdapter);
-        keypadListAdapter.notifyDataSetChanged();
 
-        BottomSheetDialogFragment bottomSheetDialog = new MyBottomSheetDialog();
-        bottomSheetDialog.getShowsDialog();
-        bottomSheetDialog.show(getSupportFragmentManager(), bottomSheetDialog.getTag());
+        showBottomSheetDialog();
+
 
         open_keypad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BottomSheetDialogFragment bottomSheetDialog = new MyBottomSheetDialog();
-                bottomSheetDialog.getShowsDialog();
-                bottomSheetDialog.show(getSupportFragmentManager(), bottomSheetDialog.getTag());
+                showBottomSheetDialog();
+            }
+        });
+    }
+
+    private void showBottomSheetDialog() {
+
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout);
+
+        ImageView btn_1 = bottomSheetDialog.findViewById(R.id.btn_1);
+        ImageView btn_2 = bottomSheetDialog.findViewById(R.id.btn_2);
+        ImageView btn_3 = bottomSheetDialog.findViewById(R.id.btn_3);
+        ImageView btn_4 = bottomSheetDialog.findViewById(R.id.btn_4);
+        ImageView btn_5 = bottomSheetDialog.findViewById(R.id.btn_5);
+        ImageView btn_6 = bottomSheetDialog.findViewById(R.id.btn_6);
+        ImageView btn_7 = bottomSheetDialog.findViewById(R.id.btn_7);
+        ImageView btn_8 = bottomSheetDialog.findViewById(R.id.btn_8);
+        ImageView btn_9 = bottomSheetDialog.findViewById(R.id.btn_9);
+        ImageView btn_0 = bottomSheetDialog.findViewById(R.id.btn_0);
+        ImageView btn_hash = bottomSheetDialog.findViewById(R.id.btn_hash);
+        ImageView btn_star = bottomSheetDialog.findViewById(R.id.btn_star);
+        ImageView btn_call = bottomSheetDialog.findViewById(R.id.btn_call);
+        ImageView btn_backpress = bottomSheetDialog.findViewById(R.id.btn_backpress);
+        EditText editText = bottomSheetDialog.findViewById(R.id.dailer_show);
+        TextView add_contact_by_keypad = bottomSheetDialog.findViewById(R.id.add_contact_by_keypad);
+        final String[] s = new String[1];
+
+        btn_0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String number = String.valueOf(editText.getText());
+                s[0] = number + "0";
+                editText.setText(s[0]);
             }
         });
 
+        btn_1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String number = String.valueOf(editText.getText());
+                s[0] = number + "1";
+                editText.setText(s[0]);
+            }
+        });
+
+        btn_2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String number = String.valueOf(editText.getText());
+                s[0] = number + "2";
+                editText.setText(s[0]);
+            }
+        });
+
+        btn_3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String number = String.valueOf(editText.getText());
+                s[0] = number + "3";
+                editText.setText(s[0]);
+            }
+        });
+
+        btn_4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String number = String.valueOf(editText.getText());
+                s[0] = number + "4";
+                editText.setText(s[0]);
+            }
+        });
+
+        btn_5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String number = String.valueOf(editText.getText());
+                s[0] = number + "5";
+                editText.setText(s[0]);
+            }
+        });
+
+        btn_6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String number = String.valueOf(editText.getText());
+                s[0] = number + "6";
+                editText.setText(s[0]);
+            }
+        });
+
+        btn_7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String number = String.valueOf(editText.getText());
+                s[0] = number + "7";
+                editText.setText(s[0]);
+            }
+        });
+
+        btn_8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String number = String.valueOf(editText.getText());
+                s[0] = number + "8";
+                editText.setText(s[0]);
+            }
+        });
+
+        btn_9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String number = String.valueOf(editText.getText());
+                s[0] = number + "9";
+                editText.setText(s[0]);
+            }
+        });
+
+        btn_hash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String number = String.valueOf(editText.getText());
+                s[0] = number + "#";
+                editText.setText(s[0]);
+            }
+        });
+
+        btn_star.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String number = String.valueOf(editText.getText());
+                s[0] = number + "*";
+                editText.setText(s[0]);
+            }
+        });
+
+        btn_backpress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (editText.length() > 0) {
+                    String t = s[0].substring(0, editText.length() - 1);
+                    editText.setText("" + t);
+                } else {
+                    editText.setText("");
+                }
+            }
+        });
+
+        btn_call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkPermissions();
+            }
+        });
+
+        editText.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+                if (TextUtils.isEmpty(s)) {
+                    recyclerView.setVisibility(View.GONE);
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence query, int start, int before, int count) {
+
+                query = query.toString().toLowerCase();
+
+                ArrayList<Users> filteredList = new ArrayList<>();
+
+                for (int i = 0; i < Constant.usersArrayList.size(); i++) {
+                    final String number = Constant.usersArrayList.get(i).getPersonPhone().toLowerCase();
+                    if (number.contains(query)) {
+                        filteredList.add(Constant.usersArrayList.get(i));
+                    }
+                }
+                if (filteredList.size() > 0) {
+                    recyclerView.setVisibility(View.VISIBLE);
+                    keypadListAdapter.setFilteredList(filteredList);
+                } else {
+                    recyclerView.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        add_contact_by_keypad.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), CreateContactActivity.class);
+                intent.putExtra("number", editText.getText().toString());
+                startActivity(intent);
+            }
+        });
+
+        bottomSheetDialog.show();
+    }
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        return super.onTouchEvent(event);
     }
 
     private void init() {
@@ -99,6 +301,11 @@ public class KeypadScreen extends AppCompatActivity {
 //        }
 
         return ContextCompat.checkSelfPermission(KeypadScreen.this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -164,6 +371,73 @@ public class KeypadScreen extends AppCompatActivity {
             startActivity(intent);
         }
 
+    }
+
+    private void checkPermissions() {
+        String[] permissions = new String[]{Manifest.permission.CALL_PHONE};
+
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(getActivity(), permissions, 123);
+        } else {
+            call();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 123 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            call();
+        } else {
+            showPermissionDialog();
+        }
+    }
+
+    private void showPermissionDialog() {
+        Dialog dialog = new Dialog(getContext());
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setGravity(Gravity.CENTER);
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.setCancelable(false);
+        }
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        dialog.setContentView(R.layout.dialog_permission);
+        dialog.setCancelable(false);
+        dialog.show();
+
+        Button gotosettings = dialog.findViewById(R.id.gotosettings);
+
+        gotosettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE) ||
+                        shouldShowRequestPermissionRationale(Manifest.permission.READ_PHONE_STATE)) {
+                    checkPermissions();
+                } else {
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+                    intent.setData(uri);
+                    startActivityForResult(intent, 123);
+                    Toast.makeText(getContext(), "Setting", Toast.LENGTH_SHORT).show();
+                }
+                dialog.dismiss();
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        try {
+            super.onActivityResult(requestCode, resultCode, data);
+
+            if (requestCode == 123) {
+                checkPermissions();
+            }
+        } catch (Exception ex) {
+            Toast.makeText(getContext(), ex.toString(),
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 }
 

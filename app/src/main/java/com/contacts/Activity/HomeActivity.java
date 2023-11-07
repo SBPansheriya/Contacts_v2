@@ -25,13 +25,12 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.contacts.Fragment.ContactsFragment;
+
 import com.contacts.Fragment.FavoritesFragment;
 import com.contacts.Fragment.GroupsFragment;
 import com.contacts.Fragment.KeypadFragment;
 import com.contacts.Fragment.NewContactsFragment;
 import com.contacts.Fragment.RecentsFragment;
-import com.contacts.MyBottomSheetDialog;
 import com.contacts.R;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -40,9 +39,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.navigation.NavigationBarView;
 
-public class HomeActivity extends AppCompatActivity{
+public class HomeActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
+    public boolean isstep = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +52,6 @@ public class HomeActivity extends AppCompatActivity{
         Window window = HomeActivity.this.getWindow();
         window.setStatusBarColor(ContextCompat.getColor(HomeActivity.this, R.color.white));
         init();
-
-//        MenuItem menuItem = menu.findItem(R.id.menu_item_1); // Change to the appropriate item
-//        Drawable icon = menuItem.getIcon();
-//        icon.setColorFilter(ContextCompat.getColor(this, R.color.selected_icon_color), PorterDuff.Mode.SRC_IN);
-//        menuItem.setIcon(icon);
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -71,7 +66,7 @@ public class HomeActivity extends AppCompatActivity{
                     return true;
                 }
                 if (item.getItemId() == R.id.contact) {
-
+                    isstep = true;
                     Fragment fragment = new NewContactsFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("btn", "contact");
@@ -99,7 +94,23 @@ public class HomeActivity extends AppCompatActivity{
                 .commit();
     }
 
-//    @Override
+    @Override
+    public void onBackPressed() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.framelayout);
+        if (fragment instanceof FavoritesFragment) {
+            super.onBackPressed();
+        } else {
+            if (isstep) {
+                super.onBackPressed();
+            }
+            else {
+                Fragment mFragment = new FavoritesFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, mFragment).setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE).commit();
+            }
+        }
+    }
+
+    //    @Override
 //    public boolean
 //    onNavigationItemSelected(@NonNull MenuItem item) {
 //        if (item.getItemId() == R.id.fav) {

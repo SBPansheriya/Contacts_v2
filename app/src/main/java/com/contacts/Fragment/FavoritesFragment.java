@@ -40,9 +40,7 @@ import com.contacts.Activity.ContactDetailActivity;
 import com.contacts.Adapter.FavListAdapter;
 import com.contacts.Activity.KeypadScreen;
 import com.contacts.Model.Users;
-import com.contacts.MyBottomSheetDialog;
 import com.contacts.R;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class FavoritesFragment extends Fragment {
 
@@ -78,7 +76,7 @@ public class FavoritesFragment extends Fragment {
         addFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment mFragment = new ContactsFragment();
+                Fragment mFragment = new NewContactsFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("btn", "no_fav_found");
                 mFragment.setArguments(bundle);

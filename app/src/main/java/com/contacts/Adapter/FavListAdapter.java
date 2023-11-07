@@ -24,7 +24,6 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.contacts.Activity.ContactDetailActivity;
-import com.contacts.Fragment.ContactsFragment;
 import com.contacts.Fragment.FavoritesFragment;
 import com.contacts.Fragment.RecentsFragment;
 import com.contacts.Model.Users;

@@ -8,15 +8,18 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,15 +34,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.contacts.Activity.ContactDetailActivity;
 import com.contacts.Activity.CreateContactActivity;
+import com.contacts.Activity.HomeActivity;
 import com.contacts.Activity.KeypadScreen;
 import com.contacts.Adapter.KeypadListAdapter;
 import com.contacts.Class.Constant;
+import com.contacts.Fragment.FavoritesFragment;
 import com.contacts.Model.Users;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayList;
@@ -49,6 +56,18 @@ public class MyBottomSheetDialog extends BottomSheetDialogFragment {
     String s;
     EditText editText;
 
+    KeypadScreen keypadScreen;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                keypadScreen = (KeypadScreen) getArguments().getSerializable("keyped",KeypadScreen.class);
+            }
+        }
+    }
 
     @SuppressLint("ResourceType")
     @Nullable
@@ -240,8 +259,13 @@ public class MyBottomSheetDialog extends BottomSheetDialogFragment {
                 startActivity(intent);
             }
         });
-
         return view;
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        ((KeypadScreen) keypadScreen).onBackPressed();
+        super.onDismiss(dialog);
     }
 
     @Override
@@ -254,10 +278,8 @@ public class MyBottomSheetDialog extends BottomSheetDialogFragment {
 
         View bottomSheetView = getDialog().findViewById(com.google.android.material.R.id.design_bottom_sheet);
         if (bottomSheetView != null) {
-            // Set initial properties (e.g., translate it off the screen)
             bottomSheetView.setTranslationY(1000);
 
-            // Animate the view step by step
             bottomSheetView.animate()
                     .translationY(0)
                     .setDuration(500)
@@ -265,7 +287,6 @@ public class MyBottomSheetDialog extends BottomSheetDialogFragment {
                         // Step 1 animation
                     })
                     .withEndAction(() -> {
-                        // After the first step animation completes, you can proceed to step 2
                         bottomSheetView.animate()
                                 .alpha(1)
                                 .setDuration(1000)
@@ -276,7 +297,6 @@ public class MyBottomSheetDialog extends BottomSheetDialogFragment {
                     })
                     .start();
         }
-
 //        if (button.equals("fav")) {
 //
 //            if (getDialog() != null && getDialog().getWindow() != null) {
@@ -394,8 +414,6 @@ public class MyBottomSheetDialog extends BottomSheetDialogFragment {
 
         if (requestCode == 123 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             call();
-        } else if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
         } else {
             showPermissionDialog();
         }
@@ -446,58 +464,5 @@ public class MyBottomSheetDialog extends BottomSheetDialogFragment {
                     Toast.LENGTH_SHORT).show();
         }
     }
-
-
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//
-//        if (getDialog() != null && getDialog().getWindow() != null) {
-//            getDialog().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-//        }
-//
-//        View bottomSheetView = getDialog().findViewById(com.google.android.material.R.id.design_bottom_sheet);
-//
-//        if (bottomSheetView != null) {
-//            ObjectAnimator step1AnimatorX = ObjectAnimator.ofFloat(bottomSheetView, "scaleX", 0.0f, 1.0f);
-//            ObjectAnimator step1AnimatorY = ObjectAnimator.ofFloat(bottomSheetView, "scaleY", 0.0f, 1.0f);
-//            ObjectAnimator step1AlphaAnimator = ObjectAnimator.ofFloat(bottomSheetView, "alpha", 0.0f, 1.0f);
-//
-//            AnimatorSet step1Set = new AnimatorSet();
-//            step1Set.playTogether(step1AnimatorX, step1AnimatorY, step1AlphaAnimator);
-//            step1Set.setDuration(300);
-//
-//            ObjectAnimator step2RotateAnimator = ObjectAnimator.ofFloat(bottomSheetView, "rotation", 45.0f, 0.0f);
-//            step2RotateAnimator.setDuration(300);
-//
-//            AnimatorSet animatorSet = new AnimatorSet();
-//            animatorSet.playSequentially(step1Set, step2RotateAnimator);
-//            animatorSet.start();
-//        }
-//    }
-
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//
-//        if (getDialog() != null && getDialog().getWindow() != null) {
-//            getDialog().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-//        }
-//
-//        View bottomSheetView = getDialog().findViewById(com.google.android.material.R.id.design_bottom_sheet);
-//
-//        if (bottomSheetView != null) {
-//            ObjectAnimator step1Animator = ObjectAnimator.ofFloat(bottomSheetView, "translationY", 100f, 0f);
-//            step1Animator.setDuration(300);
-//
-//            ObjectAnimator step2AlphaAnimator = ObjectAnimator.ofFloat(bottomSheetView, "alpha", 0.0f, 1.0f);
-//            step2AlphaAnimator.setDuration(300);
-//
-//            AnimatorSet animatorSet = new AnimatorSet();
-//            animatorSet.play(step1Animator).before(step2AlphaAnimator);
-//            animatorSet.start();
-//        }
-//    }
-
 }
 
