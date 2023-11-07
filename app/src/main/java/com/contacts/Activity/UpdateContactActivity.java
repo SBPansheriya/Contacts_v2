@@ -44,7 +44,6 @@ import com.canhub.cropper.CropImageContractOptions;
 import com.canhub.cropper.CropImageOptions;
 import com.canhub.cropper.CropImageView;
 import com.contacts.Class.Constant;
-import com.contacts.Fragment.ContactsFragment;
 import com.contacts.Model.Users;
 import com.contacts.R;
 import com.squareup.picasso.Picasso;
@@ -355,6 +354,18 @@ public class UpdateContactActivity extends AppCompatActivity {
         dialog.show();
 
         Button gotosettings = dialog.findViewById(R.id.gotosettings);
+        ImageView dismiss_dialog = dialog.findViewById(R.id.dismiss_dialog);
+        dismiss_dialog.setVisibility(View.VISIBLE);
+        TextView textView = dialog.findViewById(R.id.txt1);
+
+        textView.setText("This app needs Camera permissions to use this feature. You can grant them in app settings.");
+
+        dismiss_dialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
 
         gotosettings.setOnClickListener(new View.OnClickListener() {
             @Override

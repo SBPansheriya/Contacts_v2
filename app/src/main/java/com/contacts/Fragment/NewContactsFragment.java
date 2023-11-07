@@ -38,16 +38,10 @@ import android.widget.Toast;
 
 import com.contacts.Activity.ContactDetailActivity;
 import com.contacts.Activity.CreateContactActivity;
-import com.contacts.Activity.HomeActivity;
 import com.contacts.Adapter.NewAdapter;
 import com.contacts.Class.Constant;
-
-import com.contacts.Model.Alphabet;
-import com.contacts.Model.Header;
 import com.contacts.Model.Users;
 import com.contacts.R;
-import com.github.ybq.android.spinkit.SpinKitView;
-import com.reddit.indicatorfastscroll.FastScrollItemIndicator;
 import com.reddit.indicatorfastscroll.FastScrollerThumbView;
 import com.reddit.indicatorfastscroll.FastScrollerView;
 
@@ -66,7 +60,6 @@ public class NewContactsFragment extends Fragment {
     ImageView add_contact;
     ViewGroup viewGroup;
     Users users;
-    SpinKitView spin_kit;
     ActivityResultLauncher<Intent> launchSomeActivity;
     RelativeLayout progressLayout;
     FastScrollerView fastScrollerView;
@@ -74,7 +67,6 @@ public class NewContactsFragment extends Fragment {
     String button = "";
     NewAdapter newAdapter;
     boolean isEdit = false;
-    HomeActivity homeActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -82,16 +74,17 @@ public class NewContactsFragment extends Fragment {
 
         init(view);
 
-
         button = getArguments().getString("btn");
 
         if (button.equals("fav")) {
             tbmenu.setVisibility(View.VISIBLE);
             edit.setVisibility(View.GONE);
+            add_contact.setVisibility(View.GONE);
         }
         if (button.equals("no_fav_found")) {
             tbmenu.setVisibility(View.VISIBLE);
             edit.setVisibility(View.GONE);
+            add_contact.setVisibility(View.GONE);
         }
         if (button.equals("contact")) {
             tbmenu.setVisibility(View.GONE);
@@ -122,7 +115,6 @@ public class NewContactsFragment extends Fragment {
                 }
             }
         });
-
 //        fastScrollerView.setupWithRecyclerView(
 //                recyclerView,
 //                (position) -> {
@@ -135,7 +127,6 @@ public class NewContactsFragment extends Fragment {
 //                    alphabet = new Alphabet("#");
 //                    alphabetArrayList.add(alphabet);
 //
-////                    Users users = usersArrayList.get(position);
 //                    return new FastScrollItemIndicator.Text(
 //                            alphabetArrayList.get(position).getAlphabet().substring(0, 1).toUpperCase()
 //                    );
@@ -184,7 +175,6 @@ public class NewContactsFragment extends Fragment {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                homeActivity.onBackPressed();
                 Fragment mFragment = new FavoritesFragment();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, mFragment).setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE).commit();
             }
@@ -220,6 +210,7 @@ public class NewContactsFragment extends Fragment {
                         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                         dialog.setCancelable(false);
                     }
+                    dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                     dialog.setContentView(R.layout.dailog_layout);
                     dialog.setCancelable(false);
                     dialog.show();
@@ -280,37 +271,37 @@ public class NewContactsFragment extends Fragment {
             }
         });
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                filterContacts(newText);
-                return true;
-            }
-        });
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return false;
+//            }
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+////                filterContacts(newText);
+//                return true;
+//            }
+//        });
         return view;
     }
 
-    public void filterContacts(String query) {
-
-        query = query.toString().toLowerCase();
-
-        ArrayList<Users> filteredList = new ArrayList<>();
-
-        for (int i = 0; i < Constant.usersArrayList.size(); i++) {
-            final String name = Constant.usersArrayList.get(i).getFirst().toLowerCase();
-            if (name.contains(query)) {
-                filteredList.add(Constant.usersArrayList.get(i));
-            }
-        }
-        if (filteredList.size() > 0) {
-            recyclerView.setVisibility(View.VISIBLE);
-            newAdapter.setFilteredList(filteredList);
-        }
-    }
+//    public void filterContacts(String query) {
+//
+//        query = query.toString().toLowerCase();
+//
+//        ArrayList<Users> filteredList = new ArrayList<>();
+//
+//        for (int i = 0; i < Constant.usersArrayList.size(); i++) {
+//            final String name = Constant.usersArrayList.get(i).getFirst().toLowerCase();
+//            if (name.contains(query)) {
+//                filteredList.add(Constant.usersArrayList.get(i));
+//            }
+//        }
+//        if (filteredList.size() > 0) {
+//            recyclerView.setVisibility(View.VISIBLE);
+//            newAdapter.setFilteredList(filteredList);
+//        }
+//    }
 
     private void deleteSelectedItems() {
         ArrayList<Users> itemsToRemove = new ArrayList<>();
@@ -388,37 +379,7 @@ public class NewContactsFragment extends Fragment {
         if (usersArrayList.size() > 0) {
             Comparator<Users> nameComparator = Comparator.comparing(Users::getFirst);
             usersArrayList.sort(nameComparator);
-//
-//            headerArrayList = new ArrayList<>();
-//            for (char i = 'A'; i <= 'Z'; i++) {
-//                Header header = new Header(String.valueOf(i), new ArrayList<>());
-//                headerArrayList.add(header);
-//            }
-//            Header header1 = new Header("#", new ArrayList<>());
-//            headerArrayList.add(header1);
-//
-//            usersArrayList.forEach(user -> {
-//                if (!TextUtils.isEmpty(user.getFirst())) {
-//                    String firstLetter = String.valueOf(user.getFirst().toUpperCase().charAt(0));
-//                    boolean isMatch = headerArrayList.stream()
-//                            .anyMatch(header -> Objects.equals(header.header, firstLetter));
-//
-//                    if (isMatch) {
-//                        headerArrayList.stream()
-//                                .filter(header -> Objects.equals(header.header, firstLetter))
-//                                .findFirst()
-//                                .ifPresent(header -> header.usersList.add(user));
-//                    } else {
-//                        if (headerArrayList.size() > 0) {
-//                            headerArrayList.get(headerArrayList.size() - 1).usersList.add(user);
-//                        }
-//
-//                    }
-//                }
-//            });
-//            headerArrayList.removeIf(header -> header.usersList.isEmpty());
-//
-//        }
+
             LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             newAdapter = new NewAdapter(NewContactsFragment.this, usersArrayList, isEdit, button);
             recyclerView.setLayoutManager(manager);
@@ -467,7 +428,6 @@ public class NewContactsFragment extends Fragment {
         Contact_found_linear = view.findViewById(R.id.Contact_found_linear);
         totalcontact = view.findViewById(R.id.totalcontact);
         progressLayout = view.findViewById(R.id.progressLayout);
-        spin_kit = view.findViewById(R.id.spin_kit);
         searchView = view.findViewById(R.id.search_contact);
         tbmenu = view.findViewById(R.id.tbMenu);
         back = view.findViewById(R.id.back);

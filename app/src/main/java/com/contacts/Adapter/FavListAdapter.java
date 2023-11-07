@@ -1,47 +1,27 @@
 package com.contacts.Adapter;
 
-import static com.contacts.Class.Constant.favoriteList;
-import static com.contacts.Class.Constant.usersArrayList;
-
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.view.menu.MenuBuilder;
-import androidx.appcompat.view.menu.MenuPopupHelper;
-import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.contacts.Activity.ContactDetailActivity;
+import com.contacts.Class.Constant;
 import com.contacts.Fragment.FavoritesFragment;
-import com.contacts.Fragment.RecentsFragment;
 import com.contacts.Model.Users;
 import com.contacts.R;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class FavListAdapter extends RecyclerView.Adapter<FavListAdapter.favouriteviewholder>{
 
     FavoritesFragment favoritesFragment;
     ArrayList<Users> favoriteList;
-    MenuBuilder menuBuilder;
 
     public FavListAdapter(FavoritesFragment favoritesFragment, ArrayList<Users> favoriteList) {
         this.favoritesFragment = favoritesFragment;
@@ -62,13 +42,11 @@ public class FavListAdapter extends RecyclerView.Adapter<FavListAdapter.favourit
         if (favoriteList.get(position).image == null) {
             holder.fav_person_image.setImageResource(R.drawable.person_placeholder);
         } else {
-            Picasso.get().load(usersArrayList.get(position).image).into(holder.fav_person_image);
+            Picasso.get().load(favoriteList.get(position).image).into(holder.fav_person_image);
         }
 
         holder.fav_person_name.setText(favoriteList.get(position).first + " " + favoriteList.get(position).last);
 
-        menuBuilder = new MenuBuilder(favoritesFragment.getContext());
-        MenuInflater menuInflater = new MenuInflater(favoritesFragment.getContext());
 //        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
 //            @SuppressLint({"RestrictedApi", "NewApi"})
 //            @Override

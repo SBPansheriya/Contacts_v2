@@ -5,7 +5,7 @@
     android:id="@+id/framelayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment.ContactsFragment">
+    tools:context=".Activity.KeypadScreen">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -234,7 +234,7 @@
                         android:layout_weight="1"
                         android:baselineAligned="false"
                         android:descendantFocusability="blocksDescendants"
-                        tools:listitem="@layout/header_list_item" />
+                        tools:listitem="@layout/contact_list_item" />
 
                     <com.reddit.indicatorfastscroll.FastScrollerThumbView
                         android:id="@+id/letter_fastscroller_thumb"
@@ -274,22 +274,4 @@
             </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/progressLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#3B000000"
-        android:visibility="visible">
-
-        <com.github.ybq.android.spinkit.SpinKitView
-            android:id="@+id/spin_kit"
-            style="@style/SpinKitView.Large.ThreeBounce"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center" />
-
-    </RelativeLayout>
-
 </FrameLayout>

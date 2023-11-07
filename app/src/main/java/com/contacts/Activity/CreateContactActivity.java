@@ -303,6 +303,18 @@ public class CreateContactActivity extends AppCompatActivity {
         dialog.show();
 
         Button gotosettings = dialog.findViewById(R.id.gotosettings);
+        ImageView dismiss_dialog = dialog.findViewById(R.id.dismiss_dialog);
+        dismiss_dialog.setVisibility(View.VISIBLE);
+        TextView textView = dialog.findViewById(R.id.txt1);
+
+        textView.setText("This app needs Camera permissions to use this feature. You can grant them in app settings.");
+
+        dismiss_dialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
 
         gotosettings.setOnClickListener(new View.OnClickListener() {
             @Override

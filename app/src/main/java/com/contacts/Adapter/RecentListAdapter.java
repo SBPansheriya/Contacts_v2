@@ -1,34 +1,19 @@
 package com.contacts.Adapter;
 
-import static com.contacts.Class.Constant.recentArrayList;
 import static com.contacts.Class.Constant.usersArrayList;
-
-import android.Manifest;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.contacts.Fragment.RecentsFragment;
 import com.contacts.Model.Recent;
 import com.contacts.R;
-import com.squareup.picasso.Picasso;
-
-import java.io.InputStream;
 import java.util.ArrayList;
 
 public class RecentListAdapter extends RecyclerView.Adapter<RecentListAdapter.recentviewholder> {
@@ -51,23 +36,23 @@ public class RecentListAdapter extends RecyclerView.Adapter<RecentListAdapter.re
     @Override
     public void onBindViewHolder(@NonNull recentviewholder holder, int position) {
 
-        if (TextUtils.isEmpty(recentArrayList.get(position).getIamge())) {
+        String imageUrl = recentArrayList.get(position).getIamge();
+        System.out.println(recentArrayList.size());
 
+        if (TextUtils.isEmpty(imageUrl)) {
             if (usersArrayList.size() > 0) {
                 for (int i = 0; i < usersArrayList.size(); i++) {
-
                     if (usersArrayList.get(i).getPersonPhone().contains(recentArrayList.get(position).getContactnumber()) ||
                     usersArrayList.get(i).getOfficePhone().contains(recentArrayList.get(position).getContactnumber())) {
-                        Picasso.get().load(usersArrayList.get(i).getImage()).into(holder.recent_personImage);
+                         Glide.with(recentsFragment).load(usersArrayList.get(i).getImage()).into(holder.recent_personImage);
                         break;
                     }
                 }
             } else {
                 holder.recent_personImage.setImageResource(R.drawable.person_placeholder);
             }
-
         } else {
-            Picasso.get().load(recentArrayList.get(position).getIamge()).into(holder.recent_personImage);
+            Glide.with(recentsFragment).load(imageUrl).into(holder.recent_personImage);
         }
 
         if (recentArrayList.get(position).getStatus().equals("Outgoing")) {
@@ -98,6 +83,11 @@ public class RecentListAdapter extends RecyclerView.Adapter<RecentListAdapter.re
                 ((RecentsFragment) recentsFragment).call(recentArrayList.get(position).getContactnumber());
             }
         });
+    }
+
+    public void setRecentArrayList(ArrayList<Recent> recentArrayList) {
+        this.recentArrayList = recentArrayList;
+        notifyDataSetChanged();
     }
 
     @Override

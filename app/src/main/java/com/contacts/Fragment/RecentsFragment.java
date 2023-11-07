@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.contacts.Adapter.RecentListAdapter;
@@ -95,10 +96,15 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
     }
 
     public void getRecentContacts() {
-        recentListAdapter = new RecentListAdapter(RecentsFragment.this, recentArrayList);
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(recentListAdapter);
+        if (recentListAdapter != null) {
+            recentListAdapter.setRecentArrayList(recentArrayList);
+        } else {
+            recentListAdapter = new RecentListAdapter(RecentsFragment.this, recentArrayList);
+            LinearLayoutManager manager = new LinearLayoutManager(getContext());
+            recyclerView.setLayoutManager(manager);
+            recyclerView.setAdapter(recentListAdapter);
+        }
+
     }
 
     private void checkPermission() {
@@ -148,6 +154,18 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
         dialog.show();
 
         Button gotosettings = dialog.findViewById(R.id.gotosettings);
+        ImageView dismiss_dialog = dialog.findViewById(R.id.dismiss_dialog);
+        dismiss_dialog.setVisibility(View.VISIBLE);
+        TextView textView = dialog.findViewById(R.id.txt1);
+
+        textView.setText("This app needs Call phone permissions to use this feature. You can grant them in app settings.");
+
+        dismiss_dialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
 
         gotosettings.setOnClickListener(new View.OnClickListener() {
             @Override

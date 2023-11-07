@@ -35,7 +35,6 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.ContactViewHolde
     int favorites;
     boolean isEdit = false;
     String button;
-    private int clickCount = 0;
 
     public NewAdapter(NewContactsFragment newContactsFragment, ArrayList<Users> usersArrayList, boolean isEdit, String button) {
         this.newContactsFragment = newContactsFragment;
@@ -80,7 +79,7 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.ContactViewHolde
             holder.fav_add.setVisibility(View.GONE);
         }
 
-        if (button.equals("fav")){
+        if (button.equals("fav")) {
             holder.no_fav_add.setVisibility(View.VISIBLE);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -98,14 +97,13 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.ContactViewHolde
                         favorites = 1;
                         addToFavorites(newContactsFragment.getContext(), usersList.get(position).getContactId(),usersList.get(position).image,usersList.get(position).first,usersList.get(position).last,usersList.get(position).personPhone,favorites);
                     }
-                    clickCount = (clickCount + 1) % 3;
                 }
             });
         }
-        if (button.equals("no_fav_found")){
+        if (button.equals("no_fav_found")) {
             holder.no_fav_add.setVisibility(View.VISIBLE);
         }
-        if (button.equals("contact")){
+        if (button.equals("contact")) {
             holder.no_fav_add.setVisibility(View.GONE);
             holder.fav_add.setVisibility(View.GONE);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -116,26 +114,6 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.ContactViewHolde
             });
         }
 
-        holder.no_fav_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.fav_add.setVisibility(View.VISIBLE);
-                holder.no_fav_add.setVisibility(View.GONE);
-                favorites = 1;
-                addToFavorites(newContactsFragment.getContext(), usersList.get(position).getContactId(),usersList.get(position).image,usersList.get(position).first,usersList.get(position).last,usersList.get(position).personPhone,favorites);
-            }
-        });
-
-        holder.fav_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.fav_add.setVisibility(View.GONE);
-                holder.no_fav_add.setVisibility(View.VISIBLE);
-                favorites = 0;
-                addToFavorites(newContactsFragment.getContext(), usersList.get(position).getContactId(),usersList.get(position).image,usersList.get(position).first,usersList.get(position).last,usersList.get(position).personPhone,favorites);
-            }
-        });
-
         holder.personName.setText(usersList.get(position).first + " " + usersList.get(position).last);
 
         if (TextUtils.isEmpty(usersList.get(position).image)) {
@@ -143,8 +121,6 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.ContactViewHolde
         } else {
             Picasso.get().load(usersList.get(position).image).into(holder.personImage);
         }
-
-
 
         holder.checkBox.setChecked(usersList.get(position).isSelected());
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {

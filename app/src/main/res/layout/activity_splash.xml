@@ -8,6 +8,7 @@
     tools:context=".Splash">
 
     <ImageView
+        android:id="@+id/title1"
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:layout_gravity="center"

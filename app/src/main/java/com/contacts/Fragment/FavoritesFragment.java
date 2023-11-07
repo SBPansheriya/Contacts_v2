@@ -16,7 +16,6 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.PermissionChecker;
 import androidx.fragment.app.Fragment;
@@ -92,7 +91,7 @@ public class FavoritesFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), KeypadScreen.class);
-                intent.putExtra("check","fav");
+                intent.putExtra("check", "fav");
                 startActivity(intent);
             }
         });
@@ -118,11 +117,13 @@ public class FavoritesFragment extends Fragment {
                 if (data != null) {
                     users = (Users) result.getData().getSerializableExtra("user");
                     if (users != null) {
-//                        for (int i = 0; i < favoriteList.size(); i++) {
-//                            if (favoriteList.get(i).contactId.equalsIgnoreCase(users.contactId)) {
-//                                break;
-//                            }
-//                        }
+                        for (int i = 0; i < favoriteList.size(); i++) {
+                            if (favoriteList.get(i).contactId.equalsIgnoreCase(users.contactId)) {
+                                favoriteList.remove(i);
+                                favoriteList.add(i, users);
+                                break;
+                            }
+                        }
                         readFavoriteContacts();
                     }
                 }
@@ -148,14 +149,6 @@ public class FavoritesFragment extends Fragment {
     }
 
     public boolean checkPermission1() {
-        String[] permissions = new String[]{Manifest.permission.CALL_PHONE};
-
-//        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED) {
-//            ActivityCompat.requestPermissions(getActivity(), permissions, 100);
-//        } else {
-//            getRecentContacts();
-//        }
-
         return ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED;
     }
 
@@ -184,6 +177,18 @@ public class FavoritesFragment extends Fragment {
         dialog.show();
 
         Button gotosettings = dialog.findViewById(R.id.gotosettings);
+        ImageView dismiss_dialog = dialog.findViewById(R.id.dismiss_dialog);
+        dismiss_dialog.setVisibility(View.VISIBLE);
+        TextView textView = dialog.findViewById(R.id.txt1);
+
+        textView.setText("This app needs Call phone permissions to use this feature. You can grant them in app settings.");
+
+        dismiss_dialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
 
         gotosettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -199,7 +204,6 @@ public class FavoritesFragment extends Fragment {
             }
         });
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -222,7 +226,6 @@ public class FavoritesFragment extends Fragment {
             Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber));
             startActivity(intent);
         }
-
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -234,7 +237,7 @@ public class FavoritesFragment extends Fragment {
         favListAdapter.notifyDataSetChanged();
     }
 
-    public void intentPassFav(Users users){
+    public void intentPassFav(Users users) {
         Intent intent = new Intent(getActivity(), ContactDetailActivity.class);
         intent.putExtra("user", users);
         launchSomeActivity.launch(intent);

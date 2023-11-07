@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -33,6 +34,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.contacts.Activity.CreateContactActivity;
@@ -40,6 +42,7 @@ import com.contacts.Activity.HomeActivity;
 import com.contacts.Model.Recent;
 import com.contacts.Model.Users;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -124,7 +127,10 @@ public class Splash extends AppCompatActivity {
         dialog.setCancelable(false);
         dialog.show();
 
+        TextView textView = dialog.findViewById(R.id.txt1);
         Button gotosettings = dialog.findViewById(R.id.gotosettings);
+
+        textView.setText("This app needs Call logs and Contacts permissions to use this feature. You can grant them in app settings.");
 
         gotosettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -362,6 +368,11 @@ public class Splash extends AppCompatActivity {
                     path = image_str;
                 }
 
+//                Bitmap path1 = getContactPhoto(contactId);
+//                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+//                path1.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+//                String path2 = MediaStore.Images.Media.insertImage(getContentResolver(), path1, "title", null);
+
                 Recent recent = new Recent(contactId, path, contactName, contactNumber, formattedDate, callType);
                 recentArrayList.add(recent);
 
@@ -371,25 +382,15 @@ public class Splash extends AppCompatActivity {
     }
 
     private Bitmap getContactPhoto(String contactId) {
-//        Uri contactUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(contactId));
-//        InputStream photoInputStream = ContactsContract.Contacts.openContactPhotoInputStream(getContentResolver(), contactUri);
-//
-//        if (photoInputStream != null) {
-//            return BitmapFactory.decodeStream(photoInputStream);
-//        } else {
-//            return BitmapFactory.decodeResource(getResources(), R.drawable.person_placeholder);
-//        }
 
         Uri contactUri = null;
         if (usersArrayList.size() > 0) {
             for (int i = 0; i < usersArrayList.size(); i++) {
-
                 if (usersArrayList.get(i).contactId.equalsIgnoreCase(contactId)) {
                     contactUri = Uri.parse(usersArrayList.get(i).getImage());
                     break;
                 }
             }
-
 
             if (contactUri != null) {
                 InputStream photoInputStream = ContactsContract.Contacts.openContactPhotoInputStream(getContentResolver(), contactUri);
@@ -405,6 +406,5 @@ public class Splash extends AppCompatActivity {
         } else {
             return BitmapFactory.decodeResource(getResources(), R.drawable.person_placeholder);
         }
-
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FFFFFFFF</color> // com
-    <color name="white">#FF000000</color> // com
+    <color name="white">#000000</color> // com
     <color name="white_another">#0D514F4F</color> // com
     <color name="gray">#80FFFFFF</color> // com
     <color name="lightgray">#1AFFFFFF</color> // com
@@ -21,5 +21,6 @@
     <color name="nickel">#80FFFFFF</color> // com
     <color name="gray90">#80FFFFFF</color> // com
     <color name="blackforsheet">#33000000</color> // com
+    <color name="homeborder">#33000000</color> // com
 
 </resources>
