@@ -84,7 +84,6 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.ContactViewHolde
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     if (holder.fav_add.getVisibility() == View.VISIBLE){
                         holder.fav_add.setVisibility(View.GONE);
                         holder.no_fav_add.setVisibility(View.VISIBLE);

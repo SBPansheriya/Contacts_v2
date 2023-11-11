@@ -111,7 +111,6 @@ public class CreateContactActivity extends AppCompatActivity {
 
         cropImage = registerForActivityResult(new CropImageContract(),result -> {
             if (result.isSuccessful()) {
-                // Use the returned uri.
                 Uri uriContent = result.getUriContent();
                 bitmap = null;
                 try {
@@ -130,8 +129,6 @@ public class CreateContactActivity extends AppCompatActivity {
     }
 
     private void startCrop(Uri selectedImageUri) {
-
-        // Start cropping activity for pre-acquired image saved on the device and customize settings.
         CropImageOptions options = new CropImageOptions();
         options.guidelines = CropImageView.Guidelines.ON;
         CropImageContractOptions cropImageContractOptions = new CropImageContractOptions(selectedImageUri,options);

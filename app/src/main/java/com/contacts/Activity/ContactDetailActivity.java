@@ -86,7 +86,6 @@ public class ContactDetailActivity extends AppCompatActivity {
         launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK) {
                 Intent data = result.getData();
-                // do your operation from here....
                 if (data != null) {
                     user = (Users) result.getData().getSerializableExtra("user");
                     if (user != null) {

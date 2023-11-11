@@ -35,6 +35,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.contacts.Activity.AddFavouritesActivity;
 import com.contacts.Activity.ContactDetailActivity;
 import com.contacts.Adapter.FavListAdapter;
 import com.contacts.Activity.KeypadScreen;
@@ -75,15 +76,9 @@ public class FavoritesFragment extends Fragment {
         addFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment mFragment = new NewContactsFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("btn", "no_fav_found");
-                mFragment.setArguments(bundle);
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.framelayout, mFragment)
-                        .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .commit();
+                Intent intent = new Intent(getActivity(), AddFavouritesActivity.class);
+                intent.putExtra("user",users);
+                launchSomeActivity.launch(intent);
             }
         });
 
@@ -99,34 +94,14 @@ public class FavoritesFragment extends Fragment {
         add_fav_contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment mFragment = new NewContactsFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("btn", "fav");
-                mFragment.setArguments(bundle);
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.framelayout, mFragment)
-                        .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .commit();
+                Intent intent = new Intent(getActivity(), AddFavouritesActivity.class);
+                launchSomeActivity.launch(intent);
             }
         });
 
         launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK) {
-                Intent data = result.getData();
-                if (data != null) {
-                    users = (Users) result.getData().getSerializableExtra("user");
-                    if (users != null) {
-                        for (int i = 0; i < favoriteList.size(); i++) {
-                            if (favoriteList.get(i).contactId.equalsIgnoreCase(users.contactId)) {
-                                favoriteList.remove(i);
-                                favoriteList.add(i, users);
-                                break;
-                            }
-                        }
-                        readFavoriteContacts();
-                    }
-                }
+                readFavoriteContacts();
             }
         });
 //        edit.setOnClickListener(new View.OnClickListener() {

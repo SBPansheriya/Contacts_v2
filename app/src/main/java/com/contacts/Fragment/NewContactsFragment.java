@@ -92,185 +92,166 @@ public class NewContactsFragment extends Fragment {
 
         checkPermission();
 
-        launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            if (result.getResultCode() == RESULT_OK) {
-                Intent data = result.getData();
-                if (data != null) {
-                    users = (Users) result.getData().getSerializableExtra("user");
-                    if (users != null) {
-                        boolean isMatch = false;
-                        for (int i = 0; i < usersArrayList.size(); i++) {
-                            if (usersArrayList.get(i).contactId.equalsIgnoreCase(users.contactId)) {
-                                isMatch = true;
-                                usersArrayList.remove(i);
-                                usersArrayList.add(i, users);
-                                break;
-                            }
-                        }
-                        if (!isMatch) {
-                            usersArrayList.add(users);
-                        }
-                        getContactList();
-                    }
-                }
-            }
-        });
-//        fastScrollerView.setupWithRecyclerView(
-//                recyclerView,
-//                (position) -> {
-//                    Alphabet alphabet;
-//                    ArrayList<Alphabet> alphabetArrayList = new ArrayList<>();
-//                    for (char i = 'A'; i <= 'Z'; i++) {
-//                        alphabet = new Alphabet(String.valueOf(i));
-//                        alphabetArrayList.add(alphabet);
+//        launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+//            if (result.getResultCode() == RESULT_OK) {
+//                Intent data = result.getData();
+//                if (data != null) {
+//                    users = (Users) result.getData().getSerializableExtra("user");
+//                    if (users != null) {
+//                        boolean isMatch = false;
+//                        for (int i = 0; i < usersArrayList.size(); i++) {
+//                            if (usersArrayList.get(i).contactId.equalsIgnoreCase(users.contactId)) {
+//                                isMatch = true;
+//                                usersArrayList.remove(i);
+//                                usersArrayList.add(i, users);
+//                                break;
+//                            }
+//                        }
+//                        if (!isMatch) {
+//                            usersArrayList.add(users);
+//                        }
+//                        getContactList();
 //                    }
-//                    alphabet = new Alphabet("#");
-//                    alphabetArrayList.add(alphabet);
-//
-//                    return new FastScrollItemIndicator.Text(
-//                            alphabetArrayList.get(position).getAlphabet().substring(0, 1).toUpperCase()
-//                    );
 //                }
-//        );
+//            }
+//        });
 //
-//        fastScrollerThumbView.setupWithFastScroller(fastScrollerView);
-
-        add_contact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), CreateContactActivity.class);
-                intent.putExtra("user", users);
-                launchSomeActivity.launch(intent);
-            }
-        });
-
-        edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                edit.setVisibility(View.GONE);
-                add_contact.setVisibility(View.GONE);
-                selectall.setVisibility(View.VISIBLE);
-                cancel.setVisibility(View.VISIBLE);
-                share.setVisibility(View.VISIBLE);
-                delete.setVisibility(View.VISIBLE);
-                newAdapter.setEdit(true);
-            }
-        });
-
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                edit.setVisibility(View.VISIBLE);
-                add_contact.setVisibility(View.VISIBLE);
-                selectall.setVisibility(View.GONE);
-                deselectall.setVisibility(View.GONE);
-                cancel.setVisibility(View.GONE);
-                share.setVisibility(View.GONE);
-                delete.setVisibility(View.GONE);
-                deselectAllItems();
-                newAdapter.setEdit(false);
-            }
-        });
-
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Fragment mFragment = new FavoritesFragment();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, mFragment).setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE).commit();
-            }
-        });
-
-        create_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), CreateContactActivity.class);
-                intent.putExtra("user", users);
-                launchSomeActivity.launch(intent);
-            }
-        });
-
-        if (usersArrayList.isEmpty()) {
-            no_contcat_found_linear.setVisibility(View.VISIBLE);
-            Contact_found_linear.setVisibility(View.INVISIBLE);
-        }
-
-        totalcontact.setText(usersArrayList.size() + " " + "Contacts");
-
-        delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ArrayList<Users> itemsToRemove = getSelected();
-
-                if (itemsToRemove.isEmpty()) {
-                    Toast.makeText(getContext(), "No selected contact found", Toast.LENGTH_SHORT).show();
-                } else {
-                    Dialog dialog = new Dialog(NewContactsFragment.this.getContext());
-                    if (dialog.getWindow() != null) {
-                        dialog.getWindow().setGravity(Gravity.CENTER);
-                        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-                        dialog.setCancelable(false);
-                    }
-                    dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    dialog.setContentView(R.layout.dailog_layout);
-                    dialog.setCancelable(false);
-                    dialog.show();
-
-                    Button cancel1 = dialog.findViewById(R.id.canceldialog);
-                    Button movetobin = dialog.findViewById(R.id.movetobin);
-
-                    cancel1.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            dialog.dismiss();
-                        }
-                    });
-
-                    movetobin.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            deleteSelectedItems();
-                            edit.setVisibility(View.VISIBLE);
-                            add_contact.setVisibility(View.VISIBLE);
-                            selectall.setVisibility(View.GONE);
-                            deselectall.setVisibility(View.GONE);
-                            cancel.setVisibility(View.GONE);
-                            share.setVisibility(View.GONE);
-                            delete.setVisibility(View.GONE);
-                            deselectAllItems();
-                            Toast.makeText(getContext(), "Deleted contact successfully", Toast.LENGTH_SHORT).show();
-                            newAdapter.setEdit(false);
-                            dialog.dismiss();
-                        }
-                    });
-                }
-            }
-        });
-
-        selectall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selectAllItems();
-                selectall.setVisibility(View.GONE);
-                deselectall.setVisibility(View.VISIBLE);
-            }
-        });
-
-        deselectall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                deselectAllItems();
-                selectall.setVisibility(View.VISIBLE);
-                deselectall.setVisibility(View.GONE);
-            }
-        });
-
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                shareSelectedUsers();
-            }
-        });
-
+//        add_contact.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getActivity(), CreateContactActivity.class);
+//                intent.putExtra("user", users);
+//                launchSomeActivity.launch(intent);
+//            }
+//        });
+//
+//        edit.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                edit.setVisibility(View.GONE);
+//                add_contact.setVisibility(View.GONE);
+//                selectall.setVisibility(View.VISIBLE);
+//                cancel.setVisibility(View.VISIBLE);
+//                share.setVisibility(View.VISIBLE);
+//                delete.setVisibility(View.VISIBLE);
+//                newAdapter.setEdit(true);
+//            }
+//        });
+//
+//        cancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                edit.setVisibility(View.VISIBLE);
+//                add_contact.setVisibility(View.VISIBLE);
+//                selectall.setVisibility(View.GONE);
+//                deselectall.setVisibility(View.GONE);
+//                cancel.setVisibility(View.GONE);
+//                share.setVisibility(View.GONE);
+//                delete.setVisibility(View.GONE);
+//                deselectAllItems();
+//                newAdapter.setEdit(false);
+//            }
+//        });
+//
+//        back.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Fragment mFragment = new FavoritesFragment();
+//                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, mFragment).setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE).commit();
+//            }
+//        });
+//
+//        create_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getActivity(), CreateContactActivity.class);
+//                intent.putExtra("user", users);
+//                launchSomeActivity.launch(intent);
+//            }
+//        });
+//
+//        if (usersArrayList.isEmpty()) {
+//            no_contcat_found_linear.setVisibility(View.VISIBLE);
+//            Contact_found_linear.setVisibility(View.INVISIBLE);
+//        }
+//
+//        totalcontact.setText(usersArrayList.size() + " " + "Contacts");
+//
+//        delete.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                ArrayList<Users> itemsToRemove = getSelected();
+//
+//                if (itemsToRemove.isEmpty()) {
+//                    Toast.makeText(getContext(), "No selected contact found", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    Dialog dialog = new Dialog(NewContactsFragment.this.getContext());
+//                    if (dialog.getWindow() != null) {
+//                        dialog.getWindow().setGravity(Gravity.CENTER);
+//                        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+//                        dialog.setCancelable(false);
+//                    }
+//                    dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//                    dialog.setContentView(R.layout.dailog_layout);
+//                    dialog.setCancelable(false);
+//                    dialog.show();
+//
+//                    Button cancel1 = dialog.findViewById(R.id.canceldialog);
+//                    Button movetobin = dialog.findViewById(R.id.movetobin);
+//
+//                    cancel1.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            dialog.dismiss();
+//                        }
+//                    });
+//
+//                    movetobin.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            deleteSelectedItems();
+//                            edit.setVisibility(View.VISIBLE);
+//                            add_contact.setVisibility(View.VISIBLE);
+//                            selectall.setVisibility(View.GONE);
+//                            deselectall.setVisibility(View.GONE);
+//                            cancel.setVisibility(View.GONE);
+//                            share.setVisibility(View.GONE);
+//                            delete.setVisibility(View.GONE);
+//                            deselectAllItems();
+//                            Toast.makeText(getContext(), "Deleted contact successfully", Toast.LENGTH_SHORT).show();
+//                            newAdapter.setEdit(false);
+//                            dialog.dismiss();
+//                        }
+//                    });
+//                }
+//            }
+//        });
+//
+//        selectall.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                selectAllItems();
+//                selectall.setVisibility(View.GONE);
+//                deselectall.setVisibility(View.VISIBLE);
+//            }
+//        });
+//
+//        deselectall.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                deselectAllItems();
+//                selectall.setVisibility(View.VISIBLE);
+//                deselectall.setVisibility(View.GONE);
+//            }
+//        });
+//
+//        share.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                shareSelectedUsers();
+//            }
+//        });
+//
 //        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 //            @Override
 //            public boolean onQueryTextSubmit(String query) {
@@ -278,30 +259,30 @@ public class NewContactsFragment extends Fragment {
 //            }
 //            @Override
 //            public boolean onQueryTextChange(String newText) {
-////                filterContacts(newText);
+//                filterContacts(newText);
 //                return true;
 //            }
 //        });
         return view;
     }
 
-//    public void filterContacts(String query) {
-//
-//        query = query.toString().toLowerCase();
-//
-//        ArrayList<Users> filteredList = new ArrayList<>();
-//
-//        for (int i = 0; i < Constant.usersArrayList.size(); i++) {
-//            final String name = Constant.usersArrayList.get(i).getFirst().toLowerCase();
-//            if (name.contains(query)) {
-//                filteredList.add(Constant.usersArrayList.get(i));
-//            }
-//        }
-//        if (filteredList.size() > 0) {
-//            recyclerView.setVisibility(View.VISIBLE);
-//            newAdapter.setFilteredList(filteredList);
-//        }
-//    }
+    public void filterContacts(String query) {
+
+        query = query.toString().toLowerCase();
+
+        ArrayList<Users> filteredList = new ArrayList<>();
+
+        for (int i = 0; i < Constant.usersArrayList.size(); i++) {
+            final String name = Constant.usersArrayList.get(i).getFirst().toLowerCase();
+            if (name.contains(query)) {
+                filteredList.add(Constant.usersArrayList.get(i));
+            }
+        }
+        if (filteredList.size() > 0) {
+            recyclerView.setVisibility(View.VISIBLE);
+            newAdapter.setFilteredList(filteredList);
+        }
+    }
 
     private void deleteSelectedItems() {
         ArrayList<Users> itemsToRemove = new ArrayList<>();
@@ -431,7 +412,7 @@ public class NewContactsFragment extends Fragment {
         searchView = view.findViewById(R.id.search_contact);
         tbmenu = view.findViewById(R.id.tbMenu);
         back = view.findViewById(R.id.back);
-        fastScrollerView = view.findViewById(R.id.fastscroller);
-        fastScrollerThumbView = view.findViewById(R.id.letter_fastscroller_thumb);
+//        fastScrollerView = view.findViewById(R.id.fastscroller);
+//        fastScrollerThumbView = view.findViewById(R.id.letter_fastscroller_thumb);
     }
 }

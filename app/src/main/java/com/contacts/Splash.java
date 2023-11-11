@@ -46,6 +46,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -200,10 +201,10 @@ public class Splash extends AppCompatActivity {
                 String officeNumber = "";
                 if (phoneNumbers.size() > 0) {
                     if (phoneNumbers.size() > 2) {
-                        phoneNumber = phoneNumbers.get(0);
-                        officeNumber = phoneNumbers.get(1);
+                        phoneNumber = phoneNumbers.get(0).replaceAll(" ","").trim();
+                        officeNumber = phoneNumbers.get(1).replaceAll(" ","").trim();
                     } else {
-                        phoneNumber = phoneNumbers.get(0);
+                        phoneNumber = phoneNumbers.get(0).replaceAll(" ","").trim();
                         officeNumber = "";
                     }
                 }
@@ -211,6 +212,9 @@ public class Splash extends AppCompatActivity {
                 // Create a User object with the retrieved data and add it to the ArrayList
                 Users user = new Users(contactId, photoUri, firstName, lastName, phoneNumber, officeNumber);
                 usersArrayList.add(user);
+
+                Comparator<Users> nameComparator = Comparator.comparing(Users::getFirst);
+                usersArrayList.sort(nameComparator);
             }
             cursor.close();
         }
@@ -226,7 +230,7 @@ public class Splash extends AppCompatActivity {
 
         if (phoneCursor != null) {
             while (phoneCursor.moveToNext()) {
-                @SuppressLint("Range") String phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                @SuppressLint("Range") String phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).trim();
                 phoneNumbers.add(phoneNumber);
             }
             phoneCursor.close();

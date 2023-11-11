@@ -9,7 +9,7 @@
         android:title="Recents"
         android:icon="@drawable/recents_selector"/>
     <item
-        android:id="@+id/contact"
+        android:id="@+id/contacts"
         android:title="Contacts"
         android:icon="@drawable/contacts_selector"/>
     <item
@@ -17,8 +17,5 @@
         android:title="Groups"
         android:icon="@drawable/groups_selector"/>
 
-<!--    <item-->
-<!--        android:id="@+id/keypad"-->
-<!--        android:title="Keypad"-->
-<!--        android:icon="@drawable/keypad"/>-->
+
 </menu>

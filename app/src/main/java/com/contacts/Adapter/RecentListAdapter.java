@@ -37,7 +37,6 @@ public class RecentListAdapter extends RecyclerView.Adapter<RecentListAdapter.re
     public void onBindViewHolder(@NonNull recentviewholder holder, int position) {
 
         String imageUrl = recentArrayList.get(position).getIamge();
-        System.out.println(recentArrayList.size());
 
         if (TextUtils.isEmpty(imageUrl)) {
             if (usersArrayList.size() > 0) {
@@ -55,18 +54,22 @@ public class RecentListAdapter extends RecyclerView.Adapter<RecentListAdapter.re
             Glide.with(recentsFragment).load(imageUrl).into(holder.recent_personImage);
         }
 
-        if (recentArrayList.get(position).getStatus().equals("Outgoing")) {
-            holder.outgoing.setVisibility(View.VISIBLE);
-            holder.missedCall.setVisibility(View.GONE);
-            holder.incoming.setVisibility(View.GONE);
-        } else if (recentArrayList.get(position).getStatus().equals("Incoming")) {
-            holder.outgoing.setVisibility(View.GONE);
-            holder.missedCall.setVisibility(View.GONE);
-            holder.incoming.setVisibility(View.VISIBLE);
-        } else if (recentArrayList.get(position).getStatus().equals("Missed")) {
-            holder.outgoing.setVisibility(View.GONE);
-            holder.missedCall.setVisibility(View.VISIBLE);
-            holder.incoming.setVisibility(View.GONE);
+        switch (recentArrayList.get(position).getStatus()) {
+            case "Outgoing":
+                holder.outgoing.setVisibility(View.VISIBLE);
+                holder.missedCall.setVisibility(View.GONE);
+                holder.incoming.setVisibility(View.GONE);
+                break;
+            case "Incoming":
+                holder.outgoing.setVisibility(View.GONE);
+                holder.missedCall.setVisibility(View.GONE);
+                holder.incoming.setVisibility(View.VISIBLE);
+                break;
+            case "Missed":
+                holder.outgoing.setVisibility(View.GONE);
+                holder.missedCall.setVisibility(View.VISIBLE);
+                holder.incoming.setVisibility(View.GONE);
+                break;
         }
 
         if (!TextUtils.isEmpty(recentArrayList.get(position).getContactname())) {
