@@ -2,6 +2,7 @@ package com.contacts.Fragment;
 
 import static androidx.core.content.PermissionChecker.checkSelfPermission;
 import static com.contacts.Class.Constant.recentArrayList;
+import static com.contacts.Splash.isGetData;
 
 import android.Manifest;
 import android.app.Activity;
@@ -32,6 +33,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +49,7 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
     RecyclerView recyclerView;
     ImageView open_keypad;
     LinearLayout no_recents_linear;
+    ProgressBar progressBar;
     Recent recent;
     ActivityResultLauncher<Intent> launchSomeActivity;
     private PhoneStateBroadcastReceiver phoneStateReceiver;
@@ -88,7 +91,7 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), KeypadScreen.class);
-                intent.putExtra("check","recents");
+                intent.putExtra("check", "recents");
                 startActivity(intent);
             }
         });
@@ -96,13 +99,19 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
     }
 
     public void getRecentContacts() {
-        if (recentListAdapter != null) {
-            recentListAdapter.setRecentArrayList(recentArrayList);
+        if (isGetData) {
+            if (recentListAdapter != null) {
+                recentListAdapter.setRecentArrayList(recentArrayList);
+            } else {
+                recentListAdapter = new RecentListAdapter(RecentsFragment.this, recentArrayList);
+                LinearLayoutManager manager = new LinearLayoutManager(getContext());
+                recyclerView.setLayoutManager(manager);
+                recyclerView.setAdapter(recentListAdapter);
+            }
+            progressBar.setVisibility(View.GONE);
         } else {
-            recentListAdapter = new RecentListAdapter(RecentsFragment.this, recentArrayList);
-            LinearLayoutManager manager = new LinearLayoutManager(getContext());
-            recyclerView.setLayoutManager(manager);
-            recyclerView.setAdapter(recentListAdapter);
+            no_recents_linear.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
         }
 
     }
@@ -118,14 +127,6 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
     }
 
     public boolean checkPermission1() {
-        String[] permissions = new String[]{Manifest.permission.CALL_PHONE};
-
-//        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED) {
-//            ActivityCompat.requestPermissions(getActivity(), permissions, 100);
-//        } else {
-//            getRecentContacts();
-//        }
-
         return ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED;
     }
 
@@ -198,6 +199,7 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
         recyclerView = view.findViewById(R.id.recents_recyclerview);
         no_recents_linear = view.findViewById(R.id.no_recents);
         open_keypad = view.findViewById(R.id.open_keypad);
+        progressBar = view.findViewById(R.id.progress_circular);
     }
 
     public void call(String phoneNumber) {
@@ -209,7 +211,6 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
             Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber));
             startActivity(intent);
         }
-
     }
 
     @Override

@@ -55,57 +55,57 @@
 //    public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
 //
 //
-//        if (Constant.favoriteList.size() > 0) {
-//            boolean isMatch = false;
-//            for (int i = 0; i < Constant.favoriteList.size(); i++) {
-//                if (usersList.get(position).contactId.equals(Constant.favoriteList.get(i).contactId)) {
-//                    isMatch = true;
-//                    break;
-//                }
-//            }
-//            if (isMatch) {
-//                holder.fav_add.setVisibility(View.VISIBLE);
-//                holder.no_fav_add.setVisibility(View.GONE);
-//            } else {
-//                holder.no_fav_add.setVisibility(View.VISIBLE);
-//                holder.fav_add.setVisibility(View.GONE);
-//            }
-//        }
-//        else {
-//            holder.no_fav_add.setVisibility(View.VISIBLE);
-//            holder.fav_add.setVisibility(View.GONE);
-//        }
-//
-//        if (button.equals("fav")){
-//            holder.no_fav_add.setVisibility(View.VISIBLE);
-//        }
-//        if (button.equals("no_fav_found")){
-//            holder.no_fav_add.setVisibility(View.VISIBLE);
-//        }
-//        if (button.equals("contact")){
-//            holder.no_fav_add.setVisibility(View.GONE);
-//            holder.fav_add.setVisibility(View.GONE);
-//        }
-//
-//        holder.no_fav_add.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                holder.fav_add.setVisibility(View.VISIBLE);
-//                holder.no_fav_add.setVisibility(View.GONE);
-//                favorites = 1;
-//                addToFavorites(contactsFragment.getContext(), usersList.get(position).getContactId(),usersList.get(position).image,usersList.get(position).first,usersList.get(position).last,usersList.get(position).personPhone,favorites);
-//            }
-//        });
-//
-//        holder.fav_add.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                holder.fav_add.setVisibility(View.GONE);
-//                holder.no_fav_add.setVisibility(View.VISIBLE);
-//                favorites = 0;
-//                addToFavorites(contactsFragment.getContext(), usersList.get(position).getContactId(),usersList.get(position).image,usersList.get(position).first,usersList.get(position).last,usersList.get(position).personPhone,favorites);
-//            }
-//        });
+////        if (Constant.favoriteList.size() > 0) {
+////            boolean isMatch = false;
+////            for (int i = 0; i < Constant.favoriteList.size(); i++) {
+////                if (usersList.get(position).contactId.equals(Constant.favoriteList.get(i).contactId)) {
+////                    isMatch = true;
+////                    break;
+////                }
+////            }
+////            if (isMatch) {
+////                holder.fav_add.setVisibility(View.VISIBLE);
+////                holder.no_fav_add.setVisibility(View.GONE);
+////            } else {
+////                holder.no_fav_add.setVisibility(View.VISIBLE);
+////                holder.fav_add.setVisibility(View.GONE);
+////            }
+////        }
+////        else {
+////            holder.no_fav_add.setVisibility(View.VISIBLE);
+////            holder.fav_add.setVisibility(View.GONE);
+////        }
+////
+////        if (button.equals("fav")){
+////            holder.no_fav_add.setVisibility(View.VISIBLE);
+////        }
+////        if (button.equals("no_fav_found")){
+////            holder.no_fav_add.setVisibility(View.VISIBLE);
+////        }
+////        if (button.equals("contact")){
+////            holder.no_fav_add.setVisibility(View.GONE);
+////            holder.fav_add.setVisibility(View.GONE);
+////        }
+////
+////        holder.no_fav_add.setOnClickListener(new View.OnClickListener() {
+////            @Override
+////            public void onClick(View view) {
+////                holder.fav_add.setVisibility(View.VISIBLE);
+////                holder.no_fav_add.setVisibility(View.GONE);
+////                favorites = 1;
+////                addToFavorites(contactsFragment.getContext(), usersList.get(position).getContactId(),usersList.get(position).image,usersList.get(position).first,usersList.get(position).last,usersList.get(position).personPhone,favorites);
+////            }
+////        });
+////
+////        holder.fav_add.setOnClickListener(new View.OnClickListener() {
+////            @Override
+////            public void onClick(View view) {
+////                holder.fav_add.setVisibility(View.GONE);
+////                holder.no_fav_add.setVisibility(View.VISIBLE);
+////                favorites = 0;
+////                addToFavorites(contactsFragment.getContext(), usersList.get(position).getContactId(),usersList.get(position).image,usersList.get(position).first,usersList.get(position).last,usersList.get(position).personPhone,favorites);
+////            }
+////        });
 //
 //        holder.personName.setText(usersList.get(position).first + " " + usersList.get(position).last);
 //

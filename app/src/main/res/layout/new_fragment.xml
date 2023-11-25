@@ -146,7 +146,7 @@
             android:layout_marginStart="5dp"
             android:layout_toRightOf="@+id/image2"
             android:fontFamily="@font/sf_pro_text_regular"
-            android:text="100 Contacts"
+            android:text="No Contacts"
             android:textColor="@color/darkgray" />
 
         <TextView
@@ -201,4 +201,14 @@
         android:src="@drawable/floating"
         android:visibility="visible" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+    <ProgressBar
+        android:id="@+id/progress_circular"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"/>
+    </RelativeLayout>
 </RelativeLayout>

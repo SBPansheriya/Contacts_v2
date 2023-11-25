@@ -2,6 +2,7 @@ package com.contacts.Fragment;
 
 import static android.app.Activity.RESULT_OK;
 import static com.contacts.Class.Constant.usersArrayList;
+import static com.contacts.Splash.isGetData;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -35,6 +36,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +59,7 @@ public class NewRecyclerviewFragment extends Fragment {
     NewRecyclerAdapter newRecyclerAdapter;
     TextView totalcontact,selectall,deselectall;
     EditText searchView;
+    ProgressBar progressBar;
     ImageView edit,add_contact,cancel, share, delete;
     Users users;
     boolean isEdit = false;
@@ -222,8 +225,13 @@ public class NewRecyclerviewFragment extends Fragment {
             }
         });
 
-        totalcontact.setText(usersArrayList.size() + " " + "Contacts");
-
+        if (isGetData) {
+            totalcontact.setText(usersArrayList.size() + " " + "Contacts");
+            progressBar.setVisibility(View.GONE);
+        }
+        else {
+            progressBar.setVisibility(View.VISIBLE);
+        }
         searchView.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {}
@@ -232,19 +240,6 @@ public class NewRecyclerviewFragment extends Fragment {
 
             public void onTextChanged(CharSequence query, int start, int before, int count) {
                 filter(query.toString());
-//                query = query.toString().toLowerCase();
-//
-//                ArrayList<Users> filteredList = new ArrayList<>();
-//
-//                for (int i = 0; i < Constant.usersArrayList.size(); i++) {
-//                    final String name = Constant.usersArrayList.get(i).getFirst().toLowerCase();
-//                    if (name.contains(query)) {
-//                        filteredList.add(Constant.usersArrayList.get(i));
-//                    }
-//                }
-//                if (filteredList.size() > 0) {
-//                    newRecyclerAdapter.filterList(filteredList);
-//                }
             }
         });
 
@@ -259,10 +254,11 @@ public class NewRecyclerviewFragment extends Fragment {
                 filteredlist.add(item);
             }
         }
-        if (filteredlist.isEmpty()) {
-            Toast.makeText(getActivity(), "No Data Found..", Toast.LENGTH_SHORT).show();
-        } else {
+        if (filteredlist.size() > 0) {
+            recyclerView.setVisibility(View.VISIBLE);
             newRecyclerAdapter.filterList(filteredlist);
+        } else {
+            recyclerView.setVisibility(View.GONE);
         }
     }
 
@@ -346,14 +342,21 @@ public class NewRecyclerviewFragment extends Fragment {
     }
 
     private void getContactList() {
-        if (usersArrayList.size() > 0) {
-            Comparator<Users> nameComparator = Comparator.comparing(Users::getFirst);
-            usersArrayList.sort(nameComparator);
+        if (isGetData) {
+            if (usersArrayList.size() > 0) {
+                Comparator<Users> nameComparator = Comparator.comparing(Users::getFirst);
+                usersArrayList.sort(nameComparator);
 
-            LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-            newRecyclerAdapter = new NewRecyclerAdapter(NewRecyclerviewFragment.this, usersArrayList,isEdit);
-            recyclerView.setLayoutManager(manager);
-            recyclerView.setAdapter(newRecyclerAdapter);
+                LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+                newRecyclerAdapter = new NewRecyclerAdapter(NewRecyclerviewFragment.this, usersArrayList, isEdit);
+                recyclerView.setLayoutManager(manager);
+                recyclerView.setAdapter(newRecyclerAdapter);
+            }
+            progressBar.setVisibility(View.GONE);
+        }
+        else {
+            no_contcat_found_linear.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
         }
     }
 
@@ -390,5 +393,6 @@ public class NewRecyclerviewFragment extends Fragment {
         deselectall = view.findViewById(R.id.deselectall);
         no_contcat_found_linear = view.findViewById(R.id.no_contcat_found_linear);
         Contact_found_linear = view.findViewById(R.id.Contact_found_linear);
+        progressBar = view.findViewById(R.id.progress_circular);
     }
 }

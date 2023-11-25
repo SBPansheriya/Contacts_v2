@@ -3,6 +3,7 @@ package com.contacts.Fragment;
 import static androidx.core.content.PermissionChecker.checkSelfPermission;
 import static com.contacts.Class.Constant.favoriteList;
 import static com.contacts.Class.Constant.usersArrayList;
+import static com.contacts.Splash.isGetData;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.PermissionChecker;
 import androidx.fragment.app.Fragment;
@@ -32,6 +34,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +55,7 @@ public class FavoritesFragment extends Fragment {
     TextView done;
     Button addFav;
     ImageView edit;
+    ProgressBar progressBar;
     Users users;
     String selectedPhoneNUmber;
     ActivityResultLauncher<Intent> launchSomeActivity;
@@ -63,21 +67,19 @@ public class FavoritesFragment extends Fragment {
 
         init(view);
 
-        readFavoriteContacts();
+        checkPermission();
 
         if (favoriteList.isEmpty()) {
             no_fav_found_linear.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.INVISIBLE);
             edit.setVisibility(View.INVISIBLE);
             add_fav_contact.setVisibility(View.INVISIBLE);
-            favListAdapter.notifyDataSetChanged();
         }
 
         addFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), AddFavouritesActivity.class);
-                intent.putExtra("user",users);
                 launchSomeActivity.launch(intent);
             }
         });
@@ -101,9 +103,24 @@ public class FavoritesFragment extends Fragment {
 
         launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent data = result.getData();
+                if (data != null) {
+                    users = (Users) result.getData().getSerializableExtra("user");
+                    if (users != null) {
+                        for (int i = 0; i < favoriteList.size(); i++) {
+                            if (favoriteList.get(i).contactId.equalsIgnoreCase(users.contactId)) {
+                                favoriteList.remove(i);
+                                favoriteList.add(i, users);
+                                break;
+                            }
+                        }
+                        readFavoriteContacts();
+                    }
+                }
                 readFavoriteContacts();
             }
         });
+
 //        edit.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -127,12 +144,24 @@ public class FavoritesFragment extends Fragment {
         return ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED;
     }
 
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_CONTACTS}, 101);
+        } else {
+            readFavoriteContacts();
+        }
+    }
+
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (!TextUtils.isEmpty(selectedPhoneNUmber)) {
                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + selectedPhoneNUmber));
                 startActivity(intent);
+            }
+        } else if (requestCode == 100) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                readFavoriteContacts();
             }
         } else {
             showPermissionDialog();
@@ -205,11 +234,17 @@ public class FavoritesFragment extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     private void readFavoriteContacts() {
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        favListAdapter = new FavListAdapter(FavoritesFragment.this, favoriteList);
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(favListAdapter);
-        favListAdapter.notifyDataSetChanged();
+        if (isGetData) {
+            LinearLayoutManager manager = new LinearLayoutManager(getContext());
+            favListAdapter = new FavListAdapter(FavoritesFragment.this, favoriteList);
+            recyclerView.setLayoutManager(manager);
+            recyclerView.setAdapter(favListAdapter);
+            favListAdapter.notifyDataSetChanged();
+            progressBar.setVisibility(View.GONE);
+        } else {
+            no_fav_found_linear.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+        }
     }
 
     public void intentPassFav(Users users) {
@@ -226,5 +261,6 @@ public class FavoritesFragment extends Fragment {
         no_fav_found_linear = view.findViewById(R.id.no_fav_found_linear);
         add_fav_contact = view.findViewById(R.id.add_fav_contact);
         open_keypad = view.findViewById(R.id.open_keypad);
+        progressBar = view.findViewById(R.id.progress_circular);
     }
 }

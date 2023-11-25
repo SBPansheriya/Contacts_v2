@@ -80,7 +80,6 @@
 //    ArrayList<Header> headerArrayList = new ArrayList<>();
 //    String button = "";
 //    HomeActivity homeActivity;
-//    NewAdapter newAdapter;
 //    boolean isEdit = false;
 //
 //    @Override
@@ -89,23 +88,19 @@
 //
 //        init(view);
 //
-//        Sprite threeBounce = new ThreeBounce();
-//        spin_kit.setIndeterminateDrawable(threeBounce);
-//        progressLayout.setVisibility(View.VISIBLE);
-//
-//        button = getArguments().getString("btn");
-//
-//        if (button.equals("fav")) {
-//            tbmenu.setVisibility(View.VISIBLE);
-//            edit.setVisibility(View.GONE);
-//        }
-//        if (button.equals("no_fav_found")) {
-//            tbmenu.setVisibility(View.VISIBLE);
-//            edit.setVisibility(View.GONE);
-//        }
-//        if (button.equals("contact")) {
-//            tbmenu.setVisibility(View.GONE);
-//        }
+////        button = getArguments().getString("btn");
+////
+////        if (button.equals("fav")) {
+////            tbmenu.setVisibility(View.VISIBLE);
+////            edit.setVisibility(View.GONE);
+////        }
+////        if (button.equals("no_fav_found")) {
+////            tbmenu.setVisibility(View.VISIBLE);
+////            edit.setVisibility(View.GONE);
+////        }
+////        if (button.equals("contact")) {
+////            tbmenu.setVisibility(View.GONE);
+////        }
 //
 //        checkPermission();
 //
@@ -133,17 +128,17 @@
 //            }
 //        });
 //
-//        fastScrollerView.setupWithRecyclerView(
-//                recyclerView,
-//                (position) -> {
-//                    Header header = headerArrayList.get(position);
-//                    return new FastScrollItemIndicator.Text(
-//                            header.header.substring(0, 1).toUpperCase()
-//                    );
-//                }
-//        );
-//
-//        fastScrollerThumbView.setupWithFastScroller(fastScrollerView);
+////        fastScrollerView.setupWithRecyclerView(
+////                recyclerView,
+////                (position) -> {
+////                    Header header = headerArrayList.get(position);
+////                    return new FastScrollItemIndicator.Text(
+////                            header.header.substring(0, 1).toUpperCase()
+////                    );
+////                }
+////        );
+////
+////        fastScrollerThumbView.setupWithFastScroller(fastScrollerView);
 //
 //        add_contact.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -448,7 +443,6 @@
 //            }
 //        }
 //
-//        progressLayout.setVisibility(View.GONE);
 //    }
 //
 //    private void updateUi(ArrayList<Header> headerArrayList) {
@@ -509,7 +503,7 @@
 //        searchView = view.findViewById(R.id.search_contact);
 //        tbmenu = view.findViewById(R.id.tbMenu);
 //        back = view.findViewById(R.id.back);
-//        fastScrollerView = view.findViewById(R.id.fastscroller);
-//        fastScrollerThumbView = view.findViewById(R.id.letter_fastscroller_thumb);
+////        fastScrollerView = view.findViewById(R.id.fastscroller);
+////        fastScrollerThumbView = view.findViewById(R.id.letter_fastscroller_thumb);
 //    }
 //}
