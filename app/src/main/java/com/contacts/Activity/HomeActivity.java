@@ -68,6 +68,8 @@ public class HomeActivity extends AppCompatActivity implements Listner {
         window.setStatusBarColor(ContextCompat.getColor(HomeActivity.this, R.color.white));
         init();
 
+
+        
         new AsyncTask<Void, Void, String>() {
             @Override
             protected void onPreExecute() {
