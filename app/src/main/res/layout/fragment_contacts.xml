@@ -71,6 +71,8 @@
                 android:background="@drawable/border"
                 android:backgroundTint="@color/lightgray"
                 android:paddingStart="-10dp"
+                android:inputType="text"
+                android:maxLines="1"
                 app:iconifiedByDefault="false"
                 app:queryBackground="@android:color/transparent"
                 app:queryHint="Search Contacts"

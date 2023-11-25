@@ -35,6 +35,8 @@
             android:hint="@string/search_contacts"
             android:drawableStart="@drawable/search"
             android:paddingStart="10dp"
+            android:maxLines="1"
+            android:inputType="text"
             android:drawablePadding="10dp"
             android:background="@drawable/border"
             android:backgroundTint="@color/lightgray" />

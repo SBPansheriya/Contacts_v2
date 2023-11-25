@@ -51,8 +51,6 @@ import java.util.Locale;
 public class Splash extends AppCompatActivity {
 
     String[] permissions;
-    public static boolean isGetData = false;
-    GetModelClass getModelClass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,31 +60,26 @@ public class Splash extends AppCompatActivity {
         Window window = Splash.this.getWindow();
         window.setStatusBarColor(ContextCompat.getColor(Splash.this, R.color.white));
 
-        getModelClass = new GetModelClass(this);
-
         checkPermissions();
     }
 
     @SuppressLint("StaticFieldLeak")
     private void checkPermissions() {
-
-
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
             getRecentContacts();
             readFavoriteContacts();
             navigateToHomeActivity();
-
         } else {
             permissions = new String[]{Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS};
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_DENIED &&
                     ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED)
-                permissions =new String[]{Manifest.permission.READ_CALL_LOG,Manifest.permission.READ_CONTACTS,Manifest.permission.WRITE_CONTACTS};
+                permissions = new String[]{Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS};
             else if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_DENIED)
-                permissions =new String[]{Manifest.permission.READ_CALL_LOG};
+                permissions = new String[]{Manifest.permission.READ_CALL_LOG};
             else if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED)
-                permissions =new String[]{Manifest.permission.READ_CONTACTS};
+                permissions = new String[]{Manifest.permission.READ_CONTACTS};
             ActivityCompat.requestPermissions(Splash.this, permissions, 123);
         }
     }
@@ -97,7 +90,6 @@ public class Splash extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == 123 && grantResults.length > 0) {
-
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED &&
                     ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED &&
                     ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
@@ -133,7 +125,6 @@ public class Splash extends AppCompatActivity {
         }
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         dialog.setContentView(R.layout.dialog_permission);
-        dialog.setCancelable(false);
         dialog.show();
 
         TextView textView = dialog.findViewById(R.id.txt1);
@@ -177,7 +168,6 @@ public class Splash extends AppCompatActivity {
         } catch (Exception ex) {
             Toast.makeText(Splash.this, ex.toString(), Toast.LENGTH_SHORT).show();
         }
-
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -373,43 +363,11 @@ public class Splash extends AppCompatActivity {
                     path = image_str;
                 }
 
-//                Bitmap path1 = getContactPhoto(contactId);
-//                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-//                path1.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-//                String path2 = MediaStore.Images.Media.insertImage(getContentResolver(), path1, "title", null);
-
                 Recent recent = new Recent(contactId, path, contactName, contactNumber, formattedDate, callType);
                 recentArrayList.add(recent);
 
             } while (cursor.moveToNext());
             cursor.close();
-        }
-    }
-
-    private Bitmap getContactPhoto(String contactId) {
-
-        Uri contactUri = null;
-        if (usersArrayList.size() > 0) {
-            for (int i = 0; i < usersArrayList.size(); i++) {
-                if (usersArrayList.get(i).contactId.equalsIgnoreCase(contactId)) {
-                    contactUri = Uri.parse(usersArrayList.get(i).getImage());
-                    break;
-                }
-            }
-
-            if (contactUri != null) {
-                InputStream photoInputStream = ContactsContract.Contacts.openContactPhotoInputStream(getContentResolver(), contactUri);
-
-                if (photoInputStream != null) {
-                    return BitmapFactory.decodeStream(photoInputStream);
-                } else {
-                    return BitmapFactory.decodeResource(getResources(), R.drawable.person_placeholder);
-                }
-            } else {
-                return BitmapFactory.decodeResource(getResources(), R.drawable.person_placeholder);
-            }
-        } else {
-            return BitmapFactory.decodeResource(getResources(), R.drawable.person_placeholder);
         }
     }
 

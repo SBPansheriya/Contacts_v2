@@ -160,6 +160,7 @@
                         android:background="@drawable/border2"
                         android:fontFamily="@font/sf_pro_text_regular"
                         android:inputType="text"
+                        android:maxLines="1"
                         android:padding="10dp"
                         android:text="Clindy" />
 
@@ -178,6 +179,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="20dp"
                         android:background="@drawable/border2"
+                        android:inputType="text"
+                        android:maxLines="1"
                         android:fontFamily="@font/sf_pro_text_regular"
                         android:padding="10dp"
                         android:text="Warren" />

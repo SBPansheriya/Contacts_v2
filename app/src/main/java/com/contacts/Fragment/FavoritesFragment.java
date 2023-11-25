@@ -1,9 +1,9 @@
 package com.contacts.Fragment;
 
 import static androidx.core.content.PermissionChecker.checkSelfPermission;
+import static com.contacts.Activity.HomeActivity.isGetData;
 import static com.contacts.Class.Constant.favoriteList;
 import static com.contacts.Class.Constant.usersArrayList;
-import static com.contacts.Splash.isGetData;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -117,8 +117,8 @@ public class FavoritesFragment extends Fragment {
                         readFavoriteContacts();
                     }
                 }
-                readFavoriteContacts();
             }
+            readFavoriteContacts();
         });
 
 //        edit.setOnClickListener(new View.OnClickListener() {
@@ -241,7 +241,8 @@ public class FavoritesFragment extends Fragment {
             recyclerView.setAdapter(favListAdapter);
             favListAdapter.notifyDataSetChanged();
             progressBar.setVisibility(View.GONE);
-        } else {
+        }
+        else {
             no_fav_found_linear.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
         }

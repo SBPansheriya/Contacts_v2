@@ -1,8 +1,8 @@
 package com.contacts.Fragment;
 
 import static android.app.Activity.RESULT_OK;
+import static com.contacts.Activity.HomeActivity.isGetData;
 import static com.contacts.Class.Constant.usersArrayList;
-import static com.contacts.Splash.isGetData;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -69,7 +69,6 @@ public class NewRecyclerviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.new_fragment, container, false);
-
         init(view);
 
         checkPermission();
@@ -250,7 +249,18 @@ public class NewRecyclerviewFragment extends Fragment {
         ArrayList<Users> filteredlist = new ArrayList<>();
 
         for (Users item : usersArrayList) {
+            String name = item.getFirst().trim() + item.getLast().trim();
+            String name1 = item.getFirst() + " " + item.getLast();
             if (item.getFirst().toLowerCase().contains(text.toLowerCase())) {
+                filteredlist.add(item);
+            }
+            else if (item.getLast().toLowerCase().contains(text.toLowerCase())){
+                filteredlist.add(item);
+            }
+            else if (name.toLowerCase().contains(text.toLowerCase())){
+                filteredlist.add(item);
+            }
+            else if (name1.toLowerCase().contains(text.toLowerCase())){
                 filteredlist.add(item);
             }
         }

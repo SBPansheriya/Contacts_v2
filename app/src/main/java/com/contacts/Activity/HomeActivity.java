@@ -3,7 +3,6 @@ package com.contacts.Activity;
 import static com.contacts.Class.Constant.favoriteList;
 import static com.contacts.Class.Constant.recentArrayList;
 import static com.contacts.Class.Constant.usersArrayList;
-import static com.contacts.Splash.isGetData;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +11,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
+import android.app.UiModeManager;
 import android.content.ContentResolver;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -51,9 +53,10 @@ import java.util.Locale;
 public class HomeActivity extends AppCompatActivity implements Listner {
 
     BottomNavigationView bottomNavigationView;
-    public boolean isstep = false;
     String fragment;
     GetModelClass getModelClass;
+    public static boolean isGetData = false;
+    public boolean isstep = false;
 
     @SuppressLint("StaticFieldLeak")
     @Override
@@ -74,8 +77,8 @@ public class HomeActivity extends AppCompatActivity implements Listner {
             @Override
             protected String doInBackground(Void... voids) {
                 getContactList();
-                readFavoriteContacts();
                 getRecentContacts();
+                readFavoriteContacts();
                 return "Success";
             }
 
@@ -151,14 +154,15 @@ public class HomeActivity extends AppCompatActivity implements Listner {
 
     @Override
     public void getResult() {
-        if (fragment == "contacts") {
+        if (fragment.equals("contacts")) {
             openFragment(new NewRecyclerviewFragment());
-        } else if (fragment == "fav") {
+        } else if (fragment.equals("fav")) {
             openFragment(new FavoritesFragment());
-        } else if (fragment == "recents") {
+        }else if (fragment.equals("recents")) {
             openFragment(new RecentsFragment());
         }
     }
+
     private void getContactList() {
         usersArrayList = new ArrayList<>();
 
@@ -236,11 +240,7 @@ public class HomeActivity extends AppCompatActivity implements Listner {
 
         ContentResolver contentResolver = getContentResolver();
 
-        String[] projection = {
-                ContactsContract.Contacts._ID,
-                ContactsContract.Contacts.DISPLAY_NAME,
-                ContactsContract.Contacts.PHOTO_URI
-        };
+        String[] projection = {ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.PHOTO_URI};
 
         String selection = ContactsContract.Contacts.STARRED + "=?";
         String[] selectionArgs = {"1"};
@@ -375,9 +375,4 @@ public class HomeActivity extends AppCompatActivity implements Listner {
         }
     }
 
-    public void get(){
-        if (fragment == "contacts") {
-            openFragment(new NewRecyclerviewFragment());
-        }
-    }
 }

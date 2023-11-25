@@ -153,6 +153,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="20dp"
                             android:background="@drawable/border2"
+                            android:maxLines="1"
+                            android:inputType="text"
+                            android:maxLength="100"
                             android:padding="10dp" />
 
                         <TextView
@@ -170,6 +173,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="20dp"
                             android:background="@drawable/border2"
+                            android:inputType="text"
+                            android:maxLines="1"
                             android:padding="10dp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -208,6 +213,7 @@
                             android:layout_marginHorizontal="20dp"
                             android:background="@drawable/border2"
                             android:inputType="number"
+                            android:maxLines="1"
                             android:maxLength="10"
                             android:padding="10dp" />
 

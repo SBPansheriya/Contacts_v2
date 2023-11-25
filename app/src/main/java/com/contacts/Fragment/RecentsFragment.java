@@ -1,8 +1,8 @@
 package com.contacts.Fragment;
 
 import static androidx.core.content.PermissionChecker.checkSelfPermission;
+import static com.contacts.Activity.HomeActivity.isGetData;
 import static com.contacts.Class.Constant.recentArrayList;
-import static com.contacts.Splash.isGetData;
 
 import android.Manifest;
 import android.app.Activity;
@@ -59,7 +59,6 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recents, container, false);
-
         init(view);
 
         checkPermission();
