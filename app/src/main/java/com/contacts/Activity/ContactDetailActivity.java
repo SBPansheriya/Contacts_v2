@@ -1,21 +1,13 @@
 package com.contacts.Activity;
 
-import static android.content.Context.ACTIVITY_SERVICE;
-
 import static com.contacts.Class.Constant.favoriteList;
-import static com.contacts.Class.Constant.recentArrayList;
-import static com.contacts.Class.Constant.usersArrayList;
-
-import static java.security.AccessController.getContext;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -26,16 +18,12 @@ import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.Settings;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,15 +34,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.contacts.Adapter.FavListAdapter;
-import com.contacts.Adapter.RecentListAdapter;
-import com.contacts.Class.Constant;
-import com.contacts.Model.Recent;
 import com.contacts.Model.Users;
 
-import com.contacts.PhoneStateBroadcastReceiver;
 import com.contacts.R;
-import com.contacts.Splash;
 import com.squareup.picasso.Picasso;
 
 public class ContactDetailActivity extends AppCompatActivity {

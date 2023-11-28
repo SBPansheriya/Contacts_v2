@@ -1,8 +1,9 @@
-package com.contacts;
+package com.contacts.Class;
 
 import android.content.Context;
 
 import com.contacts.Activity.HomeActivity;
+import com.contacts.Activity.Listner;
 
 public class GetModelClass {
     Context context;

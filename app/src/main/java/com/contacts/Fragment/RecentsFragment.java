@@ -16,6 +16,7 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.PermissionChecker;
@@ -40,7 +41,7 @@ import android.widget.Toast;
 import com.contacts.Adapter.RecentListAdapter;
 import com.contacts.Activity.KeypadScreen;
 import com.contacts.Model.Recent;
-import com.contacts.PhoneStateBroadcastReceiver;
+import com.contacts.Activity.PhoneStateBroadcastReceiver;
 import com.contacts.R;
 
 public class RecentsFragment extends Fragment implements PhoneStateBroadcastReceiver.CallListener {
@@ -59,6 +60,7 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recents, container, false);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         init(view);
 
         checkPermission();

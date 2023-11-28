@@ -1,9 +1,13 @@
-package com.contacts;
+package com.contacts.Activity;
 
 import static com.contacts.Class.Constant.favoriteList;
 import static com.contacts.Class.Constant.recentArrayList;
 import static com.contacts.Class.Constant.usersArrayList;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -13,13 +17,14 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.CallLog;
@@ -32,17 +37,13 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.contacts.Activity.HomeActivity;
-import com.contacts.Activity.MainActivity;
 import com.contacts.Model.Recent;
 import com.contacts.Model.Users;
+import com.contacts.R;
 
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -51,6 +52,8 @@ import java.util.Locale;
 public class Splash extends AppCompatActivity {
 
     String[] permissions;
+    public static String PREFS_NAME = "MyPrefsFile";
+    public static String KEY = "IsSet";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,22 +63,27 @@ public class Splash extends AppCompatActivity {
         Window window = Splash.this.getWindow();
         window.setStatusBarColor(ContextCompat.getColor(Splash.this, R.color.white));
 
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putBoolean(KEY, true);
+        editor.commit();
+
         checkPermissions();
     }
 
     @SuppressLint("StaticFieldLeak")
     private void checkPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
             getRecentContacts();
             readFavoriteContacts();
             navigateToHomeActivity();
         } else {
-            permissions = new String[]{Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS};
+            permissions = new String[]{Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS};
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_DENIED &&
                     ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED)
-                permissions = new String[]{Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS};
+                permissions = new String[]{Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS};
             else if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_DENIED)
                 permissions = new String[]{Manifest.permission.READ_CALL_LOG};
             else if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED)
@@ -88,11 +96,9 @@ public class Splash extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         if (requestCode == 123 && grantResults.length > 0) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED &&
-                    ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED &&
-                    ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
                 readFavoriteContacts();
                 getRecentContacts();
                 navigateToHomeActivity();
@@ -136,39 +142,56 @@ public class Splash extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CALL_LOG) &&
-                        shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS) &&
-                        shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CONTACTS)) {
+                        shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
                     checkPermissions();
                 } else {
                     Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                     Uri uri = Uri.fromParts("package", getPackageName(), null);
                     intent.setData(uri);
-                    startActivityForResult(intent, 123);
+                    someActivityResultLauncher.launch(intent);
                 }
                 dialog.dismiss();
             }
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        try {
-            super.onActivityResult(requestCode, resultCode, data);
-            if (requestCode == 123) {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED &&
-                        ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED &&
-                        ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-                    readFavoriteContacts();
-                    getRecentContacts();
-                    navigateToHomeActivity();
-                } else {
-                    dialog();
+    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    Intent data = result.getData();
+                    if (ContextCompat.checkSelfPermission(Splash.this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED &&
+                            ContextCompat.checkSelfPermission(Splash.this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                        readFavoriteContacts();
+                        getRecentContacts();
+                        navigateToHomeActivity();
+                    }
+                    else {
+                        dialog();
+                    }
                 }
-            }
-        } catch (Exception ex) {
-            Toast.makeText(Splash.this, ex.toString(), Toast.LENGTH_SHORT).show();
-        }
-    }
+            });
+
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        try {
+//            super.onActivityResult(requestCode, resultCode, data);
+//            if (requestCode == 123) {
+//                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED &&
+//                        ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED &&
+//                        ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+//                    readFavoriteContacts();
+//                    getRecentContacts();
+//                    navigateToHomeActivity();
+//                } else {
+//                    dialog();
+//                }
+//            }
+//        } catch (Exception ex) {
+//            Toast.makeText(Splash.this, ex.toString(), Toast.LENGTH_SHORT).show();
+//        }
+//    }
 
     @SuppressLint("NotifyDataSetChanged")
     private void getContactList() {

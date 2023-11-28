@@ -1,4 +1,4 @@
-package com.contacts;
+package com.contacts.Activity;
 
 import static com.contacts.Class.Constant.recentArrayList;
 

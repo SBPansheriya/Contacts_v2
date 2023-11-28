@@ -17,6 +17,7 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -56,6 +57,7 @@ public class NewRecyclerviewFragment extends Fragment {
 
     LinearLayout no_contcat_found_linear,Contact_found_linear;
     RecyclerView recyclerView;
+    Button create_contact;
     NewRecyclerAdapter newRecyclerAdapter;
     TextView totalcontact,selectall,deselectall;
     EditText searchView;
@@ -69,6 +71,7 @@ public class NewRecyclerviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.new_fragment, container, false);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         init(view);
 
         checkPermission();
@@ -87,6 +90,14 @@ public class NewRecyclerviewFragment extends Fragment {
             edit.setVisibility(View.VISIBLE);
             add_contact.setVisibility(View.VISIBLE);
         }
+
+        create_contact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), CreateContactActivity.class);
+                launchSomeActivity.launch(intent);
+            }
+        });
 
         add_contact.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -404,5 +415,6 @@ public class NewRecyclerviewFragment extends Fragment {
         no_contcat_found_linear = view.findViewById(R.id.no_contcat_found_linear);
         Contact_found_linear = view.findViewById(R.id.Contact_found_linear);
         progressBar = view.findViewById(R.id.progress_circular);
+        create_contact = view.findViewById(R.id.create_contact);
     }
 }

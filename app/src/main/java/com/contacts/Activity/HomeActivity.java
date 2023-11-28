@@ -3,18 +3,18 @@ package com.contacts.Activity;
 import static com.contacts.Class.Constant.favoriteList;
 import static com.contacts.Class.Constant.recentArrayList;
 import static com.contacts.Class.Constant.usersArrayList;
+import static com.contacts.Activity.Splash.KEY;
+import static com.contacts.Activity.Splash.PREFS_NAME;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
-import android.app.UiModeManager;
 import android.content.ContentResolver;
-import android.content.res.Configuration;
-import android.content.res.Resources;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,20 +26,16 @@ import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.Window;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
+import com.contacts.Class.App;
 import com.contacts.Fragment.FavoritesFragment;
 import com.contacts.Fragment.GroupsFragment;
-import com.contacts.Fragment.NewContactsFragment;
 import com.contacts.Fragment.NewRecyclerviewFragment;
 import com.contacts.Fragment.RecentsFragment;
-import com.contacts.GetModelClass;
-import com.contacts.Listner;
+import com.contacts.Class.GetModelClass;
 import com.contacts.Model.Recent;
 import com.contacts.Model.Users;
 import com.contacts.R;
-import com.contacts.Splash;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
@@ -53,10 +49,12 @@ import java.util.Locale;
 public class HomeActivity extends AppCompatActivity implements Listner {
 
     BottomNavigationView bottomNavigationView;
-    String fragment;
+    String fragment = "";
     GetModelClass getModelClass;
     public static boolean isGetData = false;
     public boolean isstep = false;
+    SharedPreferences.Editor editor;
+    SharedPreferences sharedPreferences;
 
     @SuppressLint("StaticFieldLeak")
     @Override
@@ -68,12 +66,51 @@ public class HomeActivity extends AppCompatActivity implements Listner {
         window.setStatusBarColor(ContextCompat.getColor(HomeActivity.this, R.color.white));
         init();
 
+        App.context = this;
 
-        
+        sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        bottomNavigationView.setSelectedItemId(R.id.fav);
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                if (item.getItemId() == R.id.fav) {
+                    fragment = "fav";
+                    openFragment(new FavoritesFragment());
+                    return true;
+                }
+                if (item.getItemId() == R.id.recents) {
+                    fragment = "recents";
+                    openFragment(new RecentsFragment());
+                    return true;
+                }
+                if (item.getItemId() == R.id.contacts) {
+                    fragment = "contacts";
+                    openFragment(new NewRecyclerviewFragment());
+                    return true;
+                }
+                if (item.getItemId() == R.id.group) {
+                    fragment = "group";
+                    openFragment(new GroupsFragment());
+                    return true;
+                }
+                return true;
+            }
+        });
+
+        boolean isSet = sharedPreferences.getBoolean(KEY, false);
+
+        if (isSet) {
+            fragment = "fav";
+            editor.putBoolean(KEY, false);
+            editor.apply();
+            openFragment(new FavoritesFragment());
+        }
+
         new AsyncTask<Void, Void, String>() {
             @Override
             protected void onPreExecute() {
-
             }
 
             @Override
@@ -90,41 +127,7 @@ public class HomeActivity extends AppCompatActivity implements Listner {
                 getModelClass.NewClass();
             }
         }.execute();
-
-        getModelClass = new GetModelClass(this,this);
-
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-                if (item.getItemId() == R.id.fav) {
-                    fragment = "fav";
-                    openFragment(new FavoritesFragment());
-                    return true;
-                }
-                if (item.getItemId() == R.id.recents) {
-                    fragment = "recents";
-                    openFragment(new RecentsFragment());
-                    return true;
-                }
-
-                if (item.getItemId() == R.id.contacts) {
-                    fragment = "contacts";
-                    openFragment(new NewRecyclerviewFragment());
-                    return true;
-                }
-
-                if (item.getItemId() == R.id.group) {
-                    fragment = "group";
-                    openFragment(new GroupsFragment());
-                    return true;
-                }
-                return true;
-            }
-        });
-
-        bottomNavigationView.setSelectedItemId(R.id.fav);
-        openFragment(new FavoritesFragment());
+        getModelClass = new GetModelClass(this, this);
     }
 
     private void openFragment(Fragment fragment) {
@@ -133,22 +136,6 @@ public class HomeActivity extends AppCompatActivity implements Listner {
                 .replace(R.id.framelayout, fragment)
                 .commit();
     }
-
-//    @Override
-//    public void onBackPressed() {
-//        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.framelayout);
-//        if (fragment instanceof FavoritesFragment) {
-//            super.onBackPressed();
-//        } else {
-//            if (isstep) {
-//                super.onBackPressed();
-//            }
-//            else {
-//                Fragment mFragment = new FavoritesFragment();
-//                getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, mFragment).setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE).commit();
-//            }
-//        }
-//    }
 
     private void init() {
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
@@ -160,7 +147,7 @@ public class HomeActivity extends AppCompatActivity implements Listner {
             openFragment(new NewRecyclerviewFragment());
         } else if (fragment.equals("fav")) {
             openFragment(new FavoritesFragment());
-        }else if (fragment.equals("recents")) {
+        } else if (fragment.equals("recents")) {
             openFragment(new RecentsFragment());
         }
     }
@@ -377,4 +364,19 @@ public class HomeActivity extends AppCompatActivity implements Listner {
         }
     }
 
+    //    @Override
+//    public void onBackPressed() {
+//        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.framelayout);
+//        if (fragment instanceof FavoritesFragment) {
+//            super.onBackPressed();
+//        } else {
+//            if (isstep) {
+//                super.onBackPressed();
+//            }
+//            else {
+//                Fragment mFragment = new FavoritesFragment();
+//                getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, mFragment).setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE).commit();
+//            }
+//        }
+//    }
 }

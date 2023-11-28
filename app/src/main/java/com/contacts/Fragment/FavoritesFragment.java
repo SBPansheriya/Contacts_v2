@@ -17,6 +17,7 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.PermissionChecker;
@@ -64,16 +65,21 @@ public class FavoritesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_favorites, container, false);
-
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         init(view);
 
         checkPermission();
 
         if (favoriteList.isEmpty()) {
             no_fav_found_linear.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.INVISIBLE);
-            edit.setVisibility(View.INVISIBLE);
-            add_fav_contact.setVisibility(View.INVISIBLE);
+            recyclerView.setVisibility(View.GONE);
+            edit.setVisibility(View.GONE);
+            add_fav_contact.setVisibility(View.GONE);
+        } else {
+            no_fav_found_linear.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            edit.setVisibility(View.VISIBLE);
+            add_fav_contact.setVisibility(View.VISIBLE);
         }
 
         addFav.setOnClickListener(new View.OnClickListener() {
@@ -159,7 +165,7 @@ public class FavoritesFragment extends Fragment {
                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + selectedPhoneNUmber));
                 startActivity(intent);
             }
-        } else if (requestCode == 100) {
+        } else if (requestCode == 101) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 readFavoriteContacts();
             }
@@ -241,11 +247,10 @@ public class FavoritesFragment extends Fragment {
             recyclerView.setAdapter(favListAdapter);
             favListAdapter.notifyDataSetChanged();
             progressBar.setVisibility(View.GONE);
-        }
-        else {
-            no_fav_found_linear.setVisibility(View.GONE);
+        } else {
             progressBar.setVisibility(View.VISIBLE);
         }
+
     }
 
     public void intentPassFav(Users users) {

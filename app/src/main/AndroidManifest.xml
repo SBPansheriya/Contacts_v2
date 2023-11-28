@@ -19,6 +19,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
+        android:name=".Class.App"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:enableOnBackInvokedCallback="true"
@@ -34,7 +35,7 @@
             android:screenOrientation="portrait"
             android:exported="false" />
         <receiver
-            android:name=".PhoneStateBroadcastReceiver"
+            android:name=".Activity.PhoneStateBroadcastReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -63,7 +64,7 @@
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Splash"
+            android:name=".Activity.Splash"
             android:exported="true"
             android:configChanges="uiMode"
             android:screenOrientation="portrait">
