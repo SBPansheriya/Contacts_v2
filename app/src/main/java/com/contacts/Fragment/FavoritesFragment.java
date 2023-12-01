@@ -69,18 +69,7 @@ public class FavoritesFragment extends Fragment {
         init(view);
 
         checkPermission();
-
-        if (favoriteList.isEmpty()) {
-            no_fav_found_linear.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-            edit.setVisibility(View.GONE);
-            add_fav_contact.setVisibility(View.GONE);
-        } else {
-            no_fav_found_linear.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-            edit.setVisibility(View.VISIBLE);
-            add_fav_contact.setVisibility(View.VISIBLE);
-        }
+        readFavoriteContacts();
 
         addFav.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -240,17 +229,22 @@ public class FavoritesFragment extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     private void readFavoriteContacts() {
-        if (isGetData) {
+        if (favoriteList.size() > 0) {
             LinearLayoutManager manager = new LinearLayoutManager(getContext());
             favListAdapter = new FavListAdapter(FavoritesFragment.this, favoriteList);
             recyclerView.setLayoutManager(manager);
             recyclerView.setAdapter(favListAdapter);
             favListAdapter.notifyDataSetChanged();
-            progressBar.setVisibility(View.GONE);
+            no_fav_found_linear.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            edit.setVisibility(View.VISIBLE);
+            add_fav_contact.setVisibility(View.VISIBLE);
         } else {
-            progressBar.setVisibility(View.VISIBLE);
+            no_fav_found_linear.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+            edit.setVisibility(View.GONE);
+            add_fav_contact.setVisibility(View.GONE);
         }
-
     }
 
     public void intentPassFav(Users users) {

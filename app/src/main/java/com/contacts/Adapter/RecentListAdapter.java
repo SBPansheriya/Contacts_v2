@@ -1,6 +1,8 @@
 package com.contacts.Adapter;
 
 import static com.contacts.Class.Constant.usersArrayList;
+
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -99,8 +101,8 @@ public class RecentListAdapter extends RecyclerView.Adapter<RecentListAdapter.re
     }
 
     public class recentviewholder extends RecyclerView.ViewHolder {
-        ImageView recent_personImage, recent_call, missedCall, incoming, outgoing;
-        TextView recent_name, recent_date;
+        ImageView recent_personImage, recent_call, missedCall, incoming, outgoing,image2;
+        TextView recent_name, recent_date,txt;
 
         public recentviewholder(@NonNull View itemView) {
             super(itemView);
@@ -111,6 +113,8 @@ public class RecentListAdapter extends RecyclerView.Adapter<RecentListAdapter.re
             missedCall = itemView.findViewById(R.id.missedcall);
             incoming = itemView.findViewById(R.id.incoming);
             outgoing = itemView.findViewById(R.id.outgoing);
+            txt = itemView.findViewById(R.id.mobile);
+            image2 = itemView.findViewById(R.id.image2);
         }
     }
 }

@@ -76,9 +76,10 @@ public class Splash extends AppCompatActivity {
     private void checkPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            getRecentContacts();
-            readFavoriteContacts();
             navigateToHomeActivity();
+            readFavoriteContacts();
+            getContactList();
+            getRecentContacts();
         } else {
             permissions = new String[]{Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS};
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_DENIED &&
@@ -99,9 +100,10 @@ public class Splash extends AppCompatActivity {
         if (requestCode == 123 && grantResults.length > 0) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED &&
                     ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-                readFavoriteContacts();
-                getRecentContacts();
                 navigateToHomeActivity();
+                readFavoriteContacts();
+                getContactList();
+                getRecentContacts();
             } else {
                 dialog();
             }
@@ -119,7 +121,7 @@ public class Splash extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-        }, 500);
+        }, 400);
     }
 
     private void dialog() {
@@ -131,7 +133,6 @@ public class Splash extends AppCompatActivity {
         }
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         dialog.setContentView(R.layout.dialog_permission);
-        dialog.show();
 
         TextView textView = dialog.findViewById(R.id.txt1);
         Button gotosettings = dialog.findViewById(R.id.gotosettings);
@@ -153,6 +154,7 @@ public class Splash extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
+        dialog.show();
     }
 
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(

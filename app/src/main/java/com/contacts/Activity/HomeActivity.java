@@ -115,9 +115,7 @@ public class HomeActivity extends AppCompatActivity implements Listner {
 
             @Override
             protected String doInBackground(Void... voids) {
-                getContactList();
                 getRecentContacts();
-                readFavoriteContacts();
                 return "Success";
             }
 
@@ -143,15 +141,12 @@ public class HomeActivity extends AppCompatActivity implements Listner {
 
     @Override
     public void getResult() {
-        if (fragment.equals("contacts")) {
-            openFragment(new NewRecyclerviewFragment());
-        } else if (fragment.equals("fav")) {
-            openFragment(new FavoritesFragment());
-        } else if (fragment.equals("recents")) {
+        if (fragment.equals("recents")) {
             openFragment(new RecentsFragment());
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void getContactList() {
         usersArrayList = new ArrayList<>();
 
@@ -299,14 +294,7 @@ public class HomeActivity extends AppCompatActivity implements Listner {
         recentArrayList = new ArrayList<>();
 
         ContentResolver contentResolver = getContentResolver();
-        String[] projection = {
-                ContactsContract.Contacts._ID,
-                CallLog.Calls.CACHED_NAME,
-                CallLog.Calls.NUMBER,
-                CallLog.Calls.TYPE,
-                CallLog.Calls.DATE,
-                CallLog.Calls.CACHED_PHOTO_URI
-        };
+        String[] projection = {ContactsContract.Contacts._ID, CallLog.Calls.CACHED_NAME, CallLog.Calls.NUMBER, CallLog.Calls.TYPE, CallLog.Calls.DATE, CallLog.Calls.CACHED_PHOTO_URI};
 
         String sortOrder = CallLog.Calls.DATE + " DESC";
         Cursor cursor = contentResolver.query(CallLog.Calls.CONTENT_URI, projection, null, null, sortOrder);
@@ -350,11 +338,6 @@ public class HomeActivity extends AppCompatActivity implements Listner {
                 } else {
                     path = image_str;
                 }
-
-//                Bitmap path1 = getContactPhoto(contactId);
-//                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-//                path1.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-//                String path2 = MediaStore.Images.Media.insertImage(getContentResolver(), path1, "title", null);
 
                 Recent recent = new Recent(contactId, path, contactName, contactNumber, formattedDate, callType);
                 recentArrayList.add(recent);

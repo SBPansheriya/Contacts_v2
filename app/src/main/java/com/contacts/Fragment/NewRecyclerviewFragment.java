@@ -55,14 +55,14 @@ import java.util.List;
 
 public class NewRecyclerviewFragment extends Fragment {
 
-    LinearLayout no_contcat_found_linear,Contact_found_linear;
+    LinearLayout no_contcat_found_linear, Contact_found_linear;
     RecyclerView recyclerView;
     Button create_contact;
     NewRecyclerAdapter newRecyclerAdapter;
-    TextView totalcontact,selectall,deselectall;
+    TextView totalcontact, selectall, deselectall;
     EditText searchView;
     ProgressBar progressBar;
-    ImageView edit,add_contact,cancel, share, delete;
+    ImageView edit, add_contact, cancel, share, delete;
     Users users;
     boolean isEdit = false;
     ActivityResultLauncher<Intent> launchSomeActivity;
@@ -75,26 +75,13 @@ public class NewRecyclerviewFragment extends Fragment {
         init(view);
 
         checkPermission();
-
-        if (usersArrayList.isEmpty()) {
-            no_contcat_found_linear.setVisibility(View.VISIBLE);
-            Contact_found_linear.setVisibility(View.GONE);
-            searchView.setVisibility(View.GONE);
-            edit.setVisibility(View.GONE);
-            add_contact.setVisibility(View.GONE);
-        }
-        else {
-            no_contcat_found_linear.setVisibility(View.GONE);
-            Contact_found_linear.setVisibility(View.VISIBLE);
-            searchView.setVisibility(View.VISIBLE);
-            edit.setVisibility(View.VISIBLE);
-            add_contact.setVisibility(View.VISIBLE);
-        }
+        getContactList();
 
         create_contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), CreateContactActivity.class);
+                intent.putExtra("user", users);
                 launchSomeActivity.launch(intent);
             }
         });
@@ -158,6 +145,7 @@ public class NewRecyclerviewFragment extends Fragment {
                     }
                 }
             }
+            getContactList();
         });
 
         delete.setOnClickListener(new View.OnClickListener() {
@@ -235,24 +223,20 @@ public class NewRecyclerviewFragment extends Fragment {
             }
         });
 
-        if (isGetData) {
-            totalcontact.setText(usersArrayList.size() + " " + "Contacts");
-            progressBar.setVisibility(View.GONE);
-        }
-        else {
-            progressBar.setVisibility(View.VISIBLE);
-        }
+//        totalcontact.setText(usersArrayList.size() + " " + "Contacts");
+
         searchView.addTextChangedListener(new TextWatcher() {
 
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
 
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             public void onTextChanged(CharSequence query, int start, int before, int count) {
                 filter(query.toString());
             }
         });
-
         return view;
     }
 
@@ -264,14 +248,11 @@ public class NewRecyclerviewFragment extends Fragment {
             String name1 = item.getFirst() + " " + item.getLast();
             if (item.getFirst().toLowerCase().contains(text.toLowerCase())) {
                 filteredlist.add(item);
-            }
-            else if (item.getLast().toLowerCase().contains(text.toLowerCase())){
+            } else if (item.getLast().toLowerCase().contains(text.toLowerCase())) {
                 filteredlist.add(item);
-            }
-            else if (name.toLowerCase().contains(text.toLowerCase())){
+            } else if (name.toLowerCase().contains(text.toLowerCase())) {
                 filteredlist.add(item);
-            }
-            else if (name1.toLowerCase().contains(text.toLowerCase())){
+            } else if (name1.toLowerCase().contains(text.toLowerCase())) {
                 filteredlist.add(item);
             }
         }
@@ -363,22 +344,31 @@ public class NewRecyclerviewFragment extends Fragment {
     }
 
     private void getContactList() {
-        if (isGetData) {
-            if (usersArrayList.size() > 0) {
-                Comparator<Users> nameComparator = Comparator.comparing(Users::getFirst);
-                usersArrayList.sort(nameComparator);
+        if (usersArrayList.size() > 0) {
+            no_contcat_found_linear.setVisibility(View.GONE);
+            Contact_found_linear.setVisibility(View.VISIBLE);
+            searchView.setVisibility(View.VISIBLE);
+            edit.setVisibility(View.VISIBLE);
+            add_contact.setVisibility(View.VISIBLE);
 
-                LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-                newRecyclerAdapter = new NewRecyclerAdapter(NewRecyclerviewFragment.this, usersArrayList, isEdit);
-                recyclerView.setLayoutManager(manager);
-                recyclerView.setAdapter(newRecyclerAdapter);
-            }
-            progressBar.setVisibility(View.GONE);
+            Comparator<Users> nameComparator = Comparator.comparing(Users::getFirst);
+            usersArrayList.sort(nameComparator);
+
+            LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+            newRecyclerAdapter = new NewRecyclerAdapter(NewRecyclerviewFragment.this, usersArrayList, isEdit);
+            recyclerView.setLayoutManager(manager);
+            recyclerView.setAdapter(newRecyclerAdapter);
+
+            totalcontact.setText(usersArrayList.size() + " " + "Contacts");
         }
         else {
-            no_contcat_found_linear.setVisibility(View.GONE);
-            progressBar.setVisibility(View.VISIBLE);
+            no_contcat_found_linear.setVisibility(View.VISIBLE);
+            Contact_found_linear.setVisibility(View.GONE);
+            searchView.setVisibility(View.GONE);
+            edit.setVisibility(View.GONE);
+            add_contact.setVisibility(View.GONE);
         }
+
     }
 
     private void checkPermission() {

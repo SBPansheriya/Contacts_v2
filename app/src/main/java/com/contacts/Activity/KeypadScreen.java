@@ -45,6 +45,7 @@ public class KeypadScreen extends AppCompatActivity implements Serializable {
     public static RecyclerView recyclerView;
     String selectedPhoneNUmber;
     ImageView open_keypad;
+    EditText editText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +93,7 @@ public class KeypadScreen extends AppCompatActivity implements Serializable {
         ImageView btn_star = bottomSheetDialog.findViewById(R.id.btn_star);
         ImageView btn_call = bottomSheetDialog.findViewById(R.id.btn_call);
         ImageView btn_backpress = bottomSheetDialog.findViewById(R.id.btn_backpress);
-        EditText editText = bottomSheetDialog.findViewById(R.id.dailer_show);
+        editText = bottomSheetDialog.findViewById(R.id.dailer_show);
         TextView add_contact_by_keypad = bottomSheetDialog.findViewById(R.id.add_contact_by_keypad);
         final String[] s = new String[1];
 
@@ -219,7 +220,14 @@ public class KeypadScreen extends AppCompatActivity implements Serializable {
         btn_call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checkPermissions();
+                String[] permissions = new String[]{Manifest.permission.CALL_PHONE};
+
+                if (ContextCompat.checkSelfPermission(KeypadScreen.this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED) {
+                    ActivityCompat.requestPermissions(KeypadScreen.this, permissions, 100);
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + editText.getText().toString()));
+                    startActivity(intent);
+                }
             }
         });
 
@@ -316,6 +324,9 @@ public class KeypadScreen extends AppCompatActivity implements Serializable {
 
         if (requestCode == 123 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             call(selectedPhoneNUmber);
+        } else if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + editText.getText().toString()));
+            startActivity(intent);
         } else {
             showPermissionDialog();
         }

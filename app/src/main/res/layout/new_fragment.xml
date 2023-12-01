@@ -202,15 +202,4 @@
         android:backgroundTint="@color/blue"
         android:src="@drawable/floating"
         android:visibility="visible" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center">
-    <ProgressBar
-        android:id="@+id/progress_circular"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible"/>
-    </RelativeLayout>
 </RelativeLayout>

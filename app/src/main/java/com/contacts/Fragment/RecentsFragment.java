@@ -64,6 +64,7 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
         init(view);
 
         checkPermission();
+        getRecentContacts();
 
         IntentFilter intentFilter = new IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
         phoneStateReceiver = new PhoneStateBroadcastReceiver();
@@ -74,7 +75,6 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
             no_recents_linear.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.INVISIBLE);
         }
-
         launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK) {
                 Intent data = result.getData();
@@ -100,21 +100,14 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
     }
 
     public void getRecentContacts() {
-        if (isGetData) {
-            if (recentListAdapter != null) {
-                recentListAdapter.setRecentArrayList(recentArrayList);
-            } else {
-                recentListAdapter = new RecentListAdapter(RecentsFragment.this, recentArrayList);
-                LinearLayoutManager manager = new LinearLayoutManager(getContext());
-                recyclerView.setLayoutManager(manager);
-                recyclerView.setAdapter(recentListAdapter);
-            }
-            progressBar.setVisibility(View.GONE);
+        if (recentListAdapter != null) {
+            recentListAdapter.setRecentArrayList(recentArrayList);
         } else {
-            no_recents_linear.setVisibility(View.GONE);
-            progressBar.setVisibility(View.VISIBLE);
+            recentListAdapter = new RecentListAdapter(RecentsFragment.this, recentArrayList);
+            LinearLayoutManager manager = new LinearLayoutManager(getContext());
+            recyclerView.setLayoutManager(manager);
+            recyclerView.setAdapter(recentListAdapter);
         }
-
     }
 
     private void checkPermission() {

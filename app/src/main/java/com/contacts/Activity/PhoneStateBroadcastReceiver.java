@@ -146,8 +146,6 @@ public class PhoneStateBroadcastReceiver extends BroadcastReceiver {
                 Recent recent = new Recent(contactId, path, contactName, contactNumber, formattedDate, callType);
                 recentArrayList.add(recent);
 
-
-
             } while (cursor.moveToNext());
 
             if (callListener != null) {
