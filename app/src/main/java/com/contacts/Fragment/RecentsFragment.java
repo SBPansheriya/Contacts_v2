@@ -71,10 +71,6 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
         phoneStateReceiver.callListener = this::callEnd;
         getContext().registerReceiver(phoneStateReceiver, intentFilter);
 
-        if (recentArrayList.isEmpty()) {
-            no_recents_linear.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.INVISIBLE);
-        }
         launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK) {
                 Intent data = result.getData();
@@ -103,10 +99,19 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
         if (recentListAdapter != null) {
             recentListAdapter.setRecentArrayList(recentArrayList);
         } else {
-            recentListAdapter = new RecentListAdapter(RecentsFragment.this, recentArrayList);
-            LinearLayoutManager manager = new LinearLayoutManager(getContext());
-            recyclerView.setLayoutManager(manager);
-            recyclerView.setAdapter(recentListAdapter);
+            if (recentArrayList.isEmpty()) {
+                no_recents_linear.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+            }
+            else {
+                no_recents_linear.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+                recentListAdapter = new RecentListAdapter(RecentsFragment.this, recentArrayList);
+                LinearLayoutManager manager = new LinearLayoutManager(getContext());
+                recyclerView.setLayoutManager(manager);
+                recyclerView.setAdapter(recentListAdapter);
+                recentListAdapter.notifyDataSetChanged();
+            }
         }
     }
 

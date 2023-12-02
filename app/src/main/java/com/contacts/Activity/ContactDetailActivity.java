@@ -183,16 +183,6 @@ public class ContactDetailActivity extends AppCompatActivity {
 
     }
 
-    private BroadcastReceiver callEndedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if ("com.contacts.CALL_ENDED".equals(intent.getAction())) {
-                String incomingNumber = intent.getStringExtra("incoming_number");
-            }
-        }
-    };
-
-
     private void checkPermissions() {
         String[] permissions = new String[]{Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE};
 
@@ -278,7 +268,6 @@ public class ContactDetailActivity extends AppCompatActivity {
     private void call() {
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + user.personPhone));
         startActivity(intent);
-        Toast.makeText(ContactDetailActivity.this, "Calling " + user.first + " " + user.last, Toast.LENGTH_SHORT).show();
     }
 
     public void addToFavorites(Context context, String contactId, int favorite) {

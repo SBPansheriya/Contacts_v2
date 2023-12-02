@@ -37,9 +37,22 @@ public class PhoneStateBroadcastReceiver extends BroadcastReceiver {
     }
 
     public void onReceive(@NonNull Context context, Intent intent) {
-        TelephonyManager telephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE); //TelephonyManager object
-        CustomPhoneStateListener customPhoneListener = new CustomPhoneStateListener(callListener);
-        telephony.listen(customPhoneListener, PhoneStateListener.LISTEN_CALL_STATE); //Register our listener with TelephonyManager;
+//        TelephonyManager telephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE); //TelephonyManager object
+//        CustomPhoneStateListener customPhoneListener = new CustomPhoneStateListener(callListener);
+//        telephony.listen(customPhoneListener, PhoneStateListener.LISTEN_CALL_STATE); //Register our listener with TelephonyManager;
+        try {
+            // TELEPHONY MANAGER class object to register one listner
+            TelephonyManager tmgr = (TelephonyManager) context
+                    .getSystemService(Context.TELEPHONY_SERVICE);
+
+            //Create Listener
+            CustomPhoneStateListener PhoneListener = new CustomPhoneStateListener(callListener);
+
+            // Register listener for LISTEN_CALL_STATE
+            tmgr.listen(PhoneListener, PhoneStateListener.LISTEN_CALL_STATE);
+        } catch (Exception e) {
+            Log.e("Phone Receive Error", " " + e);
+        }
         mContext = context;
     }
 
@@ -77,7 +90,7 @@ public class PhoneStateBroadcastReceiver extends BroadcastReceiver {
                         prev_state = state;
                         getRecentContacts();
                     }
-                    if ((prev_state == TelephonyManager.CALL_STATE_RINGING)) {
+                    else if ((prev_state == TelephonyManager.CALL_STATE_RINGING)) {
                         prev_state = state;
                     }
                     break;
