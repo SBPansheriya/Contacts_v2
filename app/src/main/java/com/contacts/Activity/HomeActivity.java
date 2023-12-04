@@ -26,6 +26,7 @@ import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.Toast;
 
 import com.contacts.Class.App;
 import com.contacts.Fragment.FavoritesFragment;
@@ -116,8 +117,6 @@ public class HomeActivity extends AppCompatActivity implements Listner {
             @Override
             protected String doInBackground(Void... voids) {
                 getRecentContacts();
-                readFavoriteContacts();
-                getContactList();
                 return "Success";
             }
 
@@ -148,147 +147,10 @@ public class HomeActivity extends AppCompatActivity implements Listner {
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private void getContactList() {
-        usersArrayList = new ArrayList<>();
-
-        ContentResolver contentResolver = getContentResolver();
-        Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-
-        if (cursor != null && cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-                @SuppressLint("Range") String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                @SuppressLint("Range") String phoneName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                @SuppressLint("Range") String photoUri = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
-
-                String firstName = "";
-                String lastName = "";
-                if (!TextUtils.isEmpty(phoneName)) {
-                    if (phoneName.contains(" ")) {
-                        String currentString = phoneName;
-                        String[] separated = currentString.split(" ");
-                        firstName = separated[0];
-                        lastName = separated[1];
-                    } else {
-                        firstName = phoneName;
-                        lastName = "";
-                    }
-                }
-
-                // Get phone numbers
-                List<String> phoneNumbers = getPhoneNumbers(contentResolver, contactId);
-                String phoneNumber = "";
-                String officeNumber = "";
-                if (phoneNumbers.size() > 0) {
-                    if (phoneNumbers.size() > 2) {
-                        phoneNumber = phoneNumbers.get(0).replaceAll(" ", "").trim();
-                        officeNumber = phoneNumbers.get(1).replaceAll(" ", "").trim();
-                    } else {
-                        phoneNumber = phoneNumbers.get(0).replaceAll(" ", "").trim();
-                        officeNumber = "";
-                    }
-                }
-
-                // Create a User object with the retrieved data and add it to the ArrayList
-                Users user = new Users(contactId, photoUri, firstName, lastName, phoneNumber, officeNumber);
-                usersArrayList.add(user);
-
-                Comparator<Users> nameComparator = Comparator.comparing(Users::getFirst);
-                usersArrayList.sort(nameComparator);
-            }
-            cursor.close();
-        }
-    }
-
-    private List<String> getPhoneNumbers(ContentResolver contentResolver, String contactId) {
-        List<String> phoneNumbers = new ArrayList<>();
-
-        Uri phoneUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-        String[] phoneProjection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
-        String phoneSelection = ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?";
-        Cursor phoneCursor = contentResolver.query(phoneUri, phoneProjection, phoneSelection, new String[]{contactId}, null);
-
-        if (phoneCursor != null) {
-            while (phoneCursor.moveToNext()) {
-                @SuppressLint("Range") String phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).trim();
-                phoneNumbers.add(phoneNumber);
-            }
-            phoneCursor.close();
-        }
-        return phoneNumbers;
-    }
-
-    private void readFavoriteContacts() {
-
-        favoriteList = new ArrayList<>();
-
-        Uri uri = ContactsContract.Contacts.CONTENT_URI;
-
-        ContentResolver contentResolver = getContentResolver();
-
-        String[] projection = {ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.PHOTO_URI};
-
-        String selection = ContactsContract.Contacts.STARRED + "=?";
-        String[] selectionArgs = {"1"};
-
-        Cursor cursor = contentResolver.query(uri, projection, selection, selectionArgs, null);
-
-        if (cursor != null && cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-                @SuppressLint("Range") String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                @SuppressLint("Range") String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                @SuppressLint("Range") String contactImageUri = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
-                String phoneNumber = getPhoneNumber(contactId);
-
-                Bitmap contactImage = null;
-                if (contactImageUri != null) {
-                    try {
-                        contactImage = BitmapFactory.decodeStream(contentResolver.openInputStream(Uri.parse(contactImageUri)));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                String firstName = "";
-                String lastName = "";
-                if (!TextUtils.isEmpty(contactName)) {
-                    if (contactName.contains(" ")) {
-                        String currentString = contactName;
-                        String[] separated = currentString.split(" ");
-                        firstName = separated[0];
-                        lastName = separated[1];
-                    } else {
-                        firstName = contactName;
-                        lastName = "";
-                    }
-                }
-
-                Users user = new Users(contactId, contactImageUri, firstName, lastName, phoneNumber, "");
-                favoriteList.add(user);
-            }
-        }
-        if (cursor != null) {
-            cursor.close();
-        }
-    }
-
-    @SuppressLint("Range")
-    private String getPhoneNumber(String contactId) {
-        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-        String[] projection = {ContactsContract.CommonDataKinds.Phone.NUMBER};
-        String selection = ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=?";
-        String[] selectionArgs = {contactId};
-
-        Cursor cursor = getContentResolver().query(uri, projection, selection, selectionArgs, null);
-
-        String phoneNumber = null;
-        if (cursor != null && cursor.moveToNext()) {
-            phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-        }
-
-        if (cursor != null) {
-            cursor.close();
-        }
-        return phoneNumber;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getRecentContacts();
     }
 
     public void getRecentContacts() {

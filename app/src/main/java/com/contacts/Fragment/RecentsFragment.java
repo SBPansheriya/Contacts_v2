@@ -1,7 +1,6 @@
 package com.contacts.Fragment;
 
 import static androidx.core.content.PermissionChecker.checkSelfPermission;
-import static com.contacts.Activity.HomeActivity.isGetData;
 import static com.contacts.Class.Constant.recentArrayList;
 
 import android.Manifest;
@@ -17,7 +16,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.PermissionChecker;
 import androidx.fragment.app.Fragment;
@@ -54,7 +52,7 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
     Recent recent;
     ActivityResultLauncher<Intent> launchSomeActivity;
     private PhoneStateBroadcastReceiver phoneStateReceiver;
-    String selectedPhoneNUmber;
+    String selectedPhoneNumber;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,7 +61,6 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         init(view);
 
-        checkPermission();
         getRecentContacts();
 
         IntentFilter intentFilter = new IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
@@ -98,6 +95,7 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
     public void getRecentContacts() {
         if (recentListAdapter != null) {
             recentListAdapter.setRecentArrayList(recentArrayList);
+            recentListAdapter.notifyDataSetChanged();
         } else {
             if (recentArrayList.isEmpty()) {
                 no_recents_linear.setVisibility(View.VISIBLE);
@@ -115,16 +113,6 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
         }
     }
 
-    private void checkPermission() {
-        String[] permissions = new String[]{Manifest.permission.READ_CALL_LOG};
-
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), permissions, 101);
-        } else {
-            getRecentContacts();
-        }
-    }
-
     public boolean checkPermission1() {
         return ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED;
     }
@@ -132,8 +120,8 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if (!TextUtils.isEmpty(selectedPhoneNUmber)) {
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + selectedPhoneNUmber));
+            if (!TextUtils.isEmpty(selectedPhoneNumber)) {
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + selectedPhoneNumber));
                 startActivity(intent);
             }
         } else {
@@ -202,7 +190,7 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
     }
 
     public void call(String phoneNumber) {
-        selectedPhoneNUmber = phoneNumber;
+        selectedPhoneNumber = phoneNumber;
         String[] permissions = new String[]{Manifest.permission.CALL_PHONE};
         if (checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) == PermissionChecker.PERMISSION_DENIED) {
             requestPermissions(permissions, 100);

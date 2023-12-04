@@ -250,7 +250,8 @@ public class KeypadScreen extends AppCompatActivity implements Serializable {
 
                 for (int i = 0; i < Constant.usersArrayList.size(); i++) {
                     final String number = Constant.usersArrayList.get(i).getPersonPhone().toLowerCase();
-                    if (number.contains(query)) {
+                    String numericPhoneNumber = number.replaceAll("[^0-9]", "");
+                    if (numericPhoneNumber.contains(query)) {
                         filteredList.add(Constant.usersArrayList.get(i));
                     }
                 }

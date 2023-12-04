@@ -3,14 +3,17 @@ package com.contacts.Fragment;
 import static androidx.core.content.PermissionChecker.checkSelfPermission;
 import static com.contacts.Activity.HomeActivity.isGetData;
 import static com.contacts.Class.Constant.favoriteList;
+import static com.contacts.Class.Constant.recentArrayList;
 import static com.contacts.Class.Constant.usersArrayList;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -26,6 +29,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.CallLog;
+import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -43,8 +48,14 @@ import com.contacts.Activity.AddFavouritesActivity;
 import com.contacts.Activity.ContactDetailActivity;
 import com.contacts.Adapter.FavListAdapter;
 import com.contacts.Activity.KeypadScreen;
+import com.contacts.Model.Recent;
 import com.contacts.Model.Users;
 import com.contacts.R;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class FavoritesFragment extends Fragment {
 
@@ -160,6 +171,64 @@ public class FavoritesFragment extends Fragment {
             }
         } else {
             showPermissionDialog();
+        }
+    }
+
+    public void getRecentContacts() {
+
+        recentArrayList = new ArrayList<>();
+
+        ContentResolver contentResolver = getContext().getContentResolver();
+        String[] projection = {ContactsContract.Contacts._ID, CallLog.Calls.CACHED_NAME, CallLog.Calls.NUMBER, CallLog.Calls.TYPE, CallLog.Calls.DATE, CallLog.Calls.CACHED_PHOTO_URI};
+
+        String sortOrder = CallLog.Calls.DATE + " DESC";
+        Cursor cursor = contentResolver.query(CallLog.Calls.CONTENT_URI, projection, null, null, sortOrder);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            int contactColumn = cursor.getColumnIndex(ContactsContract.Contacts._ID);
+            int nameColumn = cursor.getColumnIndex(CallLog.Calls.CACHED_NAME);
+            int numberColumn = cursor.getColumnIndex(CallLog.Calls.NUMBER);
+            int typeColumn = cursor.getColumnIndex(CallLog.Calls.TYPE);
+            int callDate = cursor.getColumnIndex(CallLog.Calls.DATE);
+            int image = cursor.getColumnIndex(CallLog.Calls.CACHED_PHOTO_URI);
+
+            do {
+                String contactId = cursor.getString(contactColumn);
+                String contactName = cursor.getString(nameColumn);
+                String contactNumber = cursor.getString(numberColumn);
+                String image_str = cursor.getString(image);
+
+                int contactType = cursor.getInt(typeColumn);
+                @SuppressLint("Range") long contactDate = cursor.getLong(callDate);
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
+                String formattedDate = dateFormat.format(new Date(contactDate));
+
+                String callType = "Unknown";
+                switch (contactType) {
+                    case CallLog.Calls.INCOMING_TYPE:
+                        callType = "Incoming";
+                        break;
+                    case CallLog.Calls.OUTGOING_TYPE:
+                        callType = "Outgoing";
+                        break;
+                    case CallLog.Calls.MISSED_TYPE:
+                        callType = "Missed";
+                        break;
+                }
+
+                String path = "";
+                if (TextUtils.isEmpty(image_str)) {
+                    path = "";
+                } else {
+                    path = image_str;
+                }
+
+                Recent recent = new Recent(contactId, path, contactName, contactNumber, formattedDate, callType);
+                recentArrayList.add(recent);
+
+            } while (cursor.moveToNext());
+            cursor.close();
         }
     }
 
