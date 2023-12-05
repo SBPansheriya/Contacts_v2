@@ -1,6 +1,7 @@
 package com.contacts.Fragment;
 
 import static androidx.core.content.PermissionChecker.checkSelfPermission;
+import static com.contacts.Activity.HomeActivity.isGetData;
 import static com.contacts.Class.Constant.recentArrayList;
 
 import android.Manifest;
@@ -93,24 +94,31 @@ public class RecentsFragment extends Fragment implements PhoneStateBroadcastRece
     }
 
     public void getRecentContacts() {
-        if (recentListAdapter != null) {
-            recentListAdapter.setRecentArrayList(recentArrayList);
-            recentListAdapter.notifyDataSetChanged();
-        } else {
-            if (recentArrayList.isEmpty()) {
-                no_recents_linear.setVisibility(View.VISIBLE);
-                recyclerView.setVisibility(View.GONE);
-            }
-            else {
-                no_recents_linear.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.VISIBLE);
-                recentListAdapter = new RecentListAdapter(RecentsFragment.this, recentArrayList);
-                LinearLayoutManager manager = new LinearLayoutManager(getContext());
-                recyclerView.setLayoutManager(manager);
-                recyclerView.setAdapter(recentListAdapter);
+        if (isGetData) {
+            if (recentListAdapter != null) {
+                recentListAdapter.setRecentArrayList(recentArrayList);
                 recentListAdapter.notifyDataSetChanged();
+            } else {
+                if (recentArrayList.isEmpty()) {
+                    no_recents_linear.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                } else {
+                    no_recents_linear.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                    recentListAdapter = new RecentListAdapter(RecentsFragment.this, recentArrayList);
+                    LinearLayoutManager manager = new LinearLayoutManager(getContext());
+                    recyclerView.setLayoutManager(manager);
+                    recyclerView.setAdapter(recentListAdapter);
+                    recentListAdapter.notifyDataSetChanged();
+                }
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getRecentContacts();
     }
 
     public boolean checkPermission1() {
