@@ -277,7 +277,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         values.put(ContactsContract.CommonDataKinds.Phone.STARRED, favorite); // 1 for favorite, 0 for not favorite
         contentResolver.update(rawContactUri, values, null, null);
 
-        user = new Users(contactId, user.image, user.first, user.last, user.personPhone, "");
+        user = new Users(contactId, user.image, (user.first + user.last),user.first, user.last, user.personPhone, "");
         if (favorite == 1) {
             favoriteList.add(user);
         } else {

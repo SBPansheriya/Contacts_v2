@@ -49,6 +49,7 @@
             android:layout_toRightOf="@+id/title"
             android:layout_marginHorizontal="20dp"
             android:gravity="center"
+            android:textColor="@color/bluetheme1"
             android:text="Contact name"
             android:textSize="14dp" />
     </RelativeLayout>

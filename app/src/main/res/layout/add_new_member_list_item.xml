@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            app:cardCornerRadius="150dp">
+
+            <ImageView
+                android:id="@+id/group_personImage"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/person_placeholder" />
+        </androidx.cardview.widget.CardView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_toEndOf="@+id/title">
+
+            <TextView
+                android:id="@+id/group_personName"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginHorizontal="10dp"
+                android:fontFamily="@font/sf_pro_text_medium"
+                android:gravity="center"
+                android:text="Group name"
+                android:textColor="@color/bluetheme1"
+                android:textSize="14dp" />
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:visibility="visible"
+                android:checked="false"
+                android:layout_marginEnd="10dp"
+                app:buttonTint="@color/blue"
+                android:button="@drawable/custom_checkbox"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"/>
+
+            <ImageView
+                android:id="@+id/notcheckBox"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="10dp"
+                android:visibility="gone"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true" />
+            <ImageView
+                android:id="@+id/checkBox1"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="10dp"
+                android:visibility="gone"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

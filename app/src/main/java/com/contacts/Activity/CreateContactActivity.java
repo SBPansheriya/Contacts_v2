@@ -56,7 +56,7 @@ public class CreateContactActivity extends AppCompatActivity {
 
     TextView save;
     EditText firstname, lastname, pphone, ophone;
-    ImageView addPersonImage, cancel;
+    ImageView addPersonImage, cancel, remove_phone_number, remove_office_number;
     String imagename;
     String imagepath;
     Users user;
@@ -101,6 +101,20 @@ public class CreateContactActivity extends AppCompatActivity {
             }
         });
 
+        remove_phone_number.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pphone.setText("");
+            }
+        });
+
+        remove_office_number.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ophone.setText("");
+            }
+        });
+
         launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
@@ -109,7 +123,7 @@ public class CreateContactActivity extends AppCompatActivity {
                     }
                 });
 
-        cropImage = registerForActivityResult(new CropImageContract(),result -> {
+        cropImage = registerForActivityResult(new CropImageContract(), result -> {
             if (result.isSuccessful()) {
                 Uri uriContent = result.getUriContent();
                 bitmap = null;
@@ -131,7 +145,7 @@ public class CreateContactActivity extends AppCompatActivity {
     private void startCrop(Uri selectedImageUri) {
         CropImageOptions options = new CropImageOptions();
         options.guidelines = CropImageView.Guidelines.ON;
-        CropImageContractOptions cropImageContractOptions = new CropImageContractOptions(selectedImageUri,options);
+        CropImageContractOptions cropImageContractOptions = new CropImageContractOptions(selectedImageUri, options);
         cropImage.launch(cropImageContractOptions);
     }
 
@@ -234,7 +248,7 @@ public class CreateContactActivity extends AppCompatActivity {
             contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
         }
 
-        user = new Users(rawContactId, path, first, last, personPhone, "");
+        user = new Users(rawContactId, path, (first + last),first, last, personPhone, "");
         usersArrayList.add(user);
         onBackPressed();
         finish();
@@ -375,6 +389,8 @@ public class CreateContactActivity extends AppCompatActivity {
         pphone = findViewById(R.id.pphone);
         ophone = findViewById(R.id.ophone);
         save = findViewById(R.id.save_Contact);
+        remove_phone_number = findViewById(R.id.remove_phone_number);
+        remove_office_number = findViewById(R.id.remove_office_number);
     }
 
     @Override

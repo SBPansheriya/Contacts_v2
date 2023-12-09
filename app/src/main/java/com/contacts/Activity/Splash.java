@@ -237,7 +237,7 @@ public class Splash extends AppCompatActivity {
                 }
 
                 // Create a User object with the retrieved data and add it to the ArrayList
-                Users user = new Users(contactId, photoUri, firstName, lastName, phoneNumber, officeNumber);
+                Users user = new Users(contactId, photoUri, phoneName,firstName, lastName, phoneNumber, officeNumber);
                 usersArrayList.add(user);
 
                 Comparator<Users> nameComparator = Comparator.comparing(Users::getFirst);
@@ -309,7 +309,7 @@ public class Splash extends AppCompatActivity {
                     }
                 }
 
-                Users user = new Users(contactId, contactImageUri, firstName, lastName, phoneNumber, "");
+                Users user = new Users(contactId, contactImageUri, contactName ,firstName, lastName, phoneNumber, "");
                 favoriteList.add(user);
             }
         }

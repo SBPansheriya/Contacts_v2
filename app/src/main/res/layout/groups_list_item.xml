@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="10dp"
+        android:orientation="horizontal">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            app:cardCornerRadius="150dp">
+
+            <ImageView
+                android:id="@+id/group_Image"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/groups_placeholder" />
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_toRightOf="@+id/title">
+
+        <TextView
+            android:id="@+id/group_Name"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:layout_marginHorizontal="10dp"
+            android:fontFamily="@font/sf_pro_text_medium"
+            android:textColor="@color/bluetheme1"
+            android:textSize="14dp"
+            android:text="Group name"/>
+
+        <TextView
+            android:id="@+id/group_member_number"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_toRightOf="@+id/title"
+            android:gravity="center"
+            android:fontFamily="@font/sf_pro_text_medium"
+            android:textColor="@color/bluetheme1"
+            android:textSize="14dp"
+            android:text="(00)"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

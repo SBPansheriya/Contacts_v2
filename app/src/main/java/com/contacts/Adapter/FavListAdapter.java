@@ -45,7 +45,7 @@ public class FavListAdapter extends RecyclerView.Adapter<FavListAdapter.favourit
             Picasso.get().load(favoriteList.get(position).image).into(holder.fav_person_image);
         }
 
-        holder.fav_person_name.setText(favoriteList.get(position).first + " " + favoriteList.get(position).last);
+        holder.fav_person_name.setText(favoriteList.get(position).getFullName());
 
 //        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
 //            @SuppressLint({"RestrictedApi", "NewApi"})

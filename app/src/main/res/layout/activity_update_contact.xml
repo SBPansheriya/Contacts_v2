@@ -227,15 +227,29 @@
                         android:padding="10dp"
                         android:text="+91 (704) 555-0127" />
 
-                    <TextView
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="20dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="5dp"
+                        android:background="@null"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_margin="10dp">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/autoCompleteTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="none"
+                        android:background="@null"
                         android:text="Office"
-                        android:textColor="@color/darkgray"
-                        android:visibility="gone" />
+                        />
+                    </com.google.android.material.textfield.TextInputLayout>
+<!--                        android:layout_marginHorizontal="20dp"-->
+<!--                        android:layout_marginTop="10dp"-->
+<!--                        android:layout_marginBottom="5dp"-->
+<!--                        android:text="Office"-->
+<!--                        android:textColor="@color/darkgray"-->
+<!--                        android:visibility="visible" />-->
 
                     <EditText
                         android:id="@+id/update_ophone"
@@ -247,7 +261,7 @@
                         android:inputType="number"
                         android:padding="10dp"
                         android:text="+91 (405) 555-0128"
-                        android:visibility="gone" />
+                        android:visibility="visible" />
                 </LinearLayout>
             </LinearLayout>
 

@@ -116,7 +116,7 @@ public class HomeActivity extends AppCompatActivity implements Listner {
 
             @Override
             protected String doInBackground(Void... voids) {
-                getRecentContacts();
+//                getRecentContacts();
                 return "Success";
             }
 

@@ -7,22 +7,34 @@ import java.io.Serializable;
 public class Users implements Serializable {
     public String contactId;
     public String image;
+    public String fullName;
     public String first;
     public String last;
     public String personPhone;
     public String officePhone;
     private boolean isSelected;
 
+    public Users() {
+    }
 
-    public Users(String contactId, String image, String first, String last, String personPhone, String officePhone) {
+    public Users(String contactId, String image, String fullName,String first, String last, String personPhone, String officePhone) {
         this.contactId = contactId;
         this.image = image;
+        this.fullName = fullName;
         this.first = first;
         this.last = last;
         this.personPhone = personPhone;
         this.officePhone = officePhone;
         isSelected = false;
 
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getImage() {

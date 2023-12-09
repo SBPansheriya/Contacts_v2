@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SyncRequest;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -32,6 +33,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -69,6 +71,8 @@ public class UpdateContactActivity extends AppCompatActivity {
     Bitmap bitmap;
     ActivityResultLauncher<Intent> launchSomeActivity;
     ActivityResultLauncher<CropImageContractOptions> cropImage;
+    String[] items = {"Office","Work"};
+    AutoCompleteTextView autoCompleteTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +84,8 @@ public class UpdateContactActivity extends AppCompatActivity {
         init();
 
         user = (Users) getIntent().getSerializableExtra("user");
+
+        autoCompleteTextView.setBackground(null);
 
         if (user.image == null) {
             personimage.setImageResource(R.drawable.person_placeholder);
@@ -428,6 +434,7 @@ public class UpdateContactActivity extends AppCompatActivity {
         update_ophone = findViewById(R.id.update_ophone);
         update_contact = findViewById(R.id.update_contact);
         show_person_name = findViewById(R.id.show_personName);
+        autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
     }
 
     @Override
