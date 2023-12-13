@@ -1,8 +1,7 @@
 package com.contacts.Model;
 
-import androidx.annotation.NonNull;
-
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Users implements Serializable {
     public String contactId;
@@ -10,6 +9,7 @@ public class Users implements Serializable {
     public String fullName;
     public String first;
     public String last;
+    ArrayList<Phone> phoneArrayList;
     public String personPhone;
     public String officePhone;
     private boolean isSelected;
@@ -17,12 +17,13 @@ public class Users implements Serializable {
     public Users() {
     }
 
-    public Users(String contactId, String image, String fullName,String first, String last, String personPhone, String officePhone) {
+    public Users(String contactId, String image, String fullName,String first, String last,ArrayList<Phone> phoneArrayList ,String personPhone, String officePhone) {
         this.contactId = contactId;
         this.image = image;
         this.fullName = fullName;
         this.first = first;
         this.last = last;
+        this.phoneArrayList = phoneArrayList;
         this.personPhone = personPhone;
         this.officePhone = officePhone;
         isSelected = false;
@@ -59,6 +60,14 @@ public class Users implements Serializable {
 
     public void setLast(String last) {
         this.last = last;
+    }
+
+    public ArrayList<Phone> getPhoneArrayList() {
+        return phoneArrayList;
+    }
+
+    public void setPhoneArrayList(ArrayList<Phone> phoneArrayList) {
+        this.phoneArrayList = phoneArrayList;
     }
 
     public String getPersonPhone() {

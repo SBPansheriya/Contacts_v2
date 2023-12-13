@@ -1,7 +1,9 @@
 package com.contacts.Activity;
 
 import static com.contacts.Class.Constant.favoriteList;
+import static com.contacts.Class.Constant.phoneTypeArrayList;
 import static com.contacts.Class.Constant.recentArrayList;
+import static com.contacts.Class.Constant.typeArrayList;
 import static com.contacts.Class.Constant.usersArrayList;
 
 import androidx.activity.result.ActivityResult;
@@ -38,8 +40,11 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.contacts.Class.Constant;
+import com.contacts.Model.PhoneType;
 import com.contacts.Model.Recent;
 import com.contacts.Model.Users;
+import com.contacts.Model.Phone;
 import com.contacts.R;
 
 import java.text.SimpleDateFormat;
@@ -63,6 +68,8 @@ public class Splash extends AppCompatActivity {
         Window window = Splash.this.getWindow();
         window.setStatusBarColor(ContextCompat.getColor(Splash.this, R.color.white));
 
+        getAllPhoneNumberLabelsAndTypes(this);
+
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -74,16 +81,14 @@ public class Splash extends AppCompatActivity {
 
     @SuppressLint("StaticFieldLeak")
     private void checkPermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
             navigateToHomeActivity();
             readFavoriteContacts();
             getContactList();
             getRecentContacts();
         } else {
             permissions = new String[]{Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS};
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_DENIED &&
-                    ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED)
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_DENIED && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED)
                 permissions = new String[]{Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS};
             else if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_DENIED)
                 permissions = new String[]{Manifest.permission.READ_CALL_LOG};
@@ -98,8 +103,7 @@ public class Splash extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 123 && grantResults.length > 0) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED &&
-                    ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
                 navigateToHomeActivity();
                 readFavoriteContacts();
                 getContactList();
@@ -142,8 +146,7 @@ public class Splash extends AppCompatActivity {
         gotosettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CALL_LOG) &&
-                        shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CALL_LOG) && shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
                     checkPermissions();
                 } else {
                     Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -157,43 +160,19 @@ public class Splash extends AppCompatActivity {
         dialog.show();
     }
 
-    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    Intent data = result.getData();
-                    if (ContextCompat.checkSelfPermission(Splash.this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED &&
-                            ContextCompat.checkSelfPermission(Splash.this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-                        readFavoriteContacts();
-                        getRecentContacts();
-                        navigateToHomeActivity();
-                    }
-                    else {
-                        dialog();
-                    }
-                }
-            });
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        try {
-//            super.onActivityResult(requestCode, resultCode, data);
-//            if (requestCode == 123) {
-//                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED &&
-//                        ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED &&
-//                        ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-//                    readFavoriteContacts();
-//                    getRecentContacts();
-//                    navigateToHomeActivity();
-//                } else {
-//                    dialog();
-//                }
-//            }
-//        } catch (Exception ex) {
-//            Toast.makeText(Splash.this, ex.toString(), Toast.LENGTH_SHORT).show();
-//        }
-//    }
+    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            Intent data = result.getData();
+            if (ContextCompat.checkSelfPermission(Splash.this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(Splash.this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                readFavoriteContacts();
+                getRecentContacts();
+                navigateToHomeActivity();
+            } else {
+                dialog();
+            }
+        }
+    });
 
     @SuppressLint("NotifyDataSetChanged")
     private void getContactList() {
@@ -222,24 +201,10 @@ public class Splash extends AppCompatActivity {
                     }
                 }
 
-                // Get phone numbers
-                List<String> phoneNumbers = getPhoneNumbers(contentResolver, contactId);
-                String phoneNumber = "";
-                String officeNumber = "";
-                if (phoneNumbers.size() > 0) {
-                    if (phoneNumbers.size() > 2) {
-                        phoneNumber = phoneNumbers.get(0).replaceAll(" ", "").trim();
-                        officeNumber = phoneNumbers.get(1).replaceAll(" ", "").trim();
-                    } else {
-                        phoneNumber = phoneNumbers.get(0).replaceAll(" ", "").trim();
-                        officeNumber = "";
-                    }
-                }
+                phoneTypeArrayList = getAllPhoneNumbers(this, contactId);
 
-                // Create a User object with the retrieved data and add it to the ArrayList
-                Users user = new Users(contactId, photoUri, phoneName,firstName, lastName, phoneNumber, officeNumber);
+                Users user = new Users(contactId, photoUri, phoneName, firstName, lastName, phoneTypeArrayList, "", "");
                 usersArrayList.add(user);
-
                 Comparator<Users> nameComparator = Comparator.comparing(Users::getFirst);
                 usersArrayList.sort(nameComparator);
             }
@@ -247,22 +212,122 @@ public class Splash extends AppCompatActivity {
         }
     }
 
-    private List<String> getPhoneNumbers(ContentResolver contentResolver, String contactId) {
-        List<String> phoneNumbers = new ArrayList<>();
+    public static String mapTypeToCustomLabel(int phoneType) {
 
-        Uri phoneUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-        String[] phoneProjection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
-        String phoneSelection = ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?";
-        Cursor phoneCursor = contentResolver.query(phoneUri, phoneProjection, phoneSelection, new String[]{contactId}, null);
+        typeArrayList = new ArrayList<>();
 
-        if (phoneCursor != null) {
-            while (phoneCursor.moveToNext()) {
-                @SuppressLint("Range") String phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).trim();
-                phoneNumbers.add(phoneNumber);
-            }
-            phoneCursor.close();
+        typeArrayList.add(new PhoneType(ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE, "Mobile"));
+        typeArrayList.add(new PhoneType(ContactsContract.CommonDataKinds.Phone.TYPE_HOME, "Home"));
+        typeArrayList.add(new PhoneType(ContactsContract.CommonDataKinds.Phone.TYPE_WORK, "Work"));
+        typeArrayList.add(new PhoneType(ContactsContract.CommonDataKinds.Phone.TYPE_MAIN, "Main"));
+        typeArrayList.add(new PhoneType(ContactsContract.CommonDataKinds.Phone.TYPE_FAX_WORK, "Work Fax"));
+        typeArrayList.add(new PhoneType(ContactsContract.CommonDataKinds.Phone.TYPE_FAX_HOME, "Home Fax"));
+        typeArrayList.add(new PhoneType(ContactsContract.CommonDataKinds.Phone.TYPE_WORK_MOBILE, "Work Mobile"));
+        typeArrayList.add(new PhoneType(ContactsContract.CommonDataKinds.Phone.TYPE_PAGER, "Pager"));
+        typeArrayList.add(new PhoneType(-1, "Other"));
+
+        switch (phoneType) {
+            case ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE:
+                return "Mobile";
+            case ContactsContract.CommonDataKinds.Phone.TYPE_HOME:
+                return "Home";
+            case ContactsContract.CommonDataKinds.Phone.TYPE_WORK:
+                return "Work";
+            case ContactsContract.CommonDataKinds.Phone.TYPE_MAIN:
+                return "Main";
+            case ContactsContract.CommonDataKinds.Phone.TYPE_FAX_WORK:
+                return "Work Fax";
+            case ContactsContract.CommonDataKinds.Phone.TYPE_FAX_HOME:
+                return "Home Fax";
+            case ContactsContract.CommonDataKinds.Phone.TYPE_PAGER:
+                return "Pager";
+            case ContactsContract.CommonDataKinds.Phone.TYPE_WORK_MOBILE:
+                return "Work Mobile";
+            default:
+                return "Other";
         }
-        return phoneNumbers;
+    }
+
+    public ArrayList<Phone> getAllPhoneNumbers(Context context, String contactId) {
+
+        ContentResolver contentResolver = context.getContentResolver();
+
+        String[] projection = {
+                ContactsContract.CommonDataKinds.Phone.NUMBER,
+                ContactsContract.CommonDataKinds.Phone.TYPE,
+                ContactsContract.CommonDataKinds.Phone.LABEL};
+
+        String selection = ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?";
+        String[] selectionArgs = {contactId};
+
+        String sortOrder = null;
+
+        Cursor cursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, selection, selectionArgs, sortOrder);
+
+        phoneTypeArrayList = new ArrayList<>();
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                @SuppressLint("Range") String phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                @SuppressLint("Range") int phoneType = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+                @SuppressLint("Range") int phoneLabelResId = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LABEL));
+
+                CharSequence phoneLabel = ContactsContract.CommonDataKinds.Phone.getTypeLabel(context.getResources(), phoneType, null);
+
+                String type = mapTypeToCustomLabel(phoneType);
+
+                Phone phone = new Phone(phoneNumber, phoneType, type);
+                phoneTypeArrayList.add(phone);
+
+            } while (cursor.moveToNext());
+
+            cursor.close();
+        }
+        return phoneTypeArrayList;
+    }
+
+    public static void getAllPhoneNumberLabelsAndTypes(Context context) {
+        // Define the columns you want to retrieve from the contacts database
+        String[] projection = {
+                ContactsContract.CommonDataKinds.Phone.NUMBER,
+                ContactsContract.CommonDataKinds.Phone.TYPE,
+                ContactsContract.CommonDataKinds.Phone.LABEL
+        };
+
+        // Set up the query
+        String selection = null;
+        String[] selectionArgs = null;
+        String sortOrder = null;
+
+        // Execute the query
+        try (Cursor cursor = context.getContentResolver().query(
+                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                projection,
+                selection,
+                selectionArgs,
+                sortOrder
+        )) {
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    // Retrieve the phone number, type, and label
+                    @SuppressLint("Range") String phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    @SuppressLint("Range") int phoneType = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+                    @SuppressLint("Range") String phoneLabel = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LABEL));
+
+                    // Map the phone type to a string (you can customize this mapping as needed)
+//                    String phoneTypeString = getPhoneNumberTypeString(phoneType);
+
+                    // Do something with the phone number, type, and label
+//                    String message = "Phone Number: " + phoneNumber + "\nType: " + phoneTypeString + "\nLabel: " + phoneLabel;
+//                    showToast(context, message);
+
+                } while (cursor.moveToNext());
+            } else {
+                // Handle case where no phone numbers are found
+//                showToast(context, "No phone numbers found in contacts.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void readFavoriteContacts() {
@@ -285,7 +350,7 @@ public class Splash extends AppCompatActivity {
                 @SuppressLint("Range") String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                 @SuppressLint("Range") String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                 @SuppressLint("Range") String contactImageUri = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
-                String phoneNumber = getPhoneNumber(contactId);
+//                String phoneNumber = getPhoneNumber(contactId);
 
                 Bitmap contactImage = null;
                 if (contactImageUri != null) {
@@ -309,7 +374,9 @@ public class Splash extends AppCompatActivity {
                     }
                 }
 
-                Users user = new Users(contactId, contactImageUri, contactName ,firstName, lastName, phoneNumber, "");
+                phoneTypeArrayList = getAllPhoneNumbers(this, contactId);
+
+                Users user = new Users(contactId, contactImageUri, contactName, firstName, lastName, phoneTypeArrayList, "", "");
                 favoriteList.add(user);
             }
         }

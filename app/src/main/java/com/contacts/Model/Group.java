@@ -1,4 +1,4 @@
-package com.contacts;
+package com.contacts.Model;
 
 import java.io.Serializable;
 

@@ -48,7 +48,7 @@ public class NewRecyclerAdapter extends RecyclerView.Adapter<NewRecyclerAdapter.
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NewRecyclerviewFragment) newRecyclerviewFragment).intentPass(usersArrayList.get(position));
+                ((NewRecyclerviewFragment) newRecyclerviewFragment).intentPass(usersArrayList.get(position),usersArrayList.get(position).getPhoneArrayList());
             }
         });
 

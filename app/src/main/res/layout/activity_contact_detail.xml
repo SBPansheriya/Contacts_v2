@@ -186,175 +186,189 @@
                 android:textSize="10dp" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/title5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/title4"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
+            <!--            <LinearLayout-->
+<!--            android:id="@+id/title5"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_below="@+id/title4"-->
+<!--            android:layout_marginHorizontal="10dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:orientation="horizontal">-->
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:src="@drawable/dark_call_phone" />
+<!--            <ImageView-->
+<!--                android:layout_width="24dp"-->
+<!--                android:layout_height="24dp"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_margin="5dp"-->
+<!--                android:src="@drawable/dark_call_phone" />-->
 
-            <LinearLayout
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical">-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/selected_person_pnum"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="16dp"-->
+<!--                    android:layout_marginHorizontal="10dp"-->
+<!--                    android:fontFamily="@font/sf_pro_text_regular"-->
+<!--                    android:gravity="center"-->
+<!--                    android:text="+91 (303) 555-0105"-->
+<!--                    android:textColor="@color/bluetheme1"-->
+<!--                    android:textSize="14dp" />-->
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content">-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="16dp"-->
+<!--                        android:layout_marginStart="10dp"-->
+<!--                        android:fontFamily="@font/sf_pro_text_regular"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="Phone"-->
+<!--                        android:textColor="@color/bluetheme1"-->
+<!--                        android:textSize="14dp" />-->
+
+<!--                    <ImageView-->
+<!--                        android:id="@+id/image2"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:layout_marginStart="8dp"-->
+<!--                        android:layout_marginTop="3dp"-->
+<!--                        android:src="@drawable/baseline_brightness_1_24" />-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/savedContactStatus"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="16dp"-->
+<!--                        android:layout_marginStart="8dp"-->
+<!--                        android:fontFamily="@font/sf_pro_text_regular"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="Mobile"-->
+<!--                        android:textColor="@color/bluetheme1"-->
+<!--                        android:textSize="14dp" />-->
+<!--                </LinearLayout>-->
+<!--            </LinearLayout>-->
+<!--        </LinearLayout>-->
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/office_contact_details_linear"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_below="@+id/title5"-->
+<!--            android:layout_marginHorizontal="10dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:visibility="visible"-->
+<!--            android:orientation="horizontal">-->
+
+<!--            <ImageView-->
+<!--                android:layout_width="24dp"-->
+<!--                android:layout_height="24dp"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_margin="5dp"-->
+<!--                android:src="@drawable/dark_call_phone" />-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical">-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/selected_person_onum"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="16dp"-->
+<!--                    android:layout_marginHorizontal="10dp"-->
+<!--                    android:fontFamily="@font/sf_pro_text_regular"-->
+<!--                    android:gravity="center"-->
+<!--                    android:text="+91 (303) 555-0105"-->
+<!--                    android:textColor="@color/bluetheme1"-->
+<!--                    android:textSize="14dp" />-->
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content">-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/off_contact_status"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="16dp"-->
+<!--                        android:layout_marginStart="10dp"-->
+<!--                        android:fontFamily="@font/sf_pro_text_regular"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="Office"-->
+<!--                        android:textColor="@color/bluetheme1"-->
+<!--                        android:textSize="14dp" />-->
+
+<!--                    <ImageView-->
+<!--                        android:id="@+id/image"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:layout_marginStart="8dp"-->
+<!--                        android:layout_marginTop="3dp"-->
+<!--                        android:src="@drawable/baseline_brightness_1_24" />-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/off_savedContactStatus"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="16dp"-->
+<!--                        android:layout_marginStart="8dp"-->
+<!--                        android:fontFamily="@font/sf_pro_text_regular"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="Mobile"-->
+<!--                        android:textColor="@color/bluetheme1"-->
+<!--                        android:textSize="14dp" />-->
+<!--                </LinearLayout>-->
+<!--            </LinearLayout>-->
+<!--        </LinearLayout>-->
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/contacts_details_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                tools:itemCount="2"
+                tools:listitem="@layout/contacts_details_item_list" />
 
-                <TextView
-                    android:id="@+id/selected_person_pnum"
-                    android:layout_width="wrap_content"
-                    android:layout_height="16dp"
-                    android:layout_marginHorizontal="10dp"
-                    android:fontFamily="@font/sf_pro_text_regular"
-                    android:gravity="center"
-                    android:text="+91 (303) 555-0105"
-                    android:textColor="@color/bluetheme1"
-                    android:textSize="14dp" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="16dp"
-                        android:layout_marginStart="10dp"
-                        android:fontFamily="@font/sf_pro_text_regular"
-                        android:gravity="center"
-                        android:text="Phone"
-                        android:textColor="@color/bluetheme1"
-                        android:textSize="14dp" />
-
-                    <ImageView
-                        android:id="@+id/image2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="3dp"
-                        android:src="@drawable/baseline_brightness_1_24" />
-
-                    <TextView
-                        android:id="@+id/savedContactStatus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="16dp"
-                        android:layout_marginStart="8dp"
-                        android:fontFamily="@font/sf_pro_text_regular"
-                        android:gravity="center"
-                        android:text="Mobile"
-                        android:textColor="@color/bluetheme1"
-                        android:textSize="14dp" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/office_contact_details_linear"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/title5"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="10dp"
-            android:visibility="gone"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:src="@drawable/dark_call_phone" />
-
-            <LinearLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/whatsapp_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginTop="10dp"
+                tools:listitem="@layout/whatsapp_list_item" />
 
-                <TextView
-                    android:id="@+id/selected_person_onum"
-                    android:layout_width="wrap_content"
-                    android:layout_height="16dp"
-                    android:layout_marginHorizontal="10dp"
-                    android:fontFamily="@font/sf_pro_text_regular"
-                    android:gravity="center"
-                    android:text="+91 (303) 555-0105"
-                    android:textColor="@color/bluetheme1"
-                    android:textSize="14dp" />
+<!--            <LinearLayout-->
+<!--            android:id="@+id/whatsapp"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_below="@+id/office_contact_details_linear"-->
+<!--            android:layout_marginHorizontal="10dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:layout_marginBottom="20dp"-->
+<!--            android:orientation="horizontal">-->
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+<!--            <ImageView-->
+<!--                android:layout_width="24dp"-->
+<!--                android:layout_height="24dp"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_margin="5dp"-->
+<!--                android:src="@drawable/whatsapp" />-->
 
-                    <TextView
-                        android:id="@+id/off_contact_status"
-                        android:layout_width="wrap_content"
-                        android:layout_height="16dp"
-                        android:layout_marginStart="10dp"
-                        android:fontFamily="@font/sf_pro_text_regular"
-                        android:gravity="center"
-                        android:text="Office"
-                        android:textColor="@color/bluetheme1"
-                        android:textSize="14dp" />
-
-                    <ImageView
-                        android:id="@+id/image"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="3dp"
-                        android:src="@drawable/baseline_brightness_1_24" />
-
-                    <TextView
-                        android:id="@+id/off_savedContactStatus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="16dp"
-                        android:layout_marginStart="8dp"
-                        android:fontFamily="@font/sf_pro_text_regular"
-                        android:gravity="center"
-                        android:text="Mobile"
-                        android:textColor="@color/bluetheme1"
-                        android:textSize="14dp" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/whatsapp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/office_contact_details_linear"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:src="@drawable/whatsapp" />
-
-            <TextView
-                android:id="@+id/message_whatsapp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginHorizontal="10dp"
-                android:fontFamily="@font/sf_pro_text_regular"
-                android:gravity="center"
-                android:text="Message    +91 (303) 555-0105"
-                android:textColor="@color/bluetheme1"
-                android:textSize="14dp" />
-        </LinearLayout>
+<!--            <TextView-->
+<!--                android:id="@+id/message_whatsapp"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginHorizontal="10dp"-->
+<!--                android:fontFamily="@font/sf_pro_text_regular"-->
+<!--                android:gravity="center"-->
+<!--                android:text="Message    +91 (303) 555-0105"-->
+<!--                android:textColor="@color/bluetheme1"-->
+<!--                android:textSize="14dp" />-->
+<!--        </LinearLayout>-->
         </LinearLayout>
         </androidx.cardview.widget.CardView>
 

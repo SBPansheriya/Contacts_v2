@@ -1,4 +1,4 @@
-package com.contacts;
+package com.contacts.Activity;
 
 import static com.contacts.Class.Constant.contactsArrayList;
 
@@ -24,7 +24,10 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.contacts.Activity.AddFavouritesActivity;
+import com.contacts.Model.Contacts;
+import com.contacts.Model.Group;
+import com.contacts.Adapter.GroupDetailAdapter;
+import com.contacts.R;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -52,7 +55,7 @@ public class GroupDetailActivity extends AppCompatActivity {
 
         group = (Group) getIntent().getSerializableExtra("group");
 
-        getContacts(group.groupId);
+        getContacts(group.getGroupId());
 
         if (contactsArrayList.size() > 0) {
             no_group_contacts_found_linear.setVisibility(View.GONE);
@@ -71,11 +74,11 @@ public class GroupDetailActivity extends AppCompatActivity {
                     group = (Group) result.getData().getSerializableExtra("group");
                     contacts = (Contacts) result.getData().getSerializableExtra("contacts");
                     if (contacts != null) {
-                        getContacts(group.groupId);
+                        getContacts(group.getGroupId());
                     }
                 }
             }
-            getContacts(group.groupId);
+            getContacts(group.getGroupId());
         });
 
         back.setOnClickListener(new View.OnClickListener() {

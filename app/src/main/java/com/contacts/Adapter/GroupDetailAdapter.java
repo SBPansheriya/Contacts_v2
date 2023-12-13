@@ -1,4 +1,4 @@
-package com.contacts;
+package com.contacts.Adapter;
 
 import android.app.Dialog;
 import android.text.TextUtils;
@@ -13,6 +13,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.contacts.Activity.GroupDetailActivity;
+import com.contacts.Model.Contacts;
+import com.contacts.Model.Group;
+import com.contacts.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

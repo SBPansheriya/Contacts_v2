@@ -2,16 +2,13 @@ package com.contacts.Adapter;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.contacts.Class.Constant;
 import com.contacts.Fragment.FavoritesFragment;
 import com.contacts.Model.Users;
 import com.contacts.R;
@@ -91,14 +88,14 @@ public class FavListAdapter extends RecyclerView.Adapter<FavListAdapter.favourit
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((FavoritesFragment) favoritesFragment).call(favoriteList.get(position).getPersonPhone());
+                ((FavoritesFragment) favoritesFragment).call(favoriteList.get(position).getPhoneArrayList().get(position).getPhonenumber());
             }
         });
 
         holder.info_plite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((FavoritesFragment) favoritesFragment).intentPassFav(favoriteList.get(position));
+                ((FavoritesFragment) favoritesFragment).intentPassFav(favoriteList.get(position),favoriteList.get(position).getPhoneArrayList());
             }
         });
     }

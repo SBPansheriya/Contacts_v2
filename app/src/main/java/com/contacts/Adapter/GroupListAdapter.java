@@ -9,9 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.contacts.Activity.MainActivity;
 import com.contacts.Fragment.GroupsFragment;
-import com.contacts.Group;
+import com.contacts.Model.Group;
 import com.contacts.R;
 
 import java.util.ArrayList;

@@ -2,6 +2,7 @@ package com.contacts.Fragment;
 
 import static android.content.ContentValues.TAG;
 
+import static com.contacts.Class.Constant.contactsArrayList;
 import static com.contacts.Class.Constant.groupArrayList;
 
 import android.Manifest;
@@ -39,10 +40,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.contacts.Activity.KeypadScreen;
+import com.contacts.Adapter.GroupDetailAdapter;
 import com.contacts.Adapter.GroupListAdapter;
-import com.contacts.Group;
-import com.contacts.GroupDetailActivity;
+import com.contacts.Model.Contacts;
+import com.contacts.Model.Group;
+import com.contacts.Activity.GroupDetailActivity;
 import com.contacts.R;
 
 import java.util.ArrayList;
@@ -58,6 +60,7 @@ public class GroupsFragment extends Fragment {
     RecyclerView recyclerView;
     GroupListAdapter groupListAdapter;
     Group group;
+    Contacts contacts;
     ActivityResultLauncher<Intent> launchSomeActivity;
 
     @Override
@@ -228,7 +231,7 @@ public class GroupsFragment extends Fragment {
                 @SuppressLint("Range") String groupId = groupCursor.getString(groupCursor.getColumnIndex(ContactsContract.Groups._ID));
 
                 int member = getMemberCountForGroup(getContext(), groupId);
-                if (uniqueGroupNames.add(groupName) || member > 0) {
+                if (uniqueGroupNames.add(groupName) && member >= 0) {
                     Log.d(TAG, "Group Name: " + groupName + ", Group ID: " + groupId);
                     if (groupName.contains("My Contacts") || groupName.contains("Starred in Android")) {
                         groupArrayList.remove(groupName);

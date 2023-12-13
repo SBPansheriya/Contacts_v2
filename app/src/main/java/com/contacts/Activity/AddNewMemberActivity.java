@@ -1,14 +1,12 @@
-package com.contacts;
+package com.contacts.Activity;
 
 import static com.contacts.Class.Constant.contactsArrayList;
 import static com.contacts.Class.Constant.usersArrayList;
 
-import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -23,10 +21,11 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.contacts.Adapter.AddNewMemberAdapter;
+import com.contacts.Model.Contacts;
+import com.contacts.Model.Group;
 import com.contacts.Model.Users;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.contacts.R;
 
 public class AddNewMemberActivity extends AppCompatActivity {
 
@@ -68,6 +67,15 @@ public class AddNewMemberActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+    }
+
+    public void isChecked(boolean isChecked,int position,String contactId, String groupId){
+        if (isChecked){
+            addContactToGroup(this,contactId,groupId);
+        }
+        else {
+            removeContactFromGroup(contactId,groupId,position);
+        }
     }
 
     public void addContactToGroup(Context context, String contactId, String groupId) {

@@ -1,7 +1,6 @@
 package com.contacts.Fragment;
 
 import static android.app.Activity.RESULT_OK;
-import static com.contacts.Activity.HomeActivity.isGetData;
 import static com.contacts.Class.Constant.usersArrayList;
 
 import android.Manifest;
@@ -19,7 +18,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -31,7 +29,6 @@ import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -43,20 +40,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.contacts.Activity.ContactDetailActivity;
 import com.contacts.Activity.CreateContactActivity;
 import com.contacts.Adapter.NewRecyclerAdapter;
-import com.contacts.Class.Constant;
 import com.contacts.Model.Users;
+import com.contacts.Model.Phone;
 import com.contacts.R;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Locale;
 
 public class NewRecyclerviewFragment extends Fragment {
@@ -68,7 +63,7 @@ public class NewRecyclerviewFragment extends Fragment {
     TextView totalcontact, selectall, deselectall;
     EditText searchView;
     ProgressBar progressBar;
-    ImageView edit, add_contact, cancel, share, delete,voiceButton;
+    ImageView edit, add_contact, cancel, share, delete, voiceButton;
     Users users;
     boolean isEdit = false;
     ActivityResultLauncher<Intent> launchSomeActivity;
@@ -256,8 +251,6 @@ public class NewRecyclerviewFragment extends Fragment {
             }
         });
 
-//        totalcontact.setText(usersArrayList.size() + " " + "Contacts");
-
         searchView.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
@@ -297,7 +290,6 @@ public class NewRecyclerviewFragment extends Fragment {
         }
     }
 
-
     private void deleteSelectedItems() {
         ArrayList<Users> itemsToRemove = new ArrayList<>();
         for (Users users : usersArrayList) {
@@ -326,8 +318,11 @@ public class NewRecyclerviewFragment extends Fragment {
         } else {
             StringBuilder shareText = new StringBuilder();
             for (Users user : selectedUsers) {
-                shareText.append("Name: ").append(user.getFirst() + " " + user.getLast()).append("\n");
-                shareText.append("Number: ").append(user.getPersonPhone()).append("\n");
+                ArrayList<Phone> phoneNumbers = user.getPhoneArrayList();
+                for (int position = 0; position < phoneNumbers.size(); position++) {
+                    shareText.append("Name: ").append(user.getFullName()).append("\n");
+                    shareText.append("Number: ").append(user.getPhoneArrayList().get(position).getPhonenumber()).append("\n");
+                }
             }
 
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -370,9 +365,12 @@ public class NewRecyclerviewFragment extends Fragment {
         contentResolver.delete(contactUri, null, null);
     }
 
-    public void intentPass(Users users) {
+    public void intentPass(Users users, ArrayList<Phone> phoneArrayList) {
         Intent intent = new Intent(getActivity(), ContactDetailActivity.class);
         intent.putExtra("user", users);
+        Gson gson = new Gson();
+        String list = gson.toJson(phoneArrayList);
+        intent.putExtra("phone", list);
         launchSomeActivity.launch(intent);
     }
 
@@ -393,8 +391,7 @@ public class NewRecyclerviewFragment extends Fragment {
             recyclerView.setAdapter(newRecyclerAdapter);
 
             totalcontact.setText(usersArrayList.size() + " " + "Contacts");
-        }
-        else {
+        } else {
             no_contcat_found_linear.setVisibility(View.VISIBLE);
             Contact_found_linear.setVisibility(View.GONE);
             searchView.setVisibility(View.GONE);

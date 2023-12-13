@@ -1,5 +1,6 @@
 package com.contacts.Activity;
 
+import static androidx.core.content.PermissionChecker.checkSelfPermission;
 import static com.contacts.Class.Constant.favoriteList;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -8,13 +9,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.PermissionChecker;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -24,6 +27,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.Settings;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,20 +39,35 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.contacts.Adapter.ContactsDetailsAdapter;
+import com.contacts.Adapter.WhatsAppAdapter;
 import com.contacts.Model.Users;
 
+import com.contacts.Model.Phone;
 import com.contacts.R;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 public class ContactDetailActivity extends AppCompatActivity {
 
     ImageView edit, call, messenger, favourites, unfavourites, selected_person_image, back;
     LinearLayout whatsapp, office_contact_details_linear;
-    TextView selected_person_name, selected_person_pnum, selected_person_onum, message_whatsapp;
+    TextView selected_person_name, message_whatsapp;
     int favorite;
     Users user;
+    Phone phone;
+    RecyclerView recyclerView;
+    RecyclerView whatsapprecyclerView;
     ActivityResultLauncher<Intent> launchSomeActivity;
-
+    ContactsDetailsAdapter contactsDetailsAdapter;
+    WhatsAppAdapter whatsAppAdapter;
+    String selectedPhoneNUmber;
+    ArrayList<Phone> phoneArrayList1;
+    String listget;
+    Gson gson;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -63,13 +83,32 @@ public class ContactDetailActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_CONTACTS}, 100);
 
         user = (Users) getIntent().getSerializableExtra("user");
+        listget = getIntent().getStringExtra("phone");
+        gson = new Gson();
+
+        phoneArrayList1 = gson.fromJson(listget, new TypeToken<ArrayList<Phone>>() {
+        }.getType());
         setData();
+
+        LinearLayoutManager manager = new LinearLayoutManager(ContactDetailActivity.this);
+        contactsDetailsAdapter = new ContactsDetailsAdapter(ContactDetailActivity.this, phoneArrayList1);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(contactsDetailsAdapter);
+
+        LinearLayoutManager manager1 = new LinearLayoutManager(ContactDetailActivity.this);
+        whatsAppAdapter = new WhatsAppAdapter(ContactDetailActivity.this, phoneArrayList1);
+        whatsapprecyclerView.setLayoutManager(manager1);
+        whatsapprecyclerView.setAdapter(whatsAppAdapter);
 
         launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK) {
                 Intent data = result.getData();
                 if (data != null) {
                     user = (Users) result.getData().getSerializableExtra("user");
+                    listget = getIntent().getStringExtra("phone");
+                    gson = new Gson();
+                    phoneArrayList1 = gson.fromJson(listget, new TypeToken<ArrayList<Phone>>() {
+                    }.getType());
                     if (user != null) {
                         setData();
                     }
@@ -89,6 +128,9 @@ public class ContactDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(ContactDetailActivity.this, UpdateContactActivity.class);
                 intent.putExtra("user", user);
+                Gson gson = new Gson();
+                String list = gson.toJson(phoneArrayList1);
+                intent.putExtra("phone", list);
                 launchSomeActivity.launch(intent);
             }
         });
@@ -105,21 +147,21 @@ public class ContactDetailActivity extends AppCompatActivity {
             }
         });
 
-        whatsapp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String contact = user.personPhone; // use country code with your phone number
-                String url = "https://api.whatsapp.com/send?phone=" + contact;
-                try {
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(url));
-                    startActivity(i);
-                } catch (ActivityNotFoundException e) {
-                    Toast.makeText(ContactDetailActivity.this, "Whatsapp app not installed in your phone", Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
-            }
-        });
+//        whatsapp.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String contact = user.personPhone; // use country code with your phone number
+//                String url = "https://api.whatsapp.com/send?phone=" + contact;
+//                try {
+//                    Intent i = new Intent(Intent.ACTION_VIEW);
+//                    i.setData(Uri.parse(url));
+//                    startActivity(i);
+//                } catch (ActivityNotFoundException e) {
+//                    Toast.makeText(ContactDetailActivity.this, "Whatsapp app not installed in your phone", Toast.LENGTH_SHORT).show();
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
 
         if (favoriteList.size() > 0) {
             boolean isMatch = false;
@@ -172,15 +214,13 @@ public class ContactDetailActivity extends AppCompatActivity {
     }
 
     private void setData() {
-        selected_person_name.setText(user.first + " " + user.last);
-        selected_person_pnum.setText(user.personPhone);
+        selected_person_name.setText(user.getFullName());
         if (user.image == null) {
             selected_person_image.setImageResource(R.drawable.person_placeholder);
         } else {
             Picasso.get().load(user.image).into(selected_person_image);
         }
-        message_whatsapp.setText(user.personPhone);
-
+//        message_whatsapp.setText("");
     }
 
     private void checkPermissions() {
@@ -199,7 +239,10 @@ public class ContactDetailActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == 123 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            call();
+            if (!TextUtils.isEmpty(selectedPhoneNUmber)) {
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + selectedPhoneNUmber));
+                startActivity(intent);
+            }
         } else if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
         } else {
@@ -265,9 +308,30 @@ public class ContactDetailActivity extends AppCompatActivity {
         }
     }
 
-    private void call() {
-        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + user.personPhone));
-        startActivity(intent);
+    public void call() {
+        int position = 0;
+        if (phoneArrayList1 != null && position >= 0 && position < phoneArrayList1.size()) {
+            String firstPhoneNumber = phoneArrayList1.get(position).getPhonenumber();
+            // Now you have the first phone number
+            Log.d("PhoneList", "First phone number: " + firstPhoneNumber);
+            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + firstPhoneNumber));
+            startActivity(intent);
+        } else {
+            Log.e("PhoneList", "Invalid position or empty list");
+        }
+
+
+    }
+
+    public void getCall(String phoneNumber) {
+        selectedPhoneNUmber = phoneNumber;
+        String[] permissions = new String[]{Manifest.permission.CALL_PHONE};
+        if (checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED) {
+            requestPermissions(permissions, 100);
+        } else {
+            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber));
+            startActivity(intent);
+        }
     }
 
     public void addToFavorites(Context context, String contactId, int favorite) {
@@ -277,7 +341,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         values.put(ContactsContract.CommonDataKinds.Phone.STARRED, favorite); // 1 for favorite, 0 for not favorite
         contentResolver.update(rawContactUri, values, null, null);
 
-        user = new Users(contactId, user.image, (user.first + user.last),user.first, user.last, user.personPhone, "");
+        user = new Users(contactId, user.image, (user.first + user.last), user.first, user.last, null, user.personPhone, "");
         if (favorite == 1) {
             favoriteList.add(user);
         } else {
@@ -300,10 +364,10 @@ public class ContactDetailActivity extends AppCompatActivity {
         whatsapp = findViewById(R.id.whatsapp);
         selected_person_image = findViewById(R.id.selected_person_image);
         selected_person_name = findViewById(R.id.selected_person_name);
-        selected_person_pnum = findViewById(R.id.selected_person_pnum);
-        selected_person_onum = findViewById(R.id.selected_person_onum);
         message_whatsapp = findViewById(R.id.message_whatsapp);
         office_contact_details_linear = findViewById(R.id.office_contact_details_linear);
+        recyclerView = findViewById(R.id.contacts_details_recyclerview);
+        whatsapprecyclerView = findViewById(R.id.whatsapp_recyclerview);
     }
 
     @Override

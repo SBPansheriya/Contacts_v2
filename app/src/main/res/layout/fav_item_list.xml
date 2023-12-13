@@ -37,12 +37,18 @@
 <!--            android:layout_marginBottom="5dp"-->
 <!--            android:src="@drawable/ellipse" />-->
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/title"
+            android:orientation="horizontal">
+
         <TextView
             android:id="@+id/fav_personName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_toRightOf="@+id/title"
-            android:gravity="center"
+            android:layout_weight="1"
+            android:gravity="center|start"
             android:layout_marginHorizontal="10dp"
             android:fontFamily="@font/sf_pro_text_regular"
             android:textColor="@color/bluetheme1"
@@ -56,6 +62,7 @@
             android:layout_alignParentEnd="true"
             android:visibility="visible"
             android:src="@drawable/info"/>
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/scrollcontact"

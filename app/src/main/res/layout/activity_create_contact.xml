@@ -124,6 +124,7 @@
                     android:id="@+id/title4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -190,95 +191,26 @@
                         android:layout_width="30dp"
                         android:layout_height="26dp"
                         android:layout_gravity="top"
+                        android:layout_marginTop="13dp"
                         android:layout_marginStart="10dp"
                         android:src="@drawable/call" />
 
-                    <LinearLayout
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/phone_add_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        tools:listitem="@layout/add_new_phone_number_item_list" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="20dp"
-                            android:layout_marginBottom="5dp"
-                            android:text="Phone"
-                            android:textColor="@color/darkgray2" />
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="20dp"
-                            android:background="@drawable/border2"
-                            android:orientation="horizontal">
-
-                            <EditText
-                                android:id="@+id/pphone"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:inputType="number"
-                                android:background="@null"
-                                android:maxLength="10"
-                                android:maxLines="1"
-                                android:padding="10dp" />
-
-                            <ImageView
-                                android:id="@+id/remove_phone_number"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_centerInParent="true"
-                                android:layout_alignParentEnd="true"
-                                android:layout_marginEnd="10dp"
-                                android:src="@drawable/cancelnumber"/>
-                        </RelativeLayout>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="20dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginBottom="5dp"
-                            android:text="Office"
-                            android:textColor="@color/darkgray2"
-                            android:visibility="visible" />
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="20dp"
-                            android:background="@drawable/border2"
-                            android:orientation="horizontal">
-
-                            <EditText
-                                android:id="@+id/ophone"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:inputType="number"
-                                android:background="@null"
-                                android:maxLength="10"
-                                android:maxLines="1"
-                                android:padding="10dp" />
-
-                            <ImageView
-                                android:id="@+id/remove_office_number"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_centerInParent="true"
-                                android:layout_alignParentEnd="true"
-                                android:layout_marginEnd="10dp"
-                                android:src="@drawable/cancelnumber"/>
-                        </RelativeLayout>
-                    </LinearLayout>
                 </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/addNew"
                     android:layout_width="93dp"
                     android:layout_height="28dp"
                     android:layout_gravity="end"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="20dp"
-                    android:src="@drawable/addnew"/>
+                    android:src="@drawable/addnew" />
             </LinearLayout>
 
         </ScrollView>

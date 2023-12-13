@@ -155,7 +155,7 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.ContactViewHolde
         values.put(ContactsContract.CommonDataKinds.Phone.STARRED, favorite); // 1 for favorite, 0 for not favorite
         contentResolver.update(rawContactUri, values, null, null);
 
-        Users users = new Users(contactId,image,first+last,first,last,phone,"");
+        Users users = new Users(contactId,image,first+last,first,last,null,phone,"");
         if (favorite == 1) {
             favoriteList.add(users);
         }

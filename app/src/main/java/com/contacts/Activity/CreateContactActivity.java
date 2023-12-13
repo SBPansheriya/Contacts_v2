@@ -1,5 +1,6 @@
 package com.contacts.Activity;
 
+import static com.contacts.Class.Constant.typeArrayList;
 import static com.contacts.Class.Constant.usersArrayList;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -8,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.Activity;
@@ -20,7 +23,6 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -37,33 +39,42 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.canhub.cropper.CropImage;
-import com.canhub.cropper.CropImageActivity;
 import com.canhub.cropper.CropImageContract;
 import com.canhub.cropper.CropImageContractOptions;
 import com.canhub.cropper.CropImageOptions;
 import com.canhub.cropper.CropImageView;
+import com.contacts.Adapter.AddNewPhoneNumberAdapter;
+import com.contacts.Model.PhoneType;
 import com.contacts.Model.Users;
+import com.contacts.Model.Phone;
 import com.contacts.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class CreateContactActivity extends AppCompatActivity {
 
     TextView save;
     EditText firstname, lastname, pphone, ophone;
-    ImageView addPersonImage, cancel, remove_phone_number, remove_office_number;
+    ImageView addPersonImage, cancel, addNew;
     String imagename;
     String imagepath;
+    RecyclerView recyclerView;
     Users user;
+    Phone phone;
     Bitmap bitmap;
+    int typevalue;
+    AddNewPhoneNumberAdapter addNewPhoneNumberAdapter;
+    ArrayList<Phone> phoneArrayList = new ArrayList<>();
     ActivityResultLauncher<Intent> launchSomeActivity;
     ActivityResultLauncher<CropImageContractOptions> cropImage;
     private static final int CAMERA_REQUEST = 100;
+    private int selectedPosition = RecyclerView.NO_POSITION;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,16 +87,19 @@ public class CreateContactActivity extends AppCompatActivity {
 
         user = (Users) getIntent().getSerializableExtra("user");
 
+        phoneArrayList.add(new Phone());
+
+        LinearLayoutManager manager = new LinearLayoutManager(CreateContactActivity.this);
+        addNewPhoneNumberAdapter = new AddNewPhoneNumberAdapter(CreateContactActivity.this, phoneArrayList);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(addNewPhoneNumberAdapter);
+
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
             }
         });
-
-        String number = getIntent().getStringExtra("number");
-
-        pphone.setText(number);
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,27 +115,21 @@ public class CreateContactActivity extends AppCompatActivity {
             }
         });
 
-        remove_phone_number.setOnClickListener(new View.OnClickListener() {
+        addNew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                pphone.setText("");
+                phoneArrayList.add(new Phone());
+
+                addNewPhoneNumberAdapter.updateList(phoneArrayList);
             }
         });
 
-        remove_office_number.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ophone.setText("");
+        launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Uri selectedImageUri = result.getData().getData();
+                startCrop(selectedImageUri);
             }
         });
-
-        launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Uri selectedImageUri = result.getData().getData();
-                        startCrop(selectedImageUri);
-                    }
-                });
 
         cropImage = registerForActivityResult(new CropImageContract(), result -> {
             if (result.isSuccessful()) {
@@ -196,11 +204,21 @@ public class CreateContactActivity extends AppCompatActivity {
         });
     }
 
+    public void getData(String number, int position) {
+        phoneArrayList.get(position).setPhonenumber(number);
+    }
+
+    public void getposition(PhoneType type, int position) {
+        typevalue = type.getType();
+        typeArrayList.get(position).setType(type.getType());
+        phoneArrayList.get(position).setPhoneType(type.getType());
+        phoneArrayList.get(position).setLabel(type.getLabel());
+        addNewPhoneNumberAdapter.updateList(phoneArrayList);
+    }
+
     public void createContact() {
         String first = firstname.getText().toString();
         String last = lastname.getText().toString();
-        String personPhone = pphone.getText().toString();
-        String officePhone = ophone.getText().toString();
 
         ContentValues values = new ContentValues();
         ContentResolver contentResolver = getContentResolver();
@@ -220,19 +238,18 @@ public class CreateContactActivity extends AppCompatActivity {
         contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
 
 // Add the contact's phone number
-        values.clear();
-        values.put(ContactsContract.Data.RAW_CONTACT_ID, rawContactId);
-        values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
-        values.put(ContactsContract.CommonDataKinds.Phone.NUMBER, personPhone);
-        values.put(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE);
-        contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
-
-        values.clear();
-        values.put(ContactsContract.Data.RAW_CONTACT_ID, rawContactId);
-        values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
-        values.put(ContactsContract.CommonDataKinds.Phone.NUMBER, officePhone);
-        values.put(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_WORK);
-        contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
+        for (Phone phone : phoneArrayList) {
+            String phoneNumber = phone.getPhonenumber();
+            int type = phone.getPhoneType();
+            if (!TextUtils.isEmpty(phoneNumber)) {
+                values.clear();
+                values.put(ContactsContract.Data.RAW_CONTACT_ID, rawContactId);
+                values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+                values.put(ContactsContract.CommonDataKinds.Phone.NUMBER, phoneNumber);
+                values.put(ContactsContract.CommonDataKinds.Phone.TYPE,type);
+                contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
+            }
+        }
 
         ByteArrayOutputStream image = null;
         String path = null;
@@ -248,19 +265,22 @@ public class CreateContactActivity extends AppCompatActivity {
             contentResolver.insert(ContactsContract.Data.CONTENT_URI, values);
         }
 
-        user = new Users(rawContactId, path, (first + last),first, last, personPhone, "");
+        user = new Users(rawContactId, path, (first + last), first, last, phoneArrayList, "", "");
         usersArrayList.add(user);
+
         onBackPressed();
+
         finish();
+
     }
 
     private void savedData() {
-        if (TextUtils.isEmpty(firstname.getText().toString()) || TextUtils.isEmpty(pphone.getText().toString())) {
-            Toast.makeText(CreateContactActivity.this, "Please Fill Data", Toast.LENGTH_SHORT).show();
-        } else {
-            createContact();
-            Toast.makeText(CreateContactActivity.this, "Contact saved", Toast.LENGTH_SHORT).show();
-        }
+//        if (TextUtils.isEmpty(firstname.getText().toString()) || TextUtils.isEmpty(pphone.getText().toString())) {
+//            Toast.makeText(CreateContactActivity.this, "Please Fill Data", Toast.LENGTH_SHORT).show();
+//        } else {
+        createContact();
+        Toast.makeText(CreateContactActivity.this, "Contact saved", Toast.LENGTH_SHORT).show();
+//        }
     }
 
     private void checkPermissionsForSave() {
@@ -386,11 +406,13 @@ public class CreateContactActivity extends AppCompatActivity {
         addPersonImage = findViewById(R.id.addPersonImage);
         firstname = findViewById(R.id.firstname);
         lastname = findViewById(R.id.lastname);
-        pphone = findViewById(R.id.pphone);
-        ophone = findViewById(R.id.ophone);
+//        pphone = findViewById(R.id.pphone);
+//        ophone = findViewById(R.id.ophone);
         save = findViewById(R.id.save_Contact);
-        remove_phone_number = findViewById(R.id.remove_phone_number);
-        remove_office_number = findViewById(R.id.remove_office_number);
+//        remove_phone_number = findViewById(R.id.remove_phone_number);
+//        remove_office_number = findViewById(R.id.remove_office_number);
+        addNew = findViewById(R.id.addNew);
+        recyclerView = findViewById(R.id.phone_add_recyclerview);
     }
 
     @Override

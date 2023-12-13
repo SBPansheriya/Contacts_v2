@@ -1,7 +1,6 @@
 package com.contacts.Fragment;
 
 import static androidx.core.content.PermissionChecker.checkSelfPermission;
-import static com.contacts.Activity.HomeActivity.isGetData;
 import static com.contacts.Class.Constant.favoriteList;
 import static com.contacts.Class.Constant.recentArrayList;
 import static com.contacts.Class.Constant.usersArrayList;
@@ -25,7 +24,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.PermissionChecker;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -50,10 +48,13 @@ import com.contacts.Adapter.FavListAdapter;
 import com.contacts.Activity.KeypadScreen;
 import com.contacts.Model.Recent;
 import com.contacts.Model.Users;
+import com.contacts.Model.Phone;
 import com.contacts.R;
+import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 
@@ -174,64 +175,6 @@ public class FavoritesFragment extends Fragment {
         }
     }
 
-    public void getRecentContacts() {
-
-        recentArrayList = new ArrayList<>();
-
-        ContentResolver contentResolver = getContext().getContentResolver();
-        String[] projection = {ContactsContract.Contacts._ID, CallLog.Calls.CACHED_NAME, CallLog.Calls.NUMBER, CallLog.Calls.TYPE, CallLog.Calls.DATE, CallLog.Calls.CACHED_PHOTO_URI};
-
-        String sortOrder = CallLog.Calls.DATE + " DESC";
-        Cursor cursor = contentResolver.query(CallLog.Calls.CONTENT_URI, projection, null, null, sortOrder);
-
-        if (cursor != null && cursor.moveToFirst()) {
-            int contactColumn = cursor.getColumnIndex(ContactsContract.Contacts._ID);
-            int nameColumn = cursor.getColumnIndex(CallLog.Calls.CACHED_NAME);
-            int numberColumn = cursor.getColumnIndex(CallLog.Calls.NUMBER);
-            int typeColumn = cursor.getColumnIndex(CallLog.Calls.TYPE);
-            int callDate = cursor.getColumnIndex(CallLog.Calls.DATE);
-            int image = cursor.getColumnIndex(CallLog.Calls.CACHED_PHOTO_URI);
-
-            do {
-                String contactId = cursor.getString(contactColumn);
-                String contactName = cursor.getString(nameColumn);
-                String contactNumber = cursor.getString(numberColumn);
-                String image_str = cursor.getString(image);
-
-                int contactType = cursor.getInt(typeColumn);
-                @SuppressLint("Range") long contactDate = cursor.getLong(callDate);
-
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
-                String formattedDate = dateFormat.format(new Date(contactDate));
-
-                String callType = "Unknown";
-                switch (contactType) {
-                    case CallLog.Calls.INCOMING_TYPE:
-                        callType = "Incoming";
-                        break;
-                    case CallLog.Calls.OUTGOING_TYPE:
-                        callType = "Outgoing";
-                        break;
-                    case CallLog.Calls.MISSED_TYPE:
-                        callType = "Missed";
-                        break;
-                }
-
-                String path = "";
-                if (TextUtils.isEmpty(image_str)) {
-                    path = "";
-                } else {
-                    path = image_str;
-                }
-
-                Recent recent = new Recent(contactId, path, contactName, contactNumber, formattedDate, callType);
-                recentArrayList.add(recent);
-
-            } while (cursor.moveToNext());
-            cursor.close();
-        }
-    }
-
     private void showPermissionDialog() {
         Dialog dialog = new Dialog(getContext());
         if (dialog.getWindow() != null) {
@@ -299,6 +242,10 @@ public class FavoritesFragment extends Fragment {
     @SuppressLint("NotifyDataSetChanged")
     private void readFavoriteContacts() {
         if (favoriteList.size() > 0) {
+
+            Comparator<Users> nameComparator = Comparator.comparing(Users::getFirst);
+            favoriteList.sort(nameComparator);
+
             LinearLayoutManager manager = new LinearLayoutManager(getContext());
             favListAdapter = new FavListAdapter(FavoritesFragment.this, favoriteList);
             recyclerView.setLayoutManager(manager);
@@ -316,9 +263,12 @@ public class FavoritesFragment extends Fragment {
         }
     }
 
-    public void intentPassFav(Users users) {
+    public void intentPassFav(Users users, ArrayList<Phone> phoneArrayList) {
         Intent intent = new Intent(getActivity(), ContactDetailActivity.class);
         intent.putExtra("user", users);
+        Gson gson = new Gson();
+        String list = gson.toJson(phoneArrayList);
+        intent.putExtra("phone", list);
         launchSomeActivity.launch(intent);
     }
 

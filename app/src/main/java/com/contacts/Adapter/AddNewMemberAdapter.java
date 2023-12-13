@@ -1,4 +1,4 @@
-package com.contacts;
+package com.contacts.Adapter;
 
 import static com.contacts.Class.Constant.contactsArrayList;
 
@@ -13,7 +13,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.contacts.Activity.AddNewMemberActivity;
+import com.contacts.Model.Contacts;
+import com.contacts.Model.Group;
 import com.contacts.Model.Users;
+import com.contacts.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -69,41 +73,42 @@ public class AddNewMemberAdapter extends RecyclerView.Adapter<AddNewMemberAdapte
         });
 
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                ((AddNewMemberActivity) addNewMemberActivity).addContactToGroup(addNewMemberActivity, usersArrayList.get(position).contactId, group.groupId);
-            } else {
-//                Dialog dialog = new Dialog(addNewMemberActivity);
-//                if (dialog.getWindow() != null) {
-//                    dialog.getWindow().setGravity(Gravity.CENTER);
-//                    dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-//                    dialog.setCancelable(false);
-//                }
-//                dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//                dialog.setContentView(R.layout.dailog_layout);
-//                dialog.setCancelable(false);
-//                dialog.show();
-//
-//                Button cancel1 = dialog.findViewById(R.id.canceldialog);
-//                Button movetobin = dialog.findViewById(R.id.movetobin);
-//
-//                cancel1.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        holder.checkBox.setChecked(true);
-//                        dialog.dismiss();
-//                    }
-//                });
-//
-//                movetobin.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        ((AddNewMemberActivity) addNewMemberActivity).removeContactFromGroup(usersArrayList.get(position).contactId, group.getGroupId(),position);
-//                        dialog.dismiss();
-//                    }
-//                });
-//                Toast.makeText(addNewMemberActivity, "isremove", Toast.LENGTH_SHORT).show();
-                ((AddNewMemberActivity) addNewMemberActivity).removeContactFromGroup(usersArrayList.get(position).contactId, group.groupId, position);
-            }
+//            if (isChecked) {
+                ((AddNewMemberActivity) addNewMemberActivity).isChecked(isChecked,position,usersArrayList.get(position).contactId, group.getGroupId());
+//                ((AddNewMemberActivity) addNewMemberActivity).addContactToGroup(addNewMemberActivity, usersArrayList.get(position).contactId, group.getGroupId());
+//            } else {
+////                Dialog dialog = new Dialog(addNewMemberActivity);
+////                if (dialog.getWindow() != null) {
+////                    dialog.getWindow().setGravity(Gravity.CENTER);
+////                    dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+////                    dialog.setCancelable(false);
+////                }
+////                dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+////                dialog.setContentView(R.layout.dailog_layout);
+////                dialog.setCancelable(false);
+////                dialog.show();
+////
+////                Button cancel1 = dialog.findViewById(R.id.canceldialog);
+////                Button movetobin = dialog.findViewById(R.id.movetobin);
+////
+////                cancel1.setOnClickListener(new View.OnClickListener() {
+////                    @Override
+////                    public void onClick(View view) {
+////                        holder.checkBox.setChecked(true);
+////                        dialog.dismiss();
+////                    }
+////                });
+////
+////                movetobin.setOnClickListener(new View.OnClickListener() {
+////                    @Override
+////                    public void onClick(View view) {
+////                        ((AddNewMemberActivity) addNewMemberActivity).removeContactFromGroup(usersArrayList.get(position).contactId, group.getGroupId(),position);
+////                        dialog.dismiss();
+////                    }
+////                });
+////                Toast.makeText(addNewMemberActivity, "isremove", Toast.LENGTH_SHORT).show();
+//                ((AddNewMemberActivity) addNewMemberActivity).removeContactFromGroup(usersArrayList.get(position).contactId, group.getGroupId(), position);
+//            }
         });
     }
 

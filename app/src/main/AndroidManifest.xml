@@ -66,11 +66,11 @@
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".GroupDetailActivity"
+            android:name=".Activity.GroupDetailActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".AddNewMemberActivity"
+            android:name=".Activity.AddNewMemberActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity

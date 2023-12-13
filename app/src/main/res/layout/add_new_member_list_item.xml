@@ -25,18 +25,20 @@
                 android:src="@drawable/person_placeholder" />
         </androidx.cardview.widget.CardView>
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_toEndOf="@+id/title">
+            android:layout_toEndOf="@+id/title"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/group_personName"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:layout_weight="1"
                 android:layout_marginHorizontal="10dp"
                 android:fontFamily="@font/sf_pro_text_medium"
-                android:gravity="center"
+                android:gravity="start|center"
                 android:text="Group name"
                 android:textColor="@color/bluetheme1"
                 android:textSize="14dp" />
@@ -70,7 +72,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerInParent="true" />
 
-        </RelativeLayout>
+        </LinearLayout>
     </RelativeLayout>
 
 </RelativeLayout>

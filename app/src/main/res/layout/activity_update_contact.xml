@@ -114,173 +114,125 @@
         android:layout_below="@+id/title3"
         android:orientation="vertical">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="10dp"
-        android:layout_weight="1">
-
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/title4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="top"
-                    android:layout_marginStart="10dp"
-                    android:src="@drawable/person" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="20dp"
-                        android:layout_marginBottom="5dp"
-                        android:text="First name"
-                        android:textColor="@color/darkgray" />
-
-                    <EditText
-                        android:id="@+id/update_firstname"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="20dp"
-                        android:background="@drawable/border2"
-                        android:fontFamily="@font/sf_pro_text_regular"
-                        android:inputType="text"
-                        android:maxLines="1"
-                        android:padding="10dp"
-                        android:text="Clindy" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="20dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="5dp"
-                        android:text="Last name"
-                        android:textColor="@color/darkgray" />
-
-                    <EditText
-                        android:id="@+id/update_lastname"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="20dp"
-                        android:background="@drawable/border2"
-                        android:inputType="text"
-                        android:maxLines="1"
-                        android:fontFamily="@font/sf_pro_text_regular"
-                        android:padding="10dp"
-                        android:text="Warren" />
-
-
-                </LinearLayout>
-            </LinearLayout>
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/title4"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="26dp"
-                    android:layout_gravity="top"
-                    android:layout_marginStart="10dp"
-                    android:src="@drawable/call" />
+                <LinearLayout
+                    android:id="@+id/title4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="top"
+                        android:layout_marginStart="10dp"
+                        android:src="@drawable/person" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="20dp"
+                            android:layout_marginBottom="5dp"
+                            android:text="First name"
+                            android:textColor="@color/darkgray" />
+
+                        <EditText
+                            android:id="@+id/update_firstname"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="20dp"
+                            android:background="@drawable/border2"
+                            android:fontFamily="@font/sf_pro_text_regular"
+                            android:inputType="text"
+                            android:maxLines="1"
+                            android:padding="10dp"
+                            android:text="Clindy" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="20dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="5dp"
+                            android:text="Last name"
+                            android:textColor="@color/darkgray" />
+
+                        <EditText
+                            android:id="@+id/update_lastname"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="20dp"
+                            android:background="@drawable/border2"
+                            android:fontFamily="@font/sf_pro_text_regular"
+                            android:inputType="text"
+                            android:maxLines="1"
+                            android:padding="10dp"
+                            android:text="Warren" />
+                    </LinearLayout>
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_below="@+id/title4"
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="20dp"
-                        android:layout_marginBottom="5dp"
-                        android:text="Phone"
-                        android:textColor="@color/darkgray" />
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="top"
+                        android:layout_marginTop="13dp"
+                        android:layout_marginStart="10dp"
+                        android:src="@drawable/call" />
 
-                    <EditText
-                        android:id="@+id/update_pphone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="20dp"
-                        android:background="@drawable/border2"
-                        android:fontFamily="@font/sf_pro_text_regular"
-                        android:inputType="number"
-                        android:maxLength="10"
-                        android:padding="10dp"
-                        android:text="+91 (704) 555-0127" />
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@null"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                        android:layout_margin="10dp">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/autoCompleteTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:inputType="none"
-                        android:background="@null"
-                        android:text="Office"
-                        />
-                    </com.google.android.material.textfield.TextInputLayout>
-<!--                        android:layout_marginHorizontal="20dp"-->
-<!--                        android:layout_marginTop="10dp"-->
-<!--                        android:layout_marginBottom="5dp"-->
-<!--                        android:text="Office"-->
-<!--                        android:textColor="@color/darkgray"-->
-<!--                        android:visibility="visible" />-->
-
-                    <EditText
-                        android:id="@+id/update_ophone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="20dp"
-                        android:background="@drawable/border2"
-                        android:fontFamily="@font/sf_pro_text_regular"
-                        android:inputType="number"
-                        android:padding="10dp"
-                        android:text="+91 (405) 555-0128"
-                        android:visibility="visible" />
+                   <androidx.recyclerview.widget.RecyclerView
+                       android:id="@+id/update_number_recyclerview"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       tools:listitem="@layout/add_new_phone_number_item_list"/>
                 </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/addNewUpdate"
+                    android:layout_width="93dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/addnew" />
+
             </LinearLayout>
 
-        </LinearLayout>
+        </ScrollView>
 
-    </ScrollView>
-
-    <Button
-        android:id="@+id/update_contact"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/border"
-        android:gravity="center"
-        android:text="Save"
-        android:textColor="#FFFFFF"
-        android:textSize="16dp"
-        app:backgroundTint="@color/blue" />
+        <Button
+            android:id="@+id/update_contact"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/border"
+            android:gravity="center"
+            android:text="Save"
+            android:textColor="#FFFFFF"
+            android:textSize="16dp"
+            app:backgroundTint="@color/blue" />
     </LinearLayout>
 </RelativeLayout>

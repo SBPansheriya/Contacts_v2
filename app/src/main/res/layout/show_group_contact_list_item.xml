@@ -25,16 +25,17 @@
                 android:src="@drawable/person_placeholder" />
         </androidx.cardview.widget.CardView>
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_toRightOf="@+id/title">
+            android:layout_toEndOf="@+id/title">
 
             <TextView
                 android:id="@+id/show_group_personName"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:gravity="center"
+                android:layout_weight="1"
+                android:gravity="center|start"
                 android:layout_marginHorizontal="10dp"
                 android:fontFamily="@font/sf_pro_text_medium"
                 android:textColor="@color/bluetheme1"
@@ -45,8 +46,7 @@
                 android:id="@+id/remove_groupName"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerInParent="true"
+                android:layout_gravity="center"
                 android:src="@drawable/remove_group" />
 
 <!--            <CheckBox-->
@@ -56,7 +56,7 @@
 <!--                app:buttonTint="@color/blue"-->
 <!--                android:button="@drawable/custom_checkbox"-->
 <!--                android:visibility="visible" />-->
-        </RelativeLayout>
+        </LinearLayout>
     </RelativeLayout>
 
 </RelativeLayout>
